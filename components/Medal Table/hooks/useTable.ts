@@ -36,22 +36,23 @@ export default function useTable(){
     }
 
     function handleMoreFiltersChange(value: string[]){
-        if (!value.length){
-            setFilters(prev => ({...prev, more_filters: {no_golds: false, no_silvers: false, no_bronzes: false}}));
-            return
+        const newMoreFilters = {no_golds: false, no_silvers: false, no_bronzes: false};
+        if (value.length){ 
+            value.forEach(filter => newMoreFilters[filter as keyof typeof newMoreFilters] = true)
         }
-        const newMoreFilters = {...filters.more_filters};
-        value.forEach(filter => newMoreFilters[filter as keyof typeof newMoreFilters] = true)
         setFilters(prev => ({...prev, more_filters: newMoreFilters}))
     }
 
     async function getRowsFromPersons(){
+        let query = supabase.from("persons").select("*", { count: "exact" });
+        if (filters.name) query = query.ilike('name', `%${filters.name}%`);
+        if (filters.nationality) query = query.ilike('country_id', `%${filters.nationality}%`);
+        if (filters.more_filters.no_bronzes) query = query.eq('bronzes', 0);
+        if (filters.more_filters.no_silvers) query = query.eq('silvers', 0);
+        if (filters.more_filters.no_golds) query = query.eq('golds', 0);
+        
         try {
-            const { data, count, error } = await supabase
-            .from("persons")
-            .select("*", { count: "exact" })
-            .ilike('name', `%${filters.name}%`)
-            .ilike('country_id', `%${filters.nationality}%`)
+            const { data, count, error } = await query
             .order(filters.col_order, { ascending: filters.ascending })
             .range((pages.page - 1) * 50, pages.page * 50 - 1);
             if (error) throw error.message

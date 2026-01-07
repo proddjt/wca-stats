@@ -54,10 +54,7 @@ export default function RootLayout({
           }}
           />
           <div className="relative flex flex-col grow justify-between">
-            {/* <Navbar /> */}
-            <div className="grow flex flex-col">
               {children}
-            </div>
             <footer className="w-full flex items-center justify-center py-3">
               
             </footer>

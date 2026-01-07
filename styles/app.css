@@ -9,7 +9,6 @@ html, body {
 
 body {
     flex-grow: 1;
-    overflow: hidden;
 }
 
 div[data-overlay-container] {

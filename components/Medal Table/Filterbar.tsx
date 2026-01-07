@@ -99,6 +99,7 @@ export default function Filterbar({
                 variant="faded"
                 size="sm"
                 radius="sm"
+                defaultSelectedKeys={["total_medalsdesc"]}
                 >
                     {
                         columns.filter((column) => column.key !== "country_id").map((column) => (
@@ -116,7 +117,6 @@ export default function Filterbar({
                 label="More filters"
                 orientation="horizontal"
                 onChange={(v) => handleMoreFiltersChange(v)}
-                isDisabled
                 >
                     <Checkbox value="no_golds">Show only people with no gold medals</Checkbox>
                     <Checkbox value="no_silvers">Show only people with no silver medals</Checkbox>

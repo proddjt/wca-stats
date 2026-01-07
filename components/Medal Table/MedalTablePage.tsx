@@ -85,7 +85,7 @@ export default function MedalTablePage() {
                   isCompact
                   showControls
                   showShadow
-                  color="primary"
+                  color="warning"
                   page={pages.page}
                   total={pages.total}
                   onChange={(page) => changePage(page)}

@@ -52,6 +52,12 @@ export default function UpdateDatabasePage(){
                 >
                     Update Persons
                 </Button>
+                <Button
+                onPress={() => doUpdate("results")}
+                isDisabled={isPending}
+                >
+                    Update Results
+                </Button>
             </div>
             <Button
             onPress={doLogout}

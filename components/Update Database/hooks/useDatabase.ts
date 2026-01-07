@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
+import dayjs from 'dayjs'
+import pLimit from "p-limit";
 
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
@@ -110,7 +112,7 @@ export default function useDatabase () {
             for (let i = 1; i <= pages; i++) {
                 const response = await fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/competitions-page-${i}.json`)
                 const data = await response.json();
-                const competitions = data.items.map((c: any) => ({
+                const competitions = data.items.filter((c:any) => !c.isCanceled).map((c: any) => ({
                     id: c.id,
                     name: c.name,
                     city: c.city,
@@ -122,16 +124,17 @@ export default function useDatabase () {
                         c.wcaDelegates.map((d: any) => d.name)
                     ]
                 }))
-                competitions.forEach(async (c: any) => {
-                    try {
-                        const { error } = await supabase
-                        .from("competitions")
-                        .upsert(c, { onConflict: "id", ignoreDuplicates: true });
-                        if (error) throw error.message
-                    } catch (error) {
-                        showToast("Attention!", JSON.stringify(error), "danger")
+                try {
+                    const { error } = await supabase
+                    .from("competitions")
+                    .upsert(competitions, { onConflict: "id" });
+                    if (error){
+                        console.log(error, competitions);
+                        throw error.message
                     }
-                })
+                } catch (error) {
+                    showToast("Attention!", JSON.stringify(error), "danger")
+                }
             }
             showToast("Success!", "Competitions updated", "success")
         }
@@ -152,18 +155,64 @@ export default function useDatabase () {
                     bronzes: p.medals.bronze.toString(),
                     total_medals: (p.medals.gold + p.medals.silver + p.medals.bronze).toString()
                 }))
-                persons.forEach(async (p: any) => {
-                    try {
-                        const { error } = await supabase
-                        .from("persons")
-                        .upsert(p, { onConflict: "wca_id", ignoreDuplicates: true });
-                        if (error) throw error.message
-                    } catch (error) {
-                        showToast("Attention!", JSON.stringify(error), "danger")
+                try {
+                    const { error } = await supabase
+                    .from("persons")
+                    .upsert(persons, { onConflict: "wca_id", ignoreDuplicates: true });
+                    if (error){
+                        console.log(error, persons);
+                        throw error.message
                     }
-                })
+                } catch (error) {
+                    showToast("Attention!", JSON.stringify(error), "danger")
+                }
             }
             showToast("Success!", "Persons updated", "success")
+        }
+    }
+
+    async function updateResults(){
+        const limit = pLimit(15)
+        let comps_ids = []
+        try {
+            const {data, error} = await supabase
+            .from("competitions")
+            .select("id", { count: "exact" })
+            
+            
+            if (error) throw error.message
+            comps_ids = data.map((c: any) => c.id)
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+        if (comps_ids.length){
+            await Promise.all(
+                comps_ids.map(id =>
+                    limit(async () => {
+                        const response = await fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/results/${id}.json`);
+                        const data = await response.json();
+                        const final_results = data.items.filter((r: any) => r.round === "Final" && [1,2,3].includes(r.position) );
+                        const mapped = final_results.map((r: any) => ({
+                            id: r.competitionId+r.eventId+r.position+r.personId,
+                            competition_id: r.competitionId,
+                            event_id: r.eventId,
+                            person_id: r.personId,
+                            position: r.position,
+                            year: r.competitionId.slice(-4),
+                        }));
+                        await supabase
+                        .from("results")
+                        .upsert(mapped, { onConflict: "id" });
+                    })
+                )
+            );
+        }
+        showToast("Success!", "Results updated", "success")
+        try{
+            await fetch("/api/run-update-results");
+            showToast("Success!", "Results updated", "success")
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
 
@@ -188,6 +237,12 @@ export default function useDatabase () {
                 break;
             case "persons":
                 showLoader(updatePersons)
+                break;
+            // case "medals":
+            //     showLoader(updateMedals)
+            //     break;
+            case "results":
+                showLoader(updateResults)
                 break;
             default:
                 break;
