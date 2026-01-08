@@ -47,6 +47,8 @@ export default function useTable(){
         let query = supabase.from("persons").select("*", { count: "exact" });
         if (filters.name) query = query.ilike('name', `%${filters.name}%`);
         if (filters.nationality) query = query.ilike('country_id', `%${filters.nationality}%`);
+        if (filters.year) query = query.eq('year', filters.year);
+        if (filters.event) query = query.eq('event', filters.event);
         if (filters.more_filters.no_bronzes) query = query.eq('bronzes', 0);
         if (filters.more_filters.no_silvers) query = query.eq('silvers', 0);
         if (filters.more_filters.no_golds) query = query.eq('golds', 0);
@@ -62,6 +64,26 @@ export default function useTable(){
             showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
+
+    // async function getRowsFromMedals(){
+    //     let query = supabase.from("medals").select("*", { count: "exact" });
+    //     if (filters.name) query = query.ilike('name', `%${filters.name}%`);
+    //     if (filters.nationality) query = query.ilike('country_id', `%${filters.nationality}%`);
+    //     if (filters.more_filters.no_bronzes) query = query.eq('bronzes', 0);
+    //     if (filters.more_filters.no_silvers) query = query.eq('silvers', 0);
+    //     if (filters.more_filters.no_golds) query = query.eq('golds', 0);
+        
+    //     try {
+    //         const { data, count, error } = await query
+    //         .order(filters.col_order, { ascending: filters.ascending })
+    //         .range((pages.page - 1) * 50, pages.page * 50 - 1);
+    //         if (error) throw error.message
+    //         setRows(data);
+    //         if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
+    //     } catch (error) {
+    //         showToast("Attention!", JSON.stringify(error), "danger")
+    //     }
+    // }
 
     async function getNations(){
         try {
