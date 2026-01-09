@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { EventType, FiltersType, NationType, PagesType, RowsType } from "@/types";
+import { EventType, FiltersType, MedalType, NationType, PagesType, RowsType } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import { showToast } from "@/lib/Toast";
 import { order } from "@/Utils/event-order";
+import { sortRows } from "@/Utils/functions";
 
 
 export default function useTable(){
@@ -65,25 +66,46 @@ export default function useTable(){
         }
     }
 
-    // async function getRowsFromMedals(){
-    //     let query = supabase.from("medals").select("*", { count: "exact" });
-    //     if (filters.name) query = query.ilike('name', `%${filters.name}%`);
-    //     if (filters.nationality) query = query.ilike('country_id', `%${filters.nationality}%`);
-    //     if (filters.more_filters.no_bronzes) query = query.eq('bronzes', 0);
-    //     if (filters.more_filters.no_silvers) query = query.eq('silvers', 0);
-    //     if (filters.more_filters.no_golds) query = query.eq('golds', 0);
-        
-    //     try {
-    //         const { data, count, error } = await query
-    //         .order(filters.col_order, { ascending: filters.ascending })
-    //         .range((pages.page - 1) * 50, pages.page * 50 - 1);
-    //         if (error) throw error.message
-    //         setRows(data);
-    //         if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
-    //     } catch (error) {
-    //         showToast("Attention!", JSON.stringify(error), "danger")
-    //     }
-    // }
+    async function getRowsFromMedals(){
+        let query = supabase.from("medals").select("*", { count: "exact" });
+        if (filters.name) query = query.ilike('name', `%${filters.name}%`);
+        if (filters.nationality) query = query.ilike('country_id', `%${filters.nationality}%`);
+        if (filters.year) query = query.eq('year', filters.year);
+        if (filters.event) query = query.eq('event_id', filters.event);
+        try {
+            const { data, count, error } = await query
+            .range((pages.page - 1) * 50, pages.page * 50 - 1);
+            if (error) throw error.message
+            let filteredData = [] as RowsType[];
+            data.forEach((row: MedalType) => {
+                if (filteredData.length && filteredData.some(d => d.wca_id === row.person_id)){
+                    const index = filteredData.findIndex(d => d.wca_id === row.person_id);
+                    filteredData[index].total_medals += 1;
+                    if (row.medal_type === "gold") filteredData[index].golds += 1;
+                    if (row.medal_type === "silver") filteredData[index].silvers += 1;
+                    if (row.medal_type === "bronze") filteredData[index].bronzes += 1;
+                } else {
+                    filteredData.push({
+                        name: row.name,
+                        wca_id: row.person_id,
+                        country_id: row.country_id,
+                        golds: row.medal_type === "gold" ? 1 : 0,
+                        silvers: row.medal_type === "silver" ? 1 : 0,
+                        bronzes: row.medal_type === "bronze" ? 1 : 0,
+                        total_medals: 1
+                    })
+                }
+            })
+            if (filters.more_filters.no_bronzes) filteredData = filteredData.filter(d => d.bronzes === 0);
+            if (filters.more_filters.no_silvers) filteredData = filteredData.filter(d => d.silvers === 0);
+            if (filters.more_filters.no_golds) filteredData = filteredData.filter(d => d.golds === 0);
+            filteredData = sortRows(filteredData, filters.col_order as keyof RowsType, filters.ascending);
+            setRows(filteredData);
+            if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+    }
 
     async function getNations(){
         try {
@@ -134,6 +156,7 @@ export default function useTable(){
 
     useEffect(() => {
         if (!filters.event && !filters.year) showLoader(getRowsFromPersons)
+        else (showLoader(getRowsFromMedals))
     }, [filters, pages.page]);
 
     return {

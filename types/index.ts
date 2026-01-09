@@ -8,6 +8,16 @@ export interface RowsType {
     total_medals: number
 }
 
+export interface MedalType {
+    id: string,
+    person_id: string,
+    country_id: string,
+    event_id: string,
+    year: number,
+    medal_type: string,
+    name: string
+}
+
 export interface FiltersType {
     nationality: string,
     year: string,

@@ -65,9 +65,9 @@ export default function MedalTablePage() {
           aria-label="medals-table"
           fullWidth={false}
           isStriped
+          rowHeight={40}
           classNames={{
-            wrapper: "h-[75vh] max-h-[75vh] w-[90vw] max-w-[90vw] overflow-auto", // <--- SCROLL QUI
-            table: "min-h-full"
+            wrapper: "h-[75vh] max-h-[75vh] w-[90vw] max-w-[90vw] overflow-auto",
           }}
           topContent={<Filterbar
             handleFiltersChange={handleFiltersChange}

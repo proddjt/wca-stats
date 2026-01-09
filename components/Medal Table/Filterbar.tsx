@@ -67,7 +67,6 @@ export default function Filterbar({
                 variant="faded"
                 size="sm"
                 radius="sm"
-                isDisabled
                 startContent={filters.event && <span className={`cubing-icon event-${filters.event}`}></span>}
                 fullWidth={false}
                 className="lg:w-1/6 w-full"
@@ -85,7 +84,6 @@ export default function Filterbar({
                 variant="faded"
                 size="sm"
                 radius="sm"
-                isDisabled
                 fullWidth={false}
                 className="lg:w-1/6 w-full"
                 onClear={() => handleFiltersChange("", "year")}
