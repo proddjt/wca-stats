@@ -66,6 +66,28 @@ export default function useTable(){
         }
     }
 
+    async function getRows(){
+        try {
+            const { data, count, error } = await supabase.rpc('get_medal_leaderboard', {
+                in_name: filters.name || null,
+                in_year: filters.year || null,
+                in_event_id: filters.event || null,
+                in_country_id: filters.nationality || null,
+                in_order_col: filters.col_order,
+                in_ascending: filters.ascending,
+                in_no_bronzes: filters.more_filters.no_bronzes,
+                in_no_silvers: filters.more_filters.no_silvers,
+                in_no_golds: filters.more_filters.no_golds
+            }, {count: "exact"})
+            .range((pages.page - 1) * 50, pages.page * 50 - 1);
+            if (error) throw error.message
+            setRows(data);
+            if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+    }
+
     async function getRowsFromMedals(){
         let query = supabase.from("medals").select("*", { count: "exact" });
         if (filters.name) query = query.ilike('name', `%${filters.name}%`);
@@ -155,8 +177,7 @@ export default function useTable(){
     }, []);
 
     useEffect(() => {
-        if (!filters.event && !filters.year) showLoader(getRowsFromPersons)
-        else (showLoader(getRowsFromMedals))
+        showLoader(getRows)
     }, [filters, pages.page]);
 
     return {
