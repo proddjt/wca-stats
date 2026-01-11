@@ -114,7 +114,7 @@ export default function useDatabase () {
             for (let i = 1; i <= pages; i++) {
                 const response = await fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/competitions-page-${i}.json`)
                 const data = await response.json();
-                const competitions = data.items.filter((c:any) => !c.isCanceled).map((c: any) => ({
+                const competitions = data.items.filter((c:any) => !c.isCanceled && dayjs(c.date.start) < dayjs() ).map((c: any) => ({
                     id: c.id,
                     name: c.name,
                     city: c.city,
