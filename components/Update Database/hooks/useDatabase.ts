@@ -149,14 +149,10 @@ export default function useDatabase () {
             for (let i = 1; i <= pages; i++) {
                 const response = await fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/persons-page-${i}.json`)
                 const data = await response.json();
-                const persons = data.items.filter((p: any) => p.medals.bronze > 0 || p.medals.gold > 0 || p.medals.silver > 0).map((p: any) => ({
+                const persons = data.items.map((p: any) => ({
                     wca_id: p.id,
                     name: p.name,
                     country_id: p.country,
-                    golds: p.medals.gold.toString(),
-                    silvers: p.medals.silver.toString(),
-                    bronzes: p.medals.bronze.toString(),
-                    total_medals: (p.medals.gold + p.medals.silver + p.medals.bronze).toString(),
                     last_update: new Date().toISOString()
                 }))
                 try {
