@@ -17,6 +17,7 @@ export default function useTable(screenWidth: number){
         name: '',
         col_order: 'total_medals',
         ascending: false,
+        country: "all",
         more_filters: {
             no_golds: false,
             no_silvers: false,
@@ -32,7 +33,8 @@ export default function useTable(screenWidth: number){
 
     function handleFiltersChange(value: string | string[] | [], key: string, ascending?: boolean){
         setPages(prev => ({...prev, page: 1}))
-        setFilters(prev => ({...prev, [key]: value}))
+        if (!value) setFilters(prev => ({...prev, [key]: ""}))
+        else setFilters(prev => ({...prev, [key]: value}))
         if (ascending !== undefined) setFilters(prev => ({...prev, ascending: ascending}))
     }
 
@@ -56,7 +58,8 @@ export default function useTable(screenWidth: number){
                 in_ascending: newFilters.ascending,
                 in_no_bronzes: newFilters.more_filters.no_bronzes,
                 in_no_silvers: newFilters.more_filters.no_silvers,
-                in_no_golds: newFilters.more_filters.no_golds
+                in_no_golds: newFilters.more_filters.no_golds,
+                in_location_filter: newFilters.country
             }, {count: "exact"})
             .range((page - 1) * 50, page * 50 - 1);
             if (error) throw error.message
@@ -118,6 +121,7 @@ export default function useTable(screenWidth: number){
             name: '',
             col_order: 'total_medals',
             ascending: false,
+            country: 'all',
             more_filters: {
                 no_golds: false,
                 no_silvers: false,

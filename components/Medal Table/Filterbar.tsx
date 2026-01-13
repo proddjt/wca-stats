@@ -2,12 +2,35 @@ import {Input} from "@heroui/input";
 import {Autocomplete, AutocompleteItem, AutocompleteSection} from "@heroui/autocomplete"
 import {Select, SelectItem} from "@heroui/select";
 import {CheckboxGroup, Checkbox} from "@heroui/checkbox";
+import {RadioGroup, Radio} from "@heroui/radio";
 import Flag from 'react-world-flags'
 
 import { FaSearch } from "react-icons/fa";
+import { FaGlobeEurope } from "react-icons/fa";
+import { FaGlobeAsia } from "react-icons/fa";
+import { FaGlobeAfrica } from "react-icons/fa";
+import { FaGlobeAmericas } from "react-icons/fa";
+import { FaEarthOceania } from "react-icons/fa6";
+import { TfiWorld } from "react-icons/tfi";
+
 
 import { EventType, FiltersType, NationType } from "@/types";
 import { columns } from "./MedalTablePage";
+
+const icons = {
+    "": TfiWorld,
+    "europe": FaGlobeEurope,
+    "asia": FaGlobeAsia,
+    "africa": FaGlobeAfrica,
+    "north-america": FaGlobeAmericas,
+    "south-america": FaGlobeAmericas,
+    "oceania": FaEarthOceania
+}
+
+const getIcon = (continent: string) => {
+    const Icon = icons[continent as keyof typeof icons];
+    return <Icon />
+}
 
 export default function Filterbar({
     handleFiltersChange,
@@ -32,8 +55,12 @@ export default function Filterbar({
         handleFiltersChange(years, "year");
     };
 
+    const handleRadioChange = (v: string) => {
+        handleFiltersChange(v, "country");
+    };
+
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-0.5">
             <div className="flex lg:flex-row flex-col lg:justify-around lg:gap-0 gap-2">
                 <Input
                 value={filters.name}
@@ -55,22 +82,18 @@ export default function Filterbar({
                 selectedKey={filters.nationality}
                 onSelectionChange={(key) => handleFiltersChange(key as string, "nationality")}
                 placeholder="Search by nationality"
-                // defaultItems={[{ id: "", name: "World", cont_id: "none" }, ...nations]}
                 variant="faded"
                 size="sm"
                 radius="sm"
-                startContent={filters.nationality && <Flag code={filters.nationality} width={20}/>}
+                startContent={
+                    filters.nationality && !["europe","africa","asia","oceania","north-america","south-america"].includes(filters.nationality) ?
+                    <Flag code={filters.nationality} width={20}/> :
+                    getIcon(filters.nationality)
+                }
                 fullWidth={isDrawer}
                 className="lg:w-1/6 w-full"
                 onClear={() => handleFiltersChange("", "nationality")}
                 >
-                    <AutocompleteSection showDivider title="Rest">
-                        {
-                            nations.filter(n => !["europe","africa","asia","oceania","north-america","south-america"].includes(n.cont_id)).map(n => 
-                            <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
-                            )
-                        }
-                    </AutocompleteSection>
                     <AutocompleteItem key="" onClick={() => handleFiltersChange("", "nationality")}>World</AutocompleteItem>
                     <AutocompleteSection showDivider title="Europe">
                         {
@@ -168,17 +191,30 @@ export default function Filterbar({
                     }
                 </Select>
             </div>
-            <div className="flex lg:flex-row flex-col lg:justify-around">
+            <div className="flex lg:flex-row flex-col justify-center lg:gap-0 gap-2">
                 <CheckboxGroup
                 color="warning"
-                label="More filters"
-                orientation="horizontal"
+                label="Filter by medals"
+                className="lg:w-1/3 w-auto"
+                orientation={isDrawer ? "horizontal" : "vertical"}
                 onChange={(v) => handleMoreFiltersChange(v)}
                 >
                     <Checkbox value="no_golds">Show only people with no gold medals</Checkbox>
                     <Checkbox value="no_silvers">Show only people with no silver medals</Checkbox>
                     <Checkbox value="no_bronzes">Show only people with no bronze medals</Checkbox>
                 </CheckboxGroup>
+                <RadioGroup
+                color="warning"
+                label="Filter by country"
+                className="lg:w-1/3 w-auto"
+                value={filters.country}
+                orientation={isDrawer ? "horizontal" : "vertical"}
+                onValueChange={handleRadioChange}
+                >
+                    <Radio value="all">All</Radio>
+                    <Radio value="foreign">Only medals in foreign country</Radio>
+                    <Radio value="home">Only medals in home country</Radio>
+                </RadioGroup>
             </div>
         </div>
     )

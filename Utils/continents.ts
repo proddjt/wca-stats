@@ -152,7 +152,7 @@ export const continentsTable = [
         "continent": "north-america"
     },
     {
-        "country": "Cape Verde",
+        "country": "Cabo Verde",
         "continent": "africa"
     },
     {
@@ -160,7 +160,7 @@ export const continentsTable = [
         "continent": "north-america"
     },
     {
-        "country": "Central african Republic",
+        "country": "Central African Republic",
         "continent": "africa"
     },
     {
@@ -171,8 +171,13 @@ export const continentsTable = [
         "country": "Chile",
         "continent": "south-america"
     },
+    
     {
         "country": "China",
+        "continent": "asia"
+    },
+    {
+        "country": "Chinese Taipei",
         "continent": "asia"
     },
     {
@@ -236,7 +241,7 @@ export const continentsTable = [
         "continent": "north-america"
     },
     {
-        "country": "East Timor",
+        "country": "Timor-Leste",
         "continent": "asia"
     },
     {
@@ -284,7 +289,7 @@ export const continentsTable = [
         "continent": "europe"
     },
     {
-        "country": "Fiji Islands",
+        "country": "Fiji",
         "continent": "Oceania"
     },
     {
@@ -360,7 +365,7 @@ export const continentsTable = [
         "continent": "africa"
     },
     {
-        "country": "Guinea-Bissau",
+        "country": "Guinea Bissau",
         "continent": "africa"
     },
     {
@@ -376,7 +381,7 @@ export const continentsTable = [
         "continent": "Antarctica"
     },
     {
-        "country": "Holy See (Vatican City State)",
+        "country": "Vatican City",
         "continent": "europe"
     },
     {
@@ -384,7 +389,7 @@ export const continentsTable = [
         "continent": "north-america"
     },
     {
-        "country": "Hong Kong",
+        "country": "Hong Kong, China",
         "continent": "asia"
     },
     {
@@ -424,7 +429,7 @@ export const continentsTable = [
         "continent": "europe"
     },
     {
-        "country": "Ivory Coast",
+        "country": "Côte d'Ivoire",
         "continent": "africa"
     },
     {
@@ -450,6 +455,10 @@ export const continentsTable = [
     {
         "country": "Kiribati",
         "continent": "Oceania"
+    },
+    {
+        "country": "Kosovo",
+        "continent": "europe"
     },
     {
         "country": "Kuwait",
@@ -496,7 +505,7 @@ export const continentsTable = [
         "continent": "europe"
     },
     {
-        "country": "Macao",
+        "country": "Macau, China",
         "continent": "asia"
     },
     {
@@ -552,7 +561,7 @@ export const continentsTable = [
         "continent": "north-america"
     },
     {
-        "country": "Micronesia, Federated States of",
+        "country": "Federated States of Micronesia",
         "continent": "Oceania"
     },
     {
@@ -636,7 +645,7 @@ export const continentsTable = [
         "continent": "Oceania"
     },
     {
-        "country": "North Korea",
+        "country": "Democratic People's Republic of Korea",
         "continent": "asia"
     },
     {
@@ -752,7 +761,7 @@ export const continentsTable = [
         "continent": "europe"
     },
     {
-        "country": "Sao Tome and Principe",
+        "country": "São Tomé and Príncipe",
         "continent": "africa"
     },
     {
@@ -800,7 +809,7 @@ export const continentsTable = [
         "continent": "africa"
     },
     {
-        "country": "South africa",
+        "country": "South Africa",
         "continent": "africa"
     },
     {
@@ -808,7 +817,7 @@ export const continentsTable = [
         "continent": "Antarctica"
     },
     {
-        "country": "South Korea",
+        "country": "Republic of Korea",
         "continent": "asia"
     },
     {
@@ -860,7 +869,7 @@ export const continentsTable = [
         "continent": "asia"
     },
     {
-        "country": "The Democratic Republic of Congo",
+        "country": "Democratic Republic of the Congo",
         "continent": "africa"
     },
     {

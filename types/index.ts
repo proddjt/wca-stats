@@ -25,6 +25,7 @@ export interface FiltersType {
     name: string,
     col_order: string,
     ascending: boolean,
+    country: string,
     more_filters: {
         no_golds: boolean,
         no_silvers: boolean,
