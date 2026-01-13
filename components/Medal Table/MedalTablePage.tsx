@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue} from "@heroui/table";
 import {useDisclosure} from "@heroui/use-disclosure";
 import {Pagination} from "@heroui/pagination";
@@ -49,7 +49,12 @@ export const columns = [
 export default function MedalTablePage() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const {isPending} = useIsLoading();
-  const screenWidth = useRef(window.screen.availWidth);
+  const screenWidth = useRef(0);
+
+  useEffect(() => {
+    screenWidth.current = window.screen.availWidth;
+  }, []);
+
 
   const {
       rows,
