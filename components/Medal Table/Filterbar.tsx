@@ -16,6 +16,7 @@ import { TfiWorld } from "react-icons/tfi";
 
 import { EventType, FiltersType, NationType } from "@/types";
 import { columns } from "./MedalTablePage";
+import { useEffect, useState } from "react";
 
 const icons = {
     "": TfiWorld,
@@ -50,6 +51,15 @@ export default function Filterbar({
     isDrawer?: boolean
 }){
 
+    const [name, setName] = useState(filters.name);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => { 
+            handleFiltersChange(name, "name");
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, [name]);
+
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const years = e.target.value.split(",");
         handleFiltersChange(years, "year");
@@ -72,8 +82,8 @@ export default function Filterbar({
                 fullWidth={isDrawer}
                 className="lg:w-1/6 w-full"
                 variant="faded"
-                onChange={(e) => handleFiltersChange(e.target.value, "name")}
-                onClear={() => handleFiltersChange("", "name")}
+                onChange={(e) => setName(e.target.value)}
+                onClear={() => setName("")}
                 />
 
                 <Autocomplete
