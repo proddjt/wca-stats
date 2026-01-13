@@ -54,10 +54,14 @@ export default function Filterbar({
     const [name, setName] = useState(filters.name);
 
     useEffect(() => {
-        const timeout = setTimeout(() => { 
+        if (isDrawer) {
             handleFiltersChange(name, "name");
-        }, 500);
-        return () => clearTimeout(timeout);
+        } else {
+            const timeout = setTimeout(() => { 
+                handleFiltersChange(name, "name");
+            }, 500);
+            return () => clearTimeout(timeout);
+        }
     }, [name]);
 
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
