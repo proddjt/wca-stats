@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { EventType, FiltersType, MedalType, NationType, PagesType, RowsType } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import { showToast } from "@/lib/Toast";
 import { order } from "@/Utils/event-order";
-import { sortRows } from "@/Utils/functions";
 
 
-export default function useTable(){
+export default function useTable(screenWidth: number){
     const supabase = createClient();
     const [rows, setRows] = useState<RowsType[]>([]);
     const [filters, setFilters] = useState<FiltersType>({
@@ -32,11 +31,13 @@ export default function useTable(){
     const {showLoader} = useIsLoading();
 
     function handleFiltersChange(value: string, key: string, ascending?: boolean){
+        setPages(prev => ({...prev, page: 1}))
         setFilters(prev => ({...prev, [key]: value}))
         if (ascending !== undefined) setFilters(prev => ({...prev, ascending: ascending}))
     }
 
     function handleMoreFiltersChange(value: string[]){
+        setPages(prev => ({...prev, page: 1}))
         const newMoreFilters = {no_golds: false, no_silvers: false, no_bronzes: false};
         if (value.length){ 
             value.forEach(filter => newMoreFilters[filter as keyof typeof newMoreFilters] = true)
@@ -44,7 +45,7 @@ export default function useTable(){
         setFilters(prev => ({...prev, more_filters: newMoreFilters}))
     }
 
-    async function getRows(){
+    async function getRows(page = pages.page){
         try {
             const { data, count, error } = await supabase.rpc('get_medal_leaderboard', {
                 in_name: filters.name || null,
@@ -57,7 +58,7 @@ export default function useTable(){
                 in_no_silvers: filters.more_filters.no_silvers,
                 in_no_golds: filters.more_filters.no_golds
             }, {count: "exact"})
-            .range((pages.page - 1) * 50, pages.page * 50 - 1);
+            .range((page - 1) * 50, page * 50 - 1);
             if (error) throw error.message
             setRows(data);
             if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
@@ -105,17 +106,20 @@ export default function useTable(){
 
     function changePage(page: number){
         setPages(prev => ({...prev, page: page}));
+        showLoader(() => getRows(page))
     }
 
     useEffect(() => {
         showLoader(getNations)
         showLoader(getEvents)
         showLoader(getYears)
+        if (screenWidth < 1024) showLoader(() => getRows(1))
     }, []);
 
     useEffect(() => {
-        showLoader(getRows)
-    }, [filters, pages.page]);
+        if (screenWidth < 1024) return
+        showLoader(() => getRows(1))
+    }, [filters]);
 
     return {
         rows,
@@ -126,6 +130,7 @@ export default function useTable(){
         pages,
         changePage,
         handleFiltersChange,
-        handleMoreFiltersChange
+        handleMoreFiltersChange,
+        getRows
     }
 }

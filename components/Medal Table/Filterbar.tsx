@@ -16,6 +16,7 @@ export default function Filterbar({
     nations,
     events,
     years,
+    isDrawer = false
 } : {
     handleFiltersChange: (value: string, key: string, ascending?: boolean) => void,
     handleMoreFiltersChange: (value: string[]) => void,
@@ -23,10 +24,11 @@ export default function Filterbar({
     nations: NationType[],
     events: EventType[],
     years: {year: string}[],
+    isDrawer?: boolean
 }){
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex lg:flex-row flex-col lg:justify-around">
+            <div className="flex lg:flex-row flex-col lg:justify-around lg:gap-0 gap-2">
                 <Input
                 value={filters.name}
                 placeholder="Search by name"
@@ -34,7 +36,7 @@ export default function Filterbar({
                 size="lg"
                 radius="sm"
                 startContent={<FaSearch />}
-                fullWidth={false}
+                fullWidth={isDrawer}
                 className="lg:w-1/6 w-full"
                 variant="faded"
                 onChange={(e) => handleFiltersChange(e.target.value, "name")}
@@ -51,7 +53,7 @@ export default function Filterbar({
                 size="sm"
                 radius="sm"
                 startContent={filters.nationality && <Flag code={filters.nationality} width={20}/>}
-                fullWidth={false}
+                fullWidth={isDrawer}
                 className="lg:w-1/6 w-full"
                 onClear={() => handleFiltersChange("", "nationality")}
                 >
@@ -68,7 +70,7 @@ export default function Filterbar({
                 size="sm"
                 radius="sm"
                 startContent={filters.event && <span className={`cubing-icon event-${filters.event}`}></span>}
-                fullWidth={false}
+                fullWidth={isDrawer}
                 className="lg:w-1/6 w-full"
                 onClear={() => handleFiltersChange("", "event")}
                 >
@@ -84,7 +86,7 @@ export default function Filterbar({
                 variant="faded"
                 size="sm"
                 radius="sm"
-                fullWidth={false}
+                fullWidth={isDrawer}
                 className="lg:w-1/6 w-full"
                 onClear={() => handleFiltersChange("", "year")}
                 >

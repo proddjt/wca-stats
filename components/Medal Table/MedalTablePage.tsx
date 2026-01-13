@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useRef } from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue} from "@heroui/table";
+import {useDisclosure} from "@heroui/use-disclosure";
 import {Pagination} from "@heroui/pagination";
 import Flag from 'react-world-flags'
 
@@ -9,6 +11,8 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import Filterbar from "./Filterbar";
 import Loader from "../Layout/Loader";
+import { Button } from "@heroui/button";
+import FilterDrawer from "./FilterDrawer";
 
 export const columns = [
   {
@@ -43,7 +47,13 @@ export const columns = [
 
 
 export default function MedalTablePage() {
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const {isPending} = useIsLoading();
+  const screenWidth = useRef<number>(0);
+
+  useEffect(() => {
+    screenWidth.current = window.screen.availWidth;
+  }, [])
 
   const {
       rows,
@@ -54,65 +64,67 @@ export default function MedalTablePage() {
       pages,
       changePage,
       handleFiltersChange,
-      handleMoreFiltersChange
-  } = useTable()
+      handleMoreFiltersChange,
+      getRows
+  } = useTable(screenWidth.current)
 
   if (isPending && (!nations.length || !events.length || !years.length)) return <Loader />
 
   return (
+      <>
       <div className="grow flex flex-col justify-center items-center">
-          <Table
-          aria-label="medals-table"
-          fullWidth={false}
-          isStriped
-          rowHeight={40}
-          classNames={{
-            wrapper: "h-[75vh] max-h-[75vh] w-[90vw] max-w-[90vw] overflow-auto",
-          }}
-          topContent={<Filterbar
-            handleFiltersChange={handleFiltersChange}
-            handleMoreFiltersChange={handleMoreFiltersChange}
-            filters={filters}
-            nations={nations}
-            events={events}
-            years={years}
-            />}
-          topContentPlacement="outside"
-          bottomContent={
-            pages.total > 0 ? (
-              <div className="flex w-full justify-center">
-                <Pagination
-                  isCompact
-                  showControls
-                  showShadow
-                  color="warning"
-                  page={pages.page}
-                  total={pages.total}
-                  onChange={(page) => changePage(page)}
-                />
-              </div>
-            ) : null
-          }
-          bottomContentPlacement="outside"
-          isHeaderSticky
-          >
-              <TableHeader columns={columns}>
-                  {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-              </TableHeader>
-              <TableBody
-              items={rows||[]}
-              emptyContent="No results found"
-              isLoading={isPending && !rows.length}
-              loadingContent="Loading..."
-              className="bg-red-400"
-              >
-                  {(item) => (
-                  <TableRow key={item.wca_id}>
-                      {(columnKey) => columnKey === "country_id" ? (<TableCell className="flex flex-row gap-1"><Flag code={item.country_id} width={15}/> {nations.find(n => n.id === item.country_id)?.name}</TableCell>) : (<TableCell>{getKeyValue(item, columnKey)}</TableCell>)}
-                  </TableRow>
-                  )}
-              </TableBody>
-          </Table>
+        <Table
+        aria-label="medals-table"
+        fullWidth={false}
+        isStriped
+        rowHeight={40}
+        classNames={{
+          wrapper: "h-[70vh] max-h-[70vh] lg:w-[90vw] lg:max-w-[90vw] w-[100vw] max-w-[100vw] overflow-auto",
+        }}
+        topContent={
+          screenWidth.current < 1024 ? 
+          <Button onPress={onOpen} color="warning">Filters</Button> :
+          <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}} />
+        }
+        topContentPlacement="outside"
+        bottomContent={
+          pages.total > 0 ? (
+            <div className="flex w-full justify-center">
+              <Pagination
+                isCompact
+                showControls
+                showShadow
+                color="warning"
+                page={pages.page}
+                total={pages.total}
+                onChange={(page) => changePage(page)}
+              />
+            </div>
+          ) : null
+        }
+        bottomContentPlacement="outside"
+        isHeaderSticky
+        >
+            <TableHeader columns={columns}>
+                {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+            </TableHeader>
+            <TableBody
+            items={rows||[]}
+            emptyContent="No results found"
+            isLoading={isPending && !rows.length}
+            loadingContent="Loading..."
+            className="bg-red-400"
+            >
+                {(item) => (
+                <TableRow key={item.wca_id}>
+                    {(columnKey) => columnKey === "country_id" ? (<TableCell className="flex flex-row gap-1"><Flag code={item.country_id} width={15}/> {nations.find(n => n.id === item.country_id)?.name}</TableCell>) : (<TableCell>{getKeyValue(item, columnKey)}</TableCell>)}
+                </TableRow>
+                )}
+            </TableBody>
+        </Table>
       </div>
+
+      <FilterDrawer isOpen={isOpen} onOpenChange={onOpenChange} getRows={getRows} {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}}/>
+      </>
   )
 }

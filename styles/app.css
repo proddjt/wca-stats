@@ -16,3 +16,7 @@ div[data-overlay-container] {
     display: flex;
     flex-direction: column;
 }
+
+.active-link{
+    color: hsl(37.03 91.27% 55.1%) !important;
+}
