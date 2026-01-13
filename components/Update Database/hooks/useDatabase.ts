@@ -7,6 +7,7 @@ import pLimit from "p-limit";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { showToast } from "@/lib/Toast";
+import { continentsTable } from "@/Utils/continents";
 
 export default function useDatabase () {
     const [user, setUser] = useState<User | null>(null);
@@ -88,13 +89,14 @@ export default function useDatabase () {
         try {
             const response = await fetch("https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/countries.json")
             const data = await response.json();
-            data.items.forEach(async (c: any) => {
+            data.items.forEach(async (c: any, i: number) => {
                 try {
                     const { error } = await supabase
                     .from("countries")
                     .upsert({
                         id: c.iso2Code,
                         name: c.name,
+                        cont_id: continentsTable.find((ct: any) => ct.country === c.name)?.continent.toLowerCase(),
                         last_update: new Date().toISOString()
                     }, { onConflict: "id" });
                     if (error) throw error.message
@@ -103,6 +105,30 @@ export default function useDatabase () {
                 }
             })
             showToast("Success!", "Countries updated", "success")
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+    }
+
+    async function updateContinents(){
+        try {
+            const response = await fetch("https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/continents.json")
+            const data = await response.json();
+            data.items.forEach(async (c: any) => {
+                try {
+                    const { error } = await supabase
+                    .from("continents")
+                    .upsert({
+                        id: c.id,
+                        name: c.name,
+                        last_update: new Date().toISOString()
+                    }, { onConflict: "id" });
+                    if (error) throw error.message
+                } catch (error) {
+                    showToast("Attention!", JSON.stringify(error), "danger")
+                }
+            })
+            showToast("Success!", "Continents updated", "success")
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
         }
@@ -223,7 +249,7 @@ export default function useDatabase () {
         showLoader(() => login({email, password}))
     }
 
-    function doUpdate(action: "events" | "countries" | "comps" | "persons" | "medals" | "results"){
+    function doUpdate(action: "events" | "countries" | "comps" | "persons" | "medals" | "results" | "continents"){
         switch (action) {
             case "events":
                 showLoader(updateEvents)
@@ -237,9 +263,9 @@ export default function useDatabase () {
             case "persons":
                 showLoader(updatePersons)
                 break;
-            // case "medals":
-            //     showLoader(updateMedals)
-            //     break;
+            case "continents":
+                showLoader(updateContinents)
+                break;
             case "results":
                 showLoader(updateResults)
                 break;

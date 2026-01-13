@@ -29,6 +29,12 @@ export default function UpdateDatabasePage(){
             <h1 className="font-bold text-5xl">Update database</h1>
             <div className="flex justify-center gap-10 items-center">
                 <Button
+                onPress={() => doUpdate("continents")}
+                isDisabled={isPending}
+                >
+                    Update Continents
+                </Button>
+                <Button
                 onPress={() => doUpdate("countries")}
                 isDisabled={isPending}
                 >

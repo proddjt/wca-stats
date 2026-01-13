@@ -20,7 +20,7 @@ export interface MedalType {
 
 export interface FiltersType {
     nationality: string,
-    year: string,
+    year: string[] | [],
     event: string,
     name: string,
     col_order: string,
@@ -44,7 +44,8 @@ export interface FormType {
 
 export interface NationType {
     id: string,
-    name: string
+    name: string,
+    cont_id: string
 }
 
 export interface EventType {

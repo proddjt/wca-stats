@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue} from "@heroui/table";
 import {useDisclosure} from "@heroui/use-disclosure";
 import {Pagination} from "@heroui/pagination";
@@ -49,11 +49,7 @@ export const columns = [
 export default function MedalTablePage() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const {isPending} = useIsLoading();
-  const screenWidth = useRef<number>(0);
-
-  useEffect(() => {
-    screenWidth.current = window.screen.availWidth;
-  }, [])
+  const screenWidth = useRef(window.screen.availWidth);
 
   const {
       rows,
@@ -65,21 +61,24 @@ export default function MedalTablePage() {
       changePage,
       handleFiltersChange,
       handleMoreFiltersChange,
-      getRows
+      getRows,
+      resetFilters
   } = useTable(screenWidth.current)
 
   if (isPending && (!nations.length || !events.length || !years.length)) return <Loader />
 
   return (
       <>
-      <div className="grow flex flex-col justify-center items-center">
+      <div className="grow flex flex-col justify-center lg:items-center py-2">
         <Table
         aria-label="medals-table"
-        fullWidth={false}
         isStriped
-        rowHeight={40}
+        isCompact
+        fullWidth={false}
+        rowHeight={5}
         classNames={{
-          wrapper: "h-[70vh] max-h-[70vh] lg:w-[90vw] lg:max-w-[90vw] w-[100vw] max-w-[100vw] overflow-auto",
+          wrapper: "h-[65vh] max-h-[65vh] overflow-auto",
+          td: "whitespace-nowrap"
         }}
         topContent={
           screenWidth.current < 1024 ? 
@@ -117,14 +116,19 @@ export default function MedalTablePage() {
             >
                 {(item) => (
                 <TableRow key={item.wca_id}>
-                    {(columnKey) => columnKey === "country_id" ? (<TableCell className="flex flex-row gap-1"><Flag code={item.country_id} width={15}/> {nations.find(n => n.id === item.country_id)?.name}</TableCell>) : (<TableCell>{getKeyValue(item, columnKey)}</TableCell>)}
+                    {columnKey => columnKey === "country_id" ?
+                    <TableCell className="flex flex-row gap-1">
+                      <Flag code={item.country_id} width={15}/> {nations.find(n => n.id === item.country_id)?.name}
+                      </TableCell> :
+                    <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                    }
                 </TableRow>
                 )}
             </TableBody>
         </Table>
       </div>
 
-      <FilterDrawer isOpen={isOpen} onOpenChange={onOpenChange} getRows={getRows} {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}}/>
+      <FilterDrawer {...{resetFilters, isOpen, onOpenChange, getRows,handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}}/>
       </>
   )
 }

@@ -12,17 +12,19 @@ export default function FilterDrawer({
     nations,
     events,
     years,
-    getRows
+    getRows,
+    resetFilters
 } : {
     isOpen: boolean,
     onOpenChange: () => void,
-    handleFiltersChange: (value: string, key: string, ascending?: boolean) => void,
+    handleFiltersChange: (value: string | string[] | [], key: string, ascending?: boolean) => void,
     handleMoreFiltersChange: (value: string[]) => void,
     filters: FiltersType,
     nations: NationType[],
     events: EventType[],
     years: {year: string}[],
-    getRows: (n?: number) => Promise<void>
+    getRows: (n?: number) => Promise<void>,
+    resetFilters: () => void
 }){
     return (
         <Drawer isOpen={isOpen} placement="bottom" onOpenChange={onOpenChange}>
@@ -33,8 +35,11 @@ export default function FilterDrawer({
                 <DrawerBody>
                     <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}} isDrawer={true}/>
                 </DrawerBody>
-                <DrawerFooter>
-                    <Button color="danger" variant="light" onPress={onClose}>
+                <DrawerFooter className="flex justify-between">
+                    <Button color="danger" onPress={() => {resetFilters(); onClose()}}>
+                    Reset filters
+                    </Button>
+                    <Button color="danger" variant="bordered" onPress={onClose}>
                     Close
                     </Button>
                     <Button color="warning" onPress={() => {getRows(1); onClose()}}>

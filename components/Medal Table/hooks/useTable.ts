@@ -12,7 +12,7 @@ export default function useTable(screenWidth: number){
     const [rows, setRows] = useState<RowsType[]>([]);
     const [filters, setFilters] = useState<FiltersType>({
         nationality: '',
-        year: '',
+        year: [],
         event: '',
         name: '',
         col_order: 'total_medals',
@@ -30,7 +30,7 @@ export default function useTable(screenWidth: number){
 
     const {showLoader} = useIsLoading();
 
-    function handleFiltersChange(value: string, key: string, ascending?: boolean){
+    function handleFiltersChange(value: string | string[] | [], key: string, ascending?: boolean){
         setPages(prev => ({...prev, page: 1}))
         setFilters(prev => ({...prev, [key]: value}))
         if (ascending !== undefined) setFilters(prev => ({...prev, ascending: ascending}))
@@ -45,18 +45,18 @@ export default function useTable(screenWidth: number){
         setFilters(prev => ({...prev, more_filters: newMoreFilters}))
     }
 
-    async function getRows(page = pages.page){
+    async function getRows(page = pages.page, newFilters = filters){
         try {
             const { data, count, error } = await supabase.rpc('get_medal_leaderboard', {
-                in_name: filters.name || null,
-                in_year: filters.year || null,
-                in_event_id: filters.event || null,
-                in_country_id: filters.nationality || null,
-                in_order_col: filters.col_order,
-                in_ascending: filters.ascending,
-                in_no_bronzes: filters.more_filters.no_bronzes,
-                in_no_silvers: filters.more_filters.no_silvers,
-                in_no_golds: filters.more_filters.no_golds
+                in_name: newFilters.name || null,
+                in_year: newFilters.year,
+                in_event_id: newFilters.event || null,
+                in_country_id: newFilters.nationality || null,
+                in_order_col: newFilters.col_order,
+                in_ascending: newFilters.ascending,
+                in_no_bronzes: newFilters.more_filters.no_bronzes,
+                in_no_silvers: newFilters.more_filters.no_silvers,
+                in_no_golds: newFilters.more_filters.no_golds
             }, {count: "exact"})
             .range((page - 1) * 50, page * 50 - 1);
             if (error) throw error.message
@@ -109,6 +109,25 @@ export default function useTable(screenWidth: number){
         showLoader(() => getRows(page))
     }
 
+    function resetFilters(){
+        setPages({page: 1, total: 0})
+        const resettedFilters = {
+            nationality: '',
+            year: [],
+            event: '',
+            name: '',
+            col_order: 'total_medals',
+            ascending: false,
+            more_filters: {
+                no_golds: false,
+                no_silvers: false,
+                no_bronzes: false
+            }
+        }
+        setFilters(resettedFilters)
+        showLoader(() => getRows(1, resettedFilters))
+    }
+
     useEffect(() => {
         showLoader(getNations)
         showLoader(getEvents)
@@ -131,6 +150,7 @@ export default function useTable(screenWidth: number){
         changePage,
         handleFiltersChange,
         handleMoreFiltersChange,
-        getRows
+        getRows,
+        resetFilters
     }
 }
