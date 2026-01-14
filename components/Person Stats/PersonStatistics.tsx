@@ -36,7 +36,7 @@ export default function PersonStatistics({
                 <Image
                 alt="person avatar"
                 src={person.img}
-                width={250}
+                width={15}
                 isBlurred
                 radius="sm"
                 className="mb-5"

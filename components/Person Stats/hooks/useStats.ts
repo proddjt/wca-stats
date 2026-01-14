@@ -42,10 +42,9 @@ export default function useStats(){
                     comp_ids: [...person_data.championshipIds, ...person_data.competitionIds]
                 })
                 if (error) throw error
-                if (data) person_data.last_medals = data
+                if (data) person_data.last_medals = data[0]
 
                 console.log(person_data);
-                
 
                 setPerson(person_data)
 
