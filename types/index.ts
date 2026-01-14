@@ -1,4 +1,5 @@
 export interface RowsType {
+    position: number,
     name: string,
     wca_id: string,
     country_id: string,
@@ -21,7 +22,7 @@ export interface MedalType {
 export interface FiltersType {
     nationality: string,
     year: string[] | [],
-    event: string,
+    event: string[] | [],
     name: string,
     col_order: string,
     ascending: boolean,
@@ -57,4 +58,37 @@ export interface EventType {
 export interface PagesType {
     page: number
     total: number
+}
+
+export interface PersonType {
+    id: string,
+    name: string,
+    slug: string,
+    country: string,
+    numberOfCompetitions: number,
+    competitionIds: string[] | [],
+    numberOfChampionships: number,
+    championshipIds: string[] | [],
+    rank: {
+        singles: object[],
+        averages: object[]
+    },
+    medals: {
+        bronze: number,
+        silver: number,
+        gold: number
+    },
+    records: {
+        single: {
+            WR: number,
+            CR: number,
+            NR: number
+        },
+        average: {
+            WR: number,
+            CR: number,
+            NR: number
+        }
+    },
+    results: object
 }

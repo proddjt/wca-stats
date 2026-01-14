@@ -13,10 +13,10 @@ export default function useTable(screenWidth: number){
     const [filters, setFilters] = useState<FiltersType>({
         nationality: '',
         year: [],
-        event: '',
+        event: [],
         name: '',
-        col_order: 'total_medals',
-        ascending: false,
+        col_order: 'rank_position',
+        ascending: true,
         country: "all",
         more_filters: {
             no_golds: false,
@@ -28,6 +28,7 @@ export default function useTable(screenWidth: number){
     const [events, setEvents] = useState<EventType[]>([]);
     const [years, setYears] = useState<{year: string}[]>([]);
     const [pages, setPages] = useState<PagesType>({page: 1, total: 0});
+    const last_update = useRef<string>("")
 
     const {showLoader} = useIsLoading();
 
@@ -107,6 +108,20 @@ export default function useTable(screenWidth: number){
         }
     }
 
+    async function getLastUpdate(){
+        try {
+            const { data, error } = await supabase
+            .from("medals")
+            .select("last_update")
+            .order("last_update", { ascending: false })
+            .limit(1)
+            if (error) throw error.message
+            last_update.current = data[0].last_update
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+    }
+
     function changePage(page: number){
         setPages(prev => ({...prev, page: page}));
         showLoader(() => getRows(page))
@@ -117,7 +132,7 @@ export default function useTable(screenWidth: number){
         const resettedFilters = {
             nationality: '',
             year: [],
-            event: '',
+            event: [],
             name: '',
             col_order: 'total_medals',
             ascending: false,
@@ -136,6 +151,7 @@ export default function useTable(screenWidth: number){
         showLoader(getNations)
         showLoader(getEvents)
         showLoader(getYears)
+        showLoader(getLastUpdate)
         if (screenWidth < 1024) showLoader(() => getRows(1))
     }, []);
 
@@ -151,6 +167,7 @@ export default function useTable(screenWidth: number){
         events,
         years,
         pages,
+        last_update,
         changePage,
         handleFiltersChange,
         handleMoreFiltersChange,

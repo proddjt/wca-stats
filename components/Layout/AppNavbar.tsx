@@ -57,7 +57,7 @@ export default function AppNavbar(){
           </Link>
         </NavbarItem>
         <NavbarItem isActive={pathname === "/person-stats"}>
-          <Link color={pathname === "person-stats" ? "warning" : "foreground"} href="/person-stats">
+          <Link color={pathname === "/person-stats" ? "warning" : "foreground"} href="/person-stats">
             Person Stats
           </Link>
         </NavbarItem>
@@ -74,7 +74,7 @@ export default function AppNavbar(){
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem isActive={pathname === "/person-stats"}>
-          <Link color={pathname === "person-stats" ? "warning" : "foreground"} href="/person-stats">
+          <Link color={pathname === "/person-stats" ? "warning" : "foreground"} href="/person-stats">
             Person Stats
           </Link>
         </NavbarMenuItem>

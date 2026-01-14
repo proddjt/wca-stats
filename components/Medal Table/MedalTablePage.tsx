@@ -13,8 +13,13 @@ import Filterbar from "./Filterbar";
 import Loader from "../Layout/Loader";
 import { Button } from "@heroui/button";
 import FilterDrawer from "./FilterDrawer";
+import dayjs from "dayjs";
 
 export const columns = [
+  {
+    key: "rank_position",
+    label: "Position",
+  },
   {
     key: "name",
     label: "Name",
@@ -55,7 +60,6 @@ export default function MedalTablePage() {
     screenWidth.current = window.screen.availWidth;
   }, []);
 
-
   const {
       rows,
       filters,
@@ -63,6 +67,7 @@ export default function MedalTablePage() {
       events,
       years,
       pages,
+      last_update,
       changePage,
       handleFiltersChange,
       handleMoreFiltersChange,
@@ -131,6 +136,8 @@ export default function MedalTablePage() {
                 )}
             </TableBody>
         </Table>
+        {last_update && last_update.current &&
+        <p className="text-xs text-gray-400 text-center pt-1 italic">Last updated at: {dayjs(last_update.current).format("DD-MM-YYYY HH:mm")} UTC+1</p>}
       </div>
 
       <FilterDrawer {...{resetFilters, isOpen, onOpenChange, getRows,handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}}/>

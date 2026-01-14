@@ -64,9 +64,14 @@ export default function Filterbar({
         }
     }, [name]);
 
-    const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const years = e.target.value.split(",");
         handleFiltersChange(years, "year");
+    };
+
+    const handleEventChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const events = e.target.value.split(",");
+        handleFiltersChange(events, "event");
     };
 
     const handleRadioChange = (v: string) => {
@@ -108,7 +113,7 @@ export default function Filterbar({
                 className="lg:w-1/6 w-full"
                 onClear={() => handleFiltersChange("", "nationality")}
                 >
-                    <AutocompleteItem key="" onClick={() => handleFiltersChange("", "nationality")}>World</AutocompleteItem>
+                    <AutocompleteItem key="" textValue="World" onClick={() => handleFiltersChange("", "nationality")}>World</AutocompleteItem>
                     <AutocompleteSection showDivider title="Europe">
                         {
                             [{ id: "europe", name: "All Europe", cont_id: "europe" },...nations].filter(n => n.cont_id === "europe").map(n => 
@@ -153,23 +158,21 @@ export default function Filterbar({
                     </AutocompleteSection>
                 </Autocomplete>
 
-                <Autocomplete
-                label="Event"
-                shouldCloseOnBlur
-                selectedKey={filters.event}
-                onSelectionChange={(key) => handleFiltersChange(key as string, "event")}
-                placeholder="Search by event"
-                defaultItems={[{ id: "", name: "All events" }, ...events]}
+                <Select
+                className="lg:w-1/6 w-full"
+                label="Event (multiple)"
+                placeholder="Select one or more events"
                 variant="faded"
                 size="sm"
                 radius="sm"
-                startContent={filters.event && <span className={`cubing-icon event-${filters.event}`}></span>}
-                fullWidth={isDrawer}
-                className="lg:w-1/6 w-full"
-                onClear={() => handleFiltersChange("", "event")}
+                isClearable
+                onClear={() => handleFiltersChange([], "event")}
+                selectedKeys={filters.event.length ? filters.event : []}
+                selectionMode="multiple"
+                onChange={handleEventChange}
                 >
-                    {(event) => <AutocompleteItem key={event.id} textValue={event.name} onClick={() => handleFiltersChange(event.id, "event")}><span className={`cubing-icon event-${event.id}`}></span> {event.name}</AutocompleteItem>}
-                </Autocomplete>
+                    {events.map((event) =><SelectItem key={event.id} textValue={event.name}><span className={`cubing-icon event-${event.id}`}></span> {event.name}</SelectItem>)}
+                </Select>
 
                 <Select
                 className="lg:w-1/6 w-full"
@@ -182,7 +185,7 @@ export default function Filterbar({
                 onClear={() => handleFiltersChange([], "year")}
                 selectedKeys={filters.year.length ? filters.year : []}
                 selectionMode="multiple"
-                onChange={handleSelectionChange}
+                onChange={handleYearChange}
                 >
                     {years.map((year) =><SelectItem key={year.year}>{year.year}</SelectItem>)}
                 </Select>
@@ -193,10 +196,11 @@ export default function Filterbar({
                 variant="faded"
                 size="sm"
                 radius="sm"
-                selectedKeys={filters.col_order ? [filters.col_order + (filters.ascending ? "asc" : "desc")] : ["total_medalsdesc"]}
+                selectedKeys={filters.col_order ? [filters.col_order + (filters.ascending ? "asc" : "desc")] : ["rank_positionasc"]}
+                description="Total medals is always used to calculate position."
                 >
                     {
-                        columns.filter((column) => column.key !== "country_id").map((column) => (
+                        columns.filter((column) => column.key !== "country_id" && column.key !== "total_medals").map((column) => (
                         <>
                             <SelectItem key={`${column.key}asc`} textValue={column.label + " ascending"} onClick={() => handleFiltersChange(column.key, "col_order", true)}>{column.label} ascending</SelectItem>
                             <SelectItem key={`${column.key}desc`} textValue={column.label + " descending"} onClick={() => handleFiltersChange(column.key, "col_order", false)}>{column.label} descending</SelectItem>
