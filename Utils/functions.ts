@@ -1,26 +1,12 @@
-export function checkId(e: React.ChangeEvent<HTMLInputElement>, update_fn: (id: string) => void){
-    const onlyNumbers = /^[0-9]+$/;
-    const onlyLetters = /^[A-Za-z]+$/;
+export const safe = (prom: Promise<any>) => prom.then((res) => [null, res]).catch((err) => [err]);
 
-    switch (e.target.value.length) {
-        case 0:
-            return update_fn("");
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 9:
-        case 10:
-            return onlyNumbers.test(e.target.value[e.target.value.length - 1]) && update_fn(e.target.value.toUpperCase());
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-            return onlyLetters.test(e.target.value[e.target.value.length - 1]) && update_fn(e.target.value.toUpperCase());
-        default:
-            return false;
-    }
+export function checkId(id: string) {
+    const value = id.toUpperCase();
+    const pattern = /^[0-9]{4}[A-Za-z]{4}[0-9]{2}$/;
+
+    return pattern.test(value);
 }
+
 
 const int_cities = [{en: "Rome", it: "Roma"}, {en: "Milan", it: "Milano"}, {en: "Turin", it: "Torino"}, {en: "Naples", it: "Napoli"}, {en: "Genoa", it: "Genova"}, {en: "Florence", it: "Firenze"}]
 

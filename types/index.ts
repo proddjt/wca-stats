@@ -90,5 +90,11 @@ export interface PersonType {
             NR: number
         }
     },
-    results: object
+    results: object,
+    img?: string,
+    last_medals: {
+        last_pos1_date: string,
+        last_pos2_date: string,
+        last_pos3_date: string
+    }
 }
