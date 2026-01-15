@@ -15,7 +15,6 @@ import { TfiWorld } from "react-icons/tfi";
 
 
 import { EventType, FiltersType, NationType } from "@/types";
-import { columns } from "./MedalTablePage";
 import { useEffect, useState } from "react";
 
 const icons = {
@@ -59,7 +58,7 @@ export default function Filterbar({
         } else {
             const timeout = setTimeout(() => { 
                 handleFiltersChange(name, "name");
-            }, 1500);
+            }, 200);
             return () => clearTimeout(timeout);
         }
     }, [name]);
@@ -82,7 +81,7 @@ export default function Filterbar({
         <div className="flex flex-col gap-0.5">
             <div className="flex lg:flex-row flex-col lg:justify-around lg:gap-0 gap-2">
                 <Input
-                value={filters.name}
+                value={name}
                 placeholder="Search by name"
                 isClearable
                 size="lg"

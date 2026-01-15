@@ -16,7 +16,7 @@ export default function useTable(screenWidth: number){
         event: [],
         name: '',
         col_order: 'golds',
-        ascending: false,
+        ascending: true,
         country: "all",
         more_filters: {
             no_golds: false,
@@ -135,7 +135,7 @@ export default function useTable(screenWidth: number){
             event: [],
             name: '',
             col_order: 'golds',
-            ascending: false,
+            ascending: true,
             country: 'all',
             more_filters: {
                 no_golds: false,

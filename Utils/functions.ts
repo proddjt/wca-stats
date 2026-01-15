@@ -38,3 +38,37 @@ export function parseString(input: string) {
 
     return city
 }
+
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(customParseFormat);
+
+export function diffToHuman(date: string) {
+  const start = dayjs(date, "YYYY-MM-DD");
+  const end = dayjs();
+
+  let years = end.diff(start, "year");
+  let temp = start.add(years, "year");
+
+  let months = end.diff(temp, "month");
+  temp = temp.add(months, "month");
+
+  let weeks = end.diff(temp, "week");
+  temp = temp.add(weeks, "week");
+
+  let days = end.diff(temp, "day");
+
+  const parts = [];
+  if (years > 0) parts.push(`${years} ${years === 1 ? "anno" : "anni"}`);
+  if (months > 0) parts.push(`${months} ${months === 1 ? "mese" : "mesi"}`);
+  if (weeks > 0) parts.push(`${weeks} ${weeks === 1 ? "settimana" : "settimane"}`);
+  if (days > 0) parts.push(`${days} ${days === 1 ? "giorno" : "giorni"}`);
+
+  return parts.join(", ");
+}
+

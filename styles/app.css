@@ -24,7 +24,7 @@ div[data-overlay-container] {
 th[aria-sort]:not([aria-sort="none"]) {
     background-color: hsl(var(--heroui-warning) / 1);
     color: var(--color-black);
-    padding: calc(var(--spacing) * 1);
+    /* padding: calc(var(--spacing) * 1); */
     border-radius: 0.25rem;
     text-align: center;
 }

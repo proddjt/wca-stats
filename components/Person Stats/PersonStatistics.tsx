@@ -5,6 +5,7 @@ import Flag from "react-world-flags"
 
 import { TbArrowBackUp } from "react-icons/tb";
 import dayjs from "dayjs";
+import { diffToHuman } from "@/Utils/functions";
 
 
 export default function PersonStatistics({
@@ -56,25 +57,25 @@ export default function PersonStatistics({
             <p className="text-lg">
                 {
                     person.last_medals.first_comp != person.last_medals.last_pos1_date ?
-                    `L'ultimo oro è arrivato il ${dayjs(person.last_medals.last_pos1_date).format("DD/MM/YYYY")}`
+                    `L'ultimo oro è arrivato il ${dayjs(person.last_medals.last_pos1_date).format("DD/MM/YYYY")}, ${diffToHuman(person.last_medals.last_pos1_date)} fa`
                     :
-                    "Questa persona non ha ancora vinto un oro"
+                    `Questa persona non ha ancora vinto un oro in ${diffToHuman(person.last_medals.last_pos1_date)}`
                 }
             </p>
             <p className="text-lg">
                 {
                     person.last_medals.first_comp != person.last_medals.last_pos2_date ?
-                    `L'ultimo argento è arrivato il ${dayjs(person.last_medals.last_pos2_date).format("DD/MM/YYYY")}`
+                    `L'ultimo argento è arrivato il ${dayjs(person.last_medals.last_pos2_date).format("DD/MM/YYYY")}, ${diffToHuman(person.last_medals.last_pos2_date)} fa`
                     :
-                    "Questa persona non ha ancora vinto un argento"
+                    `Questa persona non ha ancora vinto un argento in ${diffToHuman(person.last_medals.last_pos2_date)}`
                 }
             </p>
             <p className="text-lg pb-3">
                 {
                     person.last_medals.first_comp != person.last_medals.last_pos3_date ?
-                    `L'ultimo bronzo è arrivato il ${dayjs(person.last_medals.last_pos3_date).format("DD/MM/YYYY")}`
+                    `L'ultimo bronzo è arrivato il ${dayjs(person.last_medals.last_pos3_date).format("DD/MM/YYYY")}, ${diffToHuman(person.last_medals.last_pos3_date)} fa`
                     :
-                    "Questa persona non ha ancora vinto un bronzo"
+                    `Questa persona non ha ancora vinto un bronzo in ${diffToHuman(person.last_medals.last_pos3_date)}`
                 }
             </p>
             <p className="text-xs italic text-gray-400 pb-1">(*) Il numero di regioni e di città potrebbe essere leggermente inesatto in alcuni casi, poichè la WCA non fornisce dati riguardanti la sede in cui si ha partecipato in una gara con multiple venues.</p>

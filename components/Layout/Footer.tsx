@@ -2,7 +2,7 @@ import { Link } from "@heroui/link";
 
 export default function Footer(){
     return (
-        <footer className="w-full flex items-center justify-center py-3 lg:gap-2 gap-1 lg:flex-row flex-col">
+        <footer className="flex items-center justify-center py-3 lg:gap-2 gap-1 lg:flex-row flex-col">
             <Link
             isExternal
             className="flex items-center gap-1 text-current lg:text-sm text-xs"
