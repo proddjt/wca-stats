@@ -20,3 +20,11 @@ div[data-overlay-container] {
 .active-link{
     color: hsl(37.03 91.27% 55.1%) !important;
 }
+
+th[aria-sort]:not([aria-sort="none"]) {
+    background-color: hsl(var(--heroui-warning) / 1);
+    color: var(--color-black);
+    padding: calc(var(--spacing) * 1);
+    border-radius: 0.25rem;
+    text-align: center;
+}

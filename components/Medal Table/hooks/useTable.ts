@@ -158,7 +158,11 @@ export default function useTable(screenWidth: number){
     useEffect(() => {
         if (screenWidth < 1024) return
         showLoader(() => getRows(1))
-    }, [filters]);
+    }, [filters.country, filters.event, filters.name, filters.nationality, filters.year, filters.more_filters]);
+
+    useEffect(() => {
+        showLoader(() => getRows(1))
+    }, [filters.col_order, filters.ascending]);
 
     return {
         rows,

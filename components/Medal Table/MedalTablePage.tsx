@@ -84,7 +84,6 @@ export default function MedalTablePage() {
   } = useTable(screenWidth.current)
 
   if (isPending && (!nations.length || !events.length || !years.length)) return <Loader />
-
   return (
       <>
       <div className="grow flex flex-col justify-center lg:items-center py-2">
@@ -96,7 +95,7 @@ export default function MedalTablePage() {
         rowHeight={5}
         color="warning"
         classNames={{
-          wrapper: "h-[65vh] max-h-[65vh] lg:max-h-[55vh] lg:h-[55vh] overflow-auto",
+          wrapper: "h-[65vh] max-h-[65vh] lg:max-h-[55vh] min-w-[70vw] lg:h-[55vh] overflow-auto",
           td: "whitespace-nowrap"
         }}
         topContent={
@@ -104,7 +103,6 @@ export default function MedalTablePage() {
           <Button onPress={onOpen} color="warning">Filters</Button> :
           <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}} />
         }
-        key={rows[0]?.col_order}
         topContentPlacement="outside"
         bottomContent={
           pages.total > 0 ? (
@@ -124,11 +122,14 @@ export default function MedalTablePage() {
         bottomContentPlacement="outside"
         isHeaderSticky
         sortDescriptor={{column: filters.col_order, direction: filters.ascending ? "ascending" : "descending"}}
-        onSortChange={(d) => handleFiltersChange(d.column.toString(), "col_order", d.direction === "ascending")}
+        onSortChange={(d) => {
+          if (isPending) return
+          handleFiltersChange(d.column.toString(), "col_order", d.direction === "ascending")
+        }}
         >
             <TableHeader columns={columns}>
                 {(column) => 
-                <TableColumn key={column.key} allowsSorting={column.sortable} className={filters.col_order === column.key ? "bg-warning text-black p-1 rounded text-center" : "text-center"}>
+                <TableColumn key={column.key} allowsSorting={column.sortable}>
                   <span>{column.label}</span>
                 </TableColumn>}
             </TableHeader>

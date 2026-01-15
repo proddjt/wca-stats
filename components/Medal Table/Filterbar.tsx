@@ -89,7 +89,7 @@ export default function Filterbar({
                 radius="sm"
                 startContent={<FaSearch />}
                 fullWidth={isDrawer}
-                className="lg:w-1/6 w-full"
+                className="lg:w-1/5 w-full"
                 variant="faded"
                 onChange={(e) => setName(e.target.value)}
                 onClear={() => setName("")}
@@ -110,7 +110,7 @@ export default function Filterbar({
                     getIcon(filters.nationality)
                 }
                 fullWidth={isDrawer}
-                className="lg:w-1/6 w-full"
+                className="lg:w-1/5 w-full"
                 onClear={() => handleFiltersChange("", "nationality")}
                 >
                     <AutocompleteItem key="" textValue="World" onClick={() => handleFiltersChange("", "nationality")}>World</AutocompleteItem>
@@ -159,7 +159,7 @@ export default function Filterbar({
                 </Autocomplete>
 
                 <Select
-                className="lg:w-1/6 w-full"
+                className="lg:w-1/5 w-full"
                 label="Event (multiple)"
                 placeholder="Select one or more events"
                 variant="faded"
@@ -175,7 +175,7 @@ export default function Filterbar({
                 </Select>
 
                 <Select
-                className="lg:w-1/6 w-full"
+                className="lg:w-1/5 w-full"
                 label="Year (multiple)"
                 placeholder="Select one or more years"
                 variant="faded"
@@ -190,7 +190,7 @@ export default function Filterbar({
                     {years.map((year) =><SelectItem key={year.year}>{year.year}</SelectItem>)}
                 </Select>
 
-                <Select
+                {/* <Select
                 className="lg:w-1/6 w-full"
                 label="Order by"
                 variant="faded"
@@ -206,7 +206,7 @@ export default function Filterbar({
                         </>
                     ))
                     }
-                </Select>
+                </Select> */}
             </div>
             <div className="flex lg:flex-row flex-col justify-center lg:gap-0 gap-2">
                 <CheckboxGroup
