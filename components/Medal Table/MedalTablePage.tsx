@@ -87,7 +87,7 @@ export default function MedalTablePage() {
         fullWidth={false}
         rowHeight={5}
         classNames={{
-          wrapper: "h-[65vh] max-h-[65vh] overflow-auto",
+          wrapper: "h-[65vh] max-h-[65vh] lg:max-h-[55vh] lg:h-[55vh] overflow-auto",
           td: "whitespace-nowrap"
         }}
         topContent={

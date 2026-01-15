@@ -16,6 +16,7 @@ export default function AppNavbar(){
   return (
     <Navbar
     isBordered
+    isMenuOpen={isMenuOpen}
     onMenuOpenChange={setIsMenuOpen}
     classNames={{
       item: [
@@ -64,17 +65,17 @@ export default function AppNavbar(){
       </NavbarContent>
       <NavbarMenu>
           <NavbarMenuItem isActive={pathname === "/"}>
-            <Link color={pathname === "/" ? "warning" : "foreground"} href="/">
+            <Link color={pathname === "/" ? "warning" : "foreground"} href="/" onClick={() => setIsMenuOpen(false)}>
               Home
             </Link>
           </NavbarMenuItem>
           <NavbarMenuItem isActive={pathname === "/medal-table"}>
-          <Link color={pathname === "/medal-table" ? "warning" : "foreground"} href="/medal-table">
+          <Link color={pathname === "/medal-table" ? "warning" : "foreground"} href="/medal-table" onClick={() => setIsMenuOpen(false)}>
             Medals Table
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem isActive={pathname === "/person-stats"}>
-          <Link color={pathname === "/person-stats" ? "warning" : "foreground"} href="/person-stats">
+          <Link color={pathname === "/person-stats" ? "warning" : "foreground"} href="/person-stats" onClick={() => setIsMenuOpen(false)}>
             Person Stats
           </Link>
         </NavbarMenuItem>

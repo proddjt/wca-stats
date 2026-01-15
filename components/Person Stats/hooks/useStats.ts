@@ -9,7 +9,6 @@ import { PersonType } from "@/types";
 import { parseString, safe } from "@/Utils/functions";
 import { it_cities } from "@/Utils/it_cities";
 
-
 export default function useStats(){
     const [person, setPerson] = useState<PersonType>();
     const regions = useRef<string[]>();
@@ -69,7 +68,7 @@ export default function useStats(){
 
                 regions.current = ita_cities.current
                 .map(c => it_cities.find(city => city.denominazione_ita.toLowerCase() === c.toLowerCase() )?.denominazione_regione || `${c} non trovata nell'elenco` )
-                .filter((value, index, self) => self.indexOf(value) === index)
+                .filter((value, index, self) => self.indexOf(value) === index && !value.includes("Multiple cities non trovata nell'elenco"))
                 .sort((a, b) => a.localeCompare(b));
             }
         } catch (error: any) {

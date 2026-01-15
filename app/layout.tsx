@@ -10,6 +10,7 @@ import { fontSans } from "@/config/fonts";
 import Navbar from "@/components/Layout/AppNavbar";
 import {ToastProvider} from "@heroui/toast"
 import AppNavbar from "@/components/Layout/AppNavbar";
+import Footer from "@/components/Layout/Footer";
 
 export const metadata: Metadata = {
   title: {
@@ -57,9 +58,7 @@ export default function RootLayout({
           <div className="relative flex flex-col grow justify-between">
             <AppNavbar />
               {children}
-            <footer className="w-full flex items-center justify-center py-3">
-              
-            </footer>
+            <Footer />
           </div>
         </Providers>
       </body>
