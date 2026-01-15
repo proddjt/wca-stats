@@ -197,10 +197,7 @@ export default function Filterbar({
                 size="sm"
                 radius="sm"
                 selectedKeys={filters.col_order ? [filters.col_order + (filters.ascending ? "asc" : "desc")] : ["goldsdesc"]}
-                description="Total of gold medals is always used to calculate position."
                 >
-
-                    {/* ["country_id", "total_medals", "position", "name", "wca_id"] */}
                     {
                         columns.filter((column) => !["country_id", "rank_position", "name", "wca_id"].includes(column.key)).map((column) => (
                         <>
@@ -218,6 +215,7 @@ export default function Filterbar({
                 className="lg:w-1/3 w-auto"
                 orientation={isDrawer ? "horizontal" : "vertical"}
                 onChange={(v) => handleMoreFiltersChange(v)}
+                value={[filters.more_filters.no_golds ? "no_golds" : "", filters.more_filters.no_silvers ? "no_silvers" : "", filters.more_filters.no_bronzes ? "no_bronzes" : "",]}
                 >
                     <Checkbox value="no_golds">Show only people with no gold medals</Checkbox>
                     <Checkbox value="no_silvers">Show only people with no silver medals</Checkbox>

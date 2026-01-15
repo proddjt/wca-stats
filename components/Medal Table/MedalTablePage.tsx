@@ -19,34 +19,42 @@ export const columns = [
   {
     key: "rank_position",
     label: "Position",
+    sortable: false
   },
   {
     key: "name",
     label: "Name",
+    sortable: false
   },
   {
     key: "wca_id",
     label: "WCA ID",
+    sortable: false
   },
   {
     key: "country_id",
     label: "Nationality",
+    sortable: false
   },
   {
     key: "golds",
     label: "Golds",
+    sortable: true
   },
   {
     key: "silvers",
     label: "Silvers",
+    sortable: true
   },
   {
     key: "bronzes",
     label: "Bronzes",
+    sortable: true
   },
   {
     key: "total_medals",
     label: "Total medals",
+    sortable: true
   }
 ];
 
@@ -115,9 +123,14 @@ export default function MedalTablePage() {
         }
         bottomContentPlacement="outside"
         isHeaderSticky
+        sortDescriptor={{column: filters.col_order, direction: filters.ascending ? "ascending" : "descending"}}
+        onSortChange={(d) => handleFiltersChange(d.column.toString(), "col_order", d.direction === "ascending")}
         >
             <TableHeader columns={columns}>
-                {(column) => <TableColumn key={column.key}> <span className={filters.col_order === column.key ? "bg-warning text-black p-1 rounded" : ""}>{column.label}</span></TableColumn>}
+                {(column) => 
+                <TableColumn key={column.key} allowsSorting={column.sortable} className={filters.col_order === column.key ? "bg-warning text-black p-1 rounded text-center" : "text-center"}>
+                  <span>{column.label}</span>
+                </TableColumn>}
             </TableHeader>
             <TableBody
             items={rows||[]}
