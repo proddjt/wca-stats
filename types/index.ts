@@ -6,7 +6,8 @@ export interface RowsType {
     golds: number,
     silvers: number,
     bronzes: number,
-    total_medals: number
+    total_medals: number,
+    col_order: string
 }
 
 export interface MedalType {

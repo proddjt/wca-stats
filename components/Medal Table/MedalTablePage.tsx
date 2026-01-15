@@ -86,6 +86,7 @@ export default function MedalTablePage() {
         isCompact
         fullWidth={false}
         rowHeight={5}
+        color="warning"
         classNames={{
           wrapper: "h-[65vh] max-h-[65vh] lg:max-h-[55vh] lg:h-[55vh] overflow-auto",
           td: "whitespace-nowrap"
@@ -95,6 +96,7 @@ export default function MedalTablePage() {
           <Button onPress={onOpen} color="warning">Filters</Button> :
           <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}} />
         }
+        key={rows[0]?.col_order}
         topContentPlacement="outside"
         bottomContent={
           pages.total > 0 ? (
@@ -115,7 +117,7 @@ export default function MedalTablePage() {
         isHeaderSticky
         >
             <TableHeader columns={columns}>
-                {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+                {(column) => <TableColumn key={column.key}> <span className={filters.col_order === column.key ? "bg-warning text-black p-1 rounded" : ""}>{column.label}</span></TableColumn>}
             </TableHeader>
             <TableBody
             items={rows||[]}

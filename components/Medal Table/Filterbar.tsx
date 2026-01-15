@@ -59,7 +59,7 @@ export default function Filterbar({
         } else {
             const timeout = setTimeout(() => { 
                 handleFiltersChange(name, "name");
-            }, 500);
+            }, 1500);
             return () => clearTimeout(timeout);
         }
     }, [name]);
@@ -196,11 +196,13 @@ export default function Filterbar({
                 variant="faded"
                 size="sm"
                 radius="sm"
-                selectedKeys={filters.col_order ? [filters.col_order + (filters.ascending ? "asc" : "desc")] : ["rank_positionasc"]}
-                description="Total medals is always used to calculate position."
+                selectedKeys={filters.col_order ? [filters.col_order + (filters.ascending ? "asc" : "desc")] : ["goldsdesc"]}
+                description="Total of gold medals is always used to calculate position."
                 >
+
+                    {/* ["country_id", "total_medals", "position", "name", "wca_id"] */}
                     {
-                        columns.filter((column) => column.key !== "country_id" && column.key !== "total_medals").map((column) => (
+                        columns.filter((column) => !["country_id", "rank_position", "name", "wca_id"].includes(column.key)).map((column) => (
                         <>
                             <SelectItem key={`${column.key}asc`} textValue={column.label + " ascending"} onClick={() => handleFiltersChange(column.key, "col_order", true)}>{column.label} ascending</SelectItem>
                             <SelectItem key={`${column.key}desc`} textValue={column.label + " descending"} onClick={() => handleFiltersChange(column.key, "col_order", false)}>{column.label} descending</SelectItem>

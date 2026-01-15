@@ -15,8 +15,8 @@ export default function useTable(screenWidth: number){
         year: [],
         event: [],
         name: '',
-        col_order: 'rank_position',
-        ascending: true,
+        col_order: 'golds',
+        ascending: false,
         country: "all",
         more_filters: {
             no_golds: false,
@@ -134,7 +134,7 @@ export default function useTable(screenWidth: number){
             year: [],
             event: [],
             name: '',
-            col_order: 'total_medals',
+            col_order: 'golds',
             ascending: false,
             country: 'all',
             more_filters: {

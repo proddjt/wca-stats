@@ -2,6 +2,7 @@ import { Button } from "@heroui/button";
 import {Drawer, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter} from "@heroui/drawer";
 import Filterbar from "./Filterbar";
 import { EventType, FiltersType, NationType } from "@/types";
+import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 export default function FilterDrawer({
     isOpen,
@@ -26,6 +27,8 @@ export default function FilterDrawer({
     getRows: (n?: number) => Promise<void>,
     resetFilters: () => void
 }){
+    const {showLoader} = useIsLoading();
+
     return (
         <Drawer isOpen={isOpen} placement="bottom" onOpenChange={onOpenChange}>
             <DrawerContent>
@@ -42,7 +45,7 @@ export default function FilterDrawer({
                     <Button color="danger" variant="bordered" onPress={onClose}>
                     Close
                     </Button>
-                    <Button color="warning" onPress={() => {getRows(1); onClose()}}>
+                    <Button color="warning" onPress={() => {onClose(); showLoader(() => getRows(1));}}>
                     Apply filters
                     </Button>
                 </DrawerFooter>
