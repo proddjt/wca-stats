@@ -4,6 +4,7 @@ import { CircleFlag } from "react-circle-flags";
 
 import useConfig from "@/Context/Config/useConfig"
 import { regions_icon } from "@/Utils/regions_icon";
+import { secondDiffToHuman } from "@/Utils/functions";
 
 export default function StatTable({
     mode,
@@ -12,7 +13,7 @@ export default function StatTable({
     mode: string,
     data: {rows: any[], cols: any[]},
 }){
-    const {nations} = useConfig();
+    const {nations, events} = useConfig();
     
     return (
         <Table
@@ -32,7 +33,7 @@ export default function StatTable({
             </TableHeader>
             <TableBody items={data?.rows||[]} emptyContent="No data available">
                 {(item) => (
-                <TableRow key={item.city||item.country}>
+                <TableRow key={item.key||item.city||item.country}>
                     {(columnKey) => <TableCell>
                         <span className="flex flex-row gap-1">
                         {columnKey === "country" ?
@@ -47,7 +48,16 @@ export default function StatTable({
                                 {getKeyValue(item, columnKey)}
                                 </>
                             :
-                                getKeyValue(item, columnKey)
+                                columnKey === "event_id" ?
+                                    <>
+                                    <span className={`cubing-icon event-${getKeyValue(item, columnKey)}`}></span>
+                                    {events.current.find((event) => event.id === getKeyValue(item, columnKey))?.name}
+                                    </>
+                                :
+                                    columnKey === "time" ?
+                                        secondDiffToHuman(getKeyValue(item, columnKey))
+                                    :
+                                        getKeyValue(item, columnKey)
                         }
                         </span>
                     </TableCell>}

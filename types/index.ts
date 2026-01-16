@@ -68,6 +68,25 @@ export interface PagesType {
     total: number
 }
 
+export interface SolveRound {
+    round: string;
+    position: number;
+    best: number;
+    average: number;
+    format: string;
+    solves: number[];
+}
+
+export interface ResultType {
+    [key: string]: EventResults
+}
+
+export interface TimePassedType{
+    [key: string]: number
+}
+
+export type EventResults = Record<string, SolveRound[]>
+
 export interface PersonType {
     id: string,
     name: string,
@@ -106,12 +125,16 @@ export interface PersonType {
             NR: number
         } | any[]
     },
-    results: object,
+    time_passed: TimePassedType,
+    results: ResultType,
     img?: string,
     last_medals: {
         last_pos1_date: string,
+        first_pos1_date: string,
         last_pos2_date: string,
+        first_pos2_date: string,
         last_pos3_date: string,
+        first_pos3_date: string,
         first_comp: string
     }
 }

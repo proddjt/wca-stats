@@ -11,10 +11,11 @@ import { PersonType } from "@/types"
 import { TbArrowBackUp } from "react-icons/tb";
 import { BiWorld } from "react-icons/bi";
 
-import { diffToHuman } from "@/Utils/functions";
+import { diffToHuman, secondDiffToHuman } from "@/Utils/functions";
 import { regions_icon } from "@/Utils/regions_icon";
 
 import StatTable from "./StatTable";
+import useConfig from "@/Context/Config/useConfig";
 
 const int_cols = [
     {key: "city", label: "City", sortable: true}, 
@@ -52,6 +53,8 @@ export default function PersonStatistics({
         cols: person.country === "IT" ? ita_cols : int_cols || []
     });
     const [tableMode, setTableMode] = useState<"int" | "ita">(person.country === "IT" ? "ita" : "int");
+
+    const {events} = useConfig()
 
     function changeTableMode(mode: "int" | "ita"){
         if (mode === "int"){
@@ -94,9 +97,9 @@ export default function PersonStatistics({
             </div>
 
             <p className="text-lg">This person competed in:</p>
-            <p className="text-lg">In {int_cities?.length || 0} total cities*</p>
-            <p className="text-lg">In {(int_cities?.length || 0) - (ita_cities?.length || 0)} international cities</p>
-            <p className="text-lg pb-5">In {ita_cities?.length} Italian cities</p>
+            <p className="text-lg">{int_cities?.length || 0} total cities* {int_cities?.length === 1 ? "city" : "cities"}</p>
+            <p className="text-lg">{(int_cities?.length || 0) - (ita_cities?.length || 0)} international {(int_cities?.length || 0) - (ita_cities?.length || 0) === 1 ? "city" : "cities"}</p>
+            <p className="text-lg pb-5">{ita_cities?.length} Italian {ita_cities?.length === 1 ? "city" : "cities"}</p>
             <Tabs
             aria-label="Table mode"
             selectedKey={tableMode}
@@ -129,7 +132,7 @@ export default function PersonStatistics({
             mode={tableMode}
             />
 
-            <p className="text-lg">This person competed in {regions?.length} Italian regions*</p>
+            <p className="text-lg">This person competed in {regions?.length} Italian {regions?.length === 1 ? "region" : "regions"}*</p>
             <p className="text-lg pb-5">Regions list**: <br/>{regions?.join(", ")}</p>
             
             <div className="flex flex-col gap-1 pb-5">
@@ -162,6 +165,12 @@ export default function PersonStatistics({
             <p className="text-lg">This person got {person.medals.gold + person.medals.silver + person.medals.bronze} medals in {person.medals_by_country.length} different countries across the world*</p>
             <StatTable
             data={{cols: medals_by_country_cols, rows: person.medals_by_country}}
+            mode=""
+            />
+
+            <p className="text-lg pt-5">This person spent {secondDiffToHuman(Object.values(person.time_passed).reduce((a, b) => a + b, 0))} solving puzzles in competitions!</p>
+            <StatTable
+            data={{cols: [{label: "Event", key: "event_id"}, {label: "Time", key: "time"}], rows: Object.entries(person.time_passed).map(([event_id, time]) => ({event_id: event_id, time: time, key: event_id + time}))}}
             mode=""
             />
             

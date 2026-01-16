@@ -5,9 +5,12 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { createClient } from "@/lib/supabase/client";
 import { showToast } from "@/lib/Toast";
-import { PersonType } from "@/types";
-import { parseString, safe } from "@/Utils/functions";
+import { EventResults, PersonType, ResultType, SolveRound } from "@/types";
+import { decodeMBF, parseString, safe } from "@/Utils/functions";
 import { it_cities } from "@/Utils/it_cities";
+import useConfig from "@/Context/Config/useConfig";
+
+
 
 export default function useStats(){
     const [person, setPerson] = useState<PersonType>();
@@ -16,6 +19,8 @@ export default function useStats(){
     const ita_cities = useRef<{city: string, region: string}[]>([]);
 
     const {showLoader} = useIsLoading();
+
+    const {events} = useConfig();
 
     const supabase = createClient();
 
@@ -53,6 +58,44 @@ export default function useStats(){
                 })
                 if (medals_error) throw medals_error
                 if (medals_data) person_data.medals_by_country = medals_data
+
+                // TIME PASSED SOLVING
+                const totals: Record<string, number> = {};
+
+                for (const competitionId in person_data.results) {
+                    const events = person_data.results[competitionId];
+
+                    for (const eventId in events) {
+                        if (!totals[eventId]) totals[eventId] = 0;
+
+                        const rounds = events[eventId];
+
+                        for (const round of rounds) {
+                            for (const solve of round.solves) {
+                            if (solve <= 0) continue;
+
+                            // 333fm → ogni solve vale 1 ora
+                            if (eventId === "333fm") {
+                                totals[eventId] += 3600; // secondi
+                                continue;
+                            }
+
+                            // 333mbf / 333mbo → decode
+                            if (eventId === "333mbf" || eventId === "333mbo") {
+                                const decoded = decodeMBF(solve);
+                                if (decoded !== null) {
+                                totals[eventId] += decoded;
+                                }
+                                continue;
+                            }
+
+                            // Eventi normali → valore in millisecondi
+                            totals[eventId] = Math.round((totals[eventId] + solve / 100) * 100) / 100
+                            }
+                        }
+                    }
+                }
+                person_data.time_passed = totals;
 
                 // LAST PODIUMS
                 const { data, error } = await supabase
