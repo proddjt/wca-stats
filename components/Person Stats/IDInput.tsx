@@ -25,6 +25,7 @@ export default function IDInput({
             type="text"
             variant="faded"
             value={id}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === "NumpadEnter") && checkId(id) && sendID(id)}
             onChange={(e) => e.target.value.length <= 10 && /^[A-Za-z0-9]*$/.test(e.target.value) ? setId(e.target.value.toUpperCase()) : null}
             endContent={id && id.length === 10 && checkId(id) ? <FaRegCheckCircle color="green" size="1.2em"/> : <MdOutlineCancel color="red" size="1.2em"/>}
             />

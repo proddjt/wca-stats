@@ -1,4 +1,3 @@
-import { MutableRefObject } from "react";
 import { getKeyValue, Table,TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import Flag from "react-world-flags";
 import { CircleFlag } from "react-circle-flags";
@@ -11,12 +10,13 @@ export default function StatTable({
     data
 } : {
     mode: string,
-    data: MutableRefObject<{rows: any[], cols: any[]}>,
+    data: {rows: any[], cols: any[]},
 }){
     const {nations} = useConfig();
     
     return (
         <Table
+        aria-label="stats-table"
         isCompact
         isStriped
         key={mode}
@@ -27,12 +27,12 @@ export default function StatTable({
         }}
         isHeaderSticky
         >
-            <TableHeader columns={data?.current?.cols||[]}>
+            <TableHeader columns={data?.cols||[]}>
                 {(column) => <TableColumn key={column.key} allowsSorting={column.sortable}>{column.label}</TableColumn>}
             </TableHeader>
-            <TableBody items={data?.current?.rows||[]} emptyContent="No data available">
+            <TableBody items={data?.rows||[]} emptyContent="No data available">
                 {(item) => (
-                <TableRow key={item.city}>
+                <TableRow key={item.city||item.country}>
                     {(columnKey) => <TableCell>
                         <span className="flex flex-row gap-1">
                         {columnKey === "country" ?

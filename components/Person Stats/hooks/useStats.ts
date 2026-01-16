@@ -22,6 +22,7 @@ export default function useStats(){
     async function getPersonStats(id: string){
         try {
 
+            // PERSON
             const [person_error, response] = await safe(fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/persons/${id}.json`));
             if (person_error) throw person_error
             if (!response.ok) throw {code: response.status}
@@ -29,29 +30,31 @@ export default function useStats(){
 
             if (person_data){
 
+                // IMAGE
                 const [image_error, response] = await safe(fetch(`https://www.worldcubeassociation.org/api/v0/persons/${id}.json`));
                 if (image_error) throw image_error
                 if (!response.ok) throw {code: response.status}
                 const img_data = await response.json();
                 if (img_data.person.avatar.status === "approved" && img_data.person.avatar.url && !img_data.person.avatar.is_default) person_data.img = img_data.person.avatar.url
 
+                // REGION
                 const { data: region_data, error: region_error } = await supabase
                 .from("persons")
                 .select("region")
                 .eq("wca_id", person_data.id)
-
                 if (region_error) throw region_error
                 if (region_data) person_data.region = region_data[0].region
                 else person_data.region = ""
 
+                // MEDALS BY COUNTRY
                 const { data: medals_data, error: medals_error } = await supabase
                 .rpc("get_medals_by_country", {
                     wca_id: person_data.id
                 })
-
                 if (medals_error) throw medals_error
                 if (medals_data) person_data.medals_by_country = medals_data
 
+                // LAST PODIUMS
                 const { data, error } = await supabase
                 .rpc("get_last_podiums", {
                     wca_id: person_data.id,
@@ -62,8 +65,10 @@ export default function useStats(){
 
                 console.log(person_data);
 
+                // STATE SET
                 setPerson(person_data)
 
+                // CITIES
                 const comps_ids = [...person_data.championshipIds, ...person_data.competitionIds]
                 await Promise.all(
                     comps_ids.map(async compId => {
@@ -83,6 +88,7 @@ export default function useStats(){
                     })
                 );
 
+                // REGIONS
                 regions.current = ita_cities.current.map(c => c.region)
                 .filter((value, index, self) => self.indexOf(value) === index && !value.includes("Multiple cities non trovata nell'elenco"))
                 .sort((a, b) => a.localeCompare(b))

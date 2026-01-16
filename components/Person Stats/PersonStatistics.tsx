@@ -16,8 +16,21 @@ import { regions_icon } from "@/Utils/regions_icon";
 
 import StatTable from "./StatTable";
 
-const int_cols = [{key: "city", label: "City", sortable: true}, {key: "country", label: "Country", sortable: true}]
-const ita_cols = [{key: "city", label: "City", sortable: true}, {key: "region", label: "Region", sortable: true}]
+const int_cols = [
+    {key: "city", label: "City", sortable: true}, 
+    {key: "country", label: "Country", sortable: true}
+]
+const ita_cols = [
+    {key: "city", label: "City", sortable: true},
+    {key: "region", label: "Region", sortable: true}
+]
+const medals_by_country_cols = [
+    {key: "country", label: "Country", sortable: true},
+    {key: "golds", label: "Golds", sortable: true},
+    {key: "silvers", label: "Silvers", sortable: true},
+    {key: "bronzes", label: "Bronzes", sortable: true},
+    {key: "total_medals", label: "Total medals", sortable: true}
+]
 
 export default function PersonStatistics({
     person,
@@ -112,7 +125,7 @@ export default function PersonStatistics({
                 />
             </Tabs>
             <StatTable
-            data={tableData}
+            data={tableData.current}
             mode={tableMode}
             />
 
@@ -146,6 +159,12 @@ export default function PersonStatistics({
                 </p>
             </div>
 
+            <p className="text-lg">This person got {person.medals.gold + person.medals.silver + person.medals.bronze} medals in {person.medals_by_country.length} different countries across the world*</p>
+            <StatTable
+            data={{cols: medals_by_country_cols, rows: person.medals_by_country}}
+            mode=""
+            />
+            
             <p className="text-xs italic text-gray-400 pb-1">(*) Il numero di regioni e di città potrebbe essere leggermente inesatto in alcuni casi, poichè la WCA non fornisce dati riguardanti la sede in cui si ha partecipato in una gara con multiple venues.</p>
             <p className="text-xs italic text-gray-400">(**) Se all'interno della lista delle regioni dovesse apparire una dicitura del tipo "Roma non trovata nell'elenco", si prega di contattare lo sviluppatore per comunicare il nome della città non riconosciuta e sistemare il bug.</p>
         </div>

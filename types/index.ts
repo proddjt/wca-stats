@@ -74,6 +74,13 @@ export interface PersonType {
     slug: string,
     country: string,
     region: string,
+    medals_by_country: {
+        country: string,
+        golds: number,
+        silvers: number,
+        bronzes: number,
+        total_medals: number
+    }[],
     numberOfCompetitions: number,
     competitionIds: string[] | [],
     numberOfChampionships: number,
