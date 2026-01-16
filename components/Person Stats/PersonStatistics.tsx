@@ -97,7 +97,7 @@ export default function PersonStatistics({
             </div>
 
             <p className="text-lg">This person competed in:</p>
-            <p className="text-lg">{int_cities?.length || 0} total {int_cities?.length === 1 ? "city" : "cities"}+</p>
+            <p className="text-lg">{int_cities?.length || 0} total {int_cities?.length === 1 ? "city" : "cities"}*</p>
             <p className="text-lg">{(int_cities?.length || 0) - (ita_cities?.length || 0)} international {(int_cities?.length || 0) - (ita_cities?.length || 0) === 1 ? "city" : "cities"}</p>
             <p className="text-lg pb-5">{ita_cities?.length} Italian {ita_cities?.length === 1 ? "city" : "cities"}</p>
             <Tabs
@@ -132,8 +132,8 @@ export default function PersonStatistics({
             mode={tableMode}
             />
 
-            <p className="text-lg">This person competed in {regions?.length} Italian {regions?.length === 1 ? "region" : "regions"}*</p>
-            <p className="text-lg pb-5">Regions list**: <br/>{regions?.join(", ")}</p>
+            <p className="text-lg pt-5">This person competed in {regions?.length} Italian {regions?.length === 1 ? "region" : "regions"}* **</p>
+            <p className="text-lg pb-5">{regions?.join(", ")}</p>
             
             <div className="flex flex-col gap-1 pb-5">
                 <p className="text-lg bg-amber-400 rounded-lg text-black p-1">

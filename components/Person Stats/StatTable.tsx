@@ -23,7 +23,7 @@ export default function StatTable({
         key={mode}
         className="mt-2"
         classNames={{
-          wrapper: "h-[50vh] max-h-[50vh] lg:max-h-[60vh] lg:h-[60vh] w-[90vw] max-w-[90vw] overflow-auto",
+          wrapper: "max-h-[50vh] lg:max-h-[60vh] w-[90vw] max-w-[90vw] overflow-auto",
           td: "whitespace-nowrap overflow-hidden text-ellipsis",
         }}
         isHeaderSticky
