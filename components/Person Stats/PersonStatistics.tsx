@@ -97,7 +97,7 @@ export default function PersonStatistics({
             </div>
 
             <p className="text-lg">This person competed in:</p>
-            <p className="text-lg">{int_cities?.length || 0} total cities* {int_cities?.length === 1 ? "city" : "cities"}</p>
+            <p className="text-lg">{int_cities?.length || 0} total {int_cities?.length === 1 ? "city" : "cities"}+</p>
             <p className="text-lg">{(int_cities?.length || 0) - (ita_cities?.length || 0)} international {(int_cities?.length || 0) - (ita_cities?.length || 0) === 1 ? "city" : "cities"}</p>
             <p className="text-lg pb-5">{ita_cities?.length} Italian {ita_cities?.length === 1 ? "city" : "cities"}</p>
             <Tabs
@@ -170,7 +170,12 @@ export default function PersonStatistics({
 
             <p className="text-lg pt-5">This person spent {secondDiffToHuman(Object.values(person.time_passed).reduce((a, b) => a + b, 0))} solving puzzles in competitions!</p>
             <StatTable
-            data={{cols: [{label: "Event", key: "event_id"}, {label: "Time", key: "time"}], rows: Object.entries(person.time_passed).map(([event_id, time]) => ({event_id: event_id, time: time, key: event_id + time}))}}
+            data={{
+                cols: [{label: "Event", key: "event_id"}, {label: "Time", key: "time"}],
+                rows: Object.entries(person.time_passed)
+                .map(([event_id, time]) => ({event_id: event_id, time: time, key: event_id + time}))
+                .filter((row) => row.time > 0)
+            }}
             mode=""
             />
             
