@@ -118,30 +118,34 @@ export default function PersonStatistics({
 
             <p className="text-lg">This person competed in {regions?.length} Italian regions*</p>
             <p className="text-lg pb-5">Regions list**: <br/>{regions?.join(", ")}</p>
-            <p className="text-lg">
+            
+            <div className="flex flex-col gap-1 pb-5">
+                <p className="text-lg bg-amber-400 rounded-lg text-black p-1">
                 {
                     person.last_medals.first_comp != person.last_medals.last_pos1_date ?
                     `Last gold was on ${dayjs(person.last_medals.last_pos1_date).format("DD-MM-YYYY")}, ${diffToHuman(person.last_medals.last_pos1_date)} ago`
                     :
                     `This person has never won a gold in ${diffToHuman(person.last_medals.last_pos1_date)}`
                 }
-            </p>
-            <p className="text-lg">
-                {
-                    person.last_medals.first_comp != person.last_medals.last_pos2_date ?
-                    `Last silver was on ${dayjs(person.last_medals.last_pos2_date).format("DD-MM-YYYY")}, ${diffToHuman(person.last_medals.last_pos2_date)} ago`
-                    :
-                    `This person has never won a silver in ${diffToHuman(person.last_medals.last_pos2_date)}`
-                }
-            </p>
-            <p className="text-lg pb-3">
-                {
-                    person.last_medals.first_comp != person.last_medals.last_pos3_date ?
-                    `Last bronze was on ${dayjs(person.last_medals.last_pos3_date).format("DD-MM-YYYY")}, ${diffToHuman(person.last_medals.last_pos3_date)} ago`
-                    :
-                    `This person has never won a bronze in ${diffToHuman(person.last_medals.last_pos3_date)}`
-                }
-            </p>
+                </p>
+                <p className="text-lg bg-stone-300 rounded-lg text-black p-1">
+                    {
+                        person.last_medals.first_comp != person.last_medals.last_pos2_date ?
+                        `Last silver was on ${dayjs(person.last_medals.last_pos2_date).format("DD-MM-YYYY")}, ${diffToHuman(person.last_medals.last_pos2_date)} ago`
+                        :
+                        `This person has never won a silver in ${diffToHuman(person.last_medals.last_pos2_date)}`
+                    }
+                </p>
+                <p className="text-lg bg-amber-700 rounded-lg text-black p-1">
+                    {
+                        person.last_medals.first_comp != person.last_medals.last_pos3_date ?
+                        `Last bronze was on ${dayjs(person.last_medals.last_pos3_date).format("DD-MM-YYYY")}, ${diffToHuman(person.last_medals.last_pos3_date)} ago`
+                        :
+                        `This person has never won a bronze in ${diffToHuman(person.last_medals.last_pos3_date)}`
+                    }
+                </p>
+            </div>
+
             <p className="text-xs italic text-gray-400 pb-1">(*) Il numero di regioni e di città potrebbe essere leggermente inesatto in alcuni casi, poichè la WCA non fornisce dati riguardanti la sede in cui si ha partecipato in una gara con multiple venues.</p>
             <p className="text-xs italic text-gray-400">(**) Se all'interno della lista delle regioni dovesse apparire una dicitura del tipo "Roma non trovata nell'elenco", si prega di contattare lo sviluppatore per comunicare il nome della città non riconosciuta e sistemare il bug.</p>
         </div>

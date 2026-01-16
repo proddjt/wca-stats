@@ -62,7 +62,7 @@ export default function AppNavbar(){
             Person Stats
           </Link>
         </NavbarItem>
-        <NavbarItem isActive={pathname === "/person-stats"}>
+        <NavbarItem>
           <Link color="secondary" isExternal showAnchorIcon href="https://wcaquiz.xyz" onClick={() => setIsMenuOpen(false)}>
             Check out WCA Quiz
           </Link>

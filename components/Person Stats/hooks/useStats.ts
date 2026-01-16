@@ -44,6 +44,14 @@ export default function useStats(){
                 if (region_data) person_data.region = region_data[0].region
                 else person_data.region = ""
 
+                const { data: medals_data, error: medals_error } = await supabase
+                .rpc("get_medals_by_country", {
+                    wca_id: person_data.id
+                })
+
+                if (medals_error) throw medals_error
+                if (medals_data) person_data.medals_by_country = medals_data
+
                 const { data, error } = await supabase
                 .rpc("get_last_podiums", {
                     wca_id: person_data.id,
@@ -75,10 +83,9 @@ export default function useStats(){
                     })
                 );
 
-                regions.current = ita_cities.current
-                .filter((value, index, self) => self.indexOf(value) === index && !value.region.includes("Multiple cities non trovata nell'elenco"))
-                .sort((a, b) => a.region.localeCompare(b.region))
-                .map(r => r.region);
+                regions.current = ita_cities.current.map(c => c.region)
+                .filter((value, index, self) => self.indexOf(value) === index && !value.includes("Multiple cities non trovata nell'elenco"))
+                .sort((a, b) => a.localeCompare(b))
             }
         } catch (error: any) {
             if (error.code && error.code === 404) return showToast("Attention!", "WCA ID non found.", "danger")
