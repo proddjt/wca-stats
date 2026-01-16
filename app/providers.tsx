@@ -7,6 +7,7 @@ import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import IsLoadingProvider from "@/Context/IsLoading/IsLoadingProvider";
+import ConfigProvider from "@/Context/Config/ConfigProvider";
 
 
 export interface ProvidersProps {
@@ -29,9 +30,11 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <HeroUIProvider navigate={router.push}>
       
       <IsLoadingProvider>
-        <NextThemesProvider {...themeProps}>
-          {children}
-        </NextThemesProvider>
+        <ConfigProvider>
+          <NextThemesProvider {...themeProps}>
+            {children}
+          </NextThemesProvider>
+        </ConfigProvider>
       </IsLoadingProvider>
     </HeroUIProvider>
   );

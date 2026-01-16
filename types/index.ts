@@ -1,3 +1,5 @@
+import { MutableRefObject } from "react"
+
 export interface RowsType {
     position: number,
     name: string,
@@ -40,6 +42,11 @@ export interface IsLoadingContextType {
     showLoader: (f: () => Promise<void>) => void
 }
 
+export interface ConfigContextType {
+    nations: MutableRefObject<NationType[]>,
+    events: MutableRefObject<EventType[]>
+}
+
 export interface FormType {
     email: string,
     password: string
@@ -66,6 +73,7 @@ export interface PersonType {
     name: string,
     slug: string,
     country: string,
+    region: string,
     numberOfCompetitions: number,
     competitionIds: string[] | [],
     numberOfChampionships: number,
@@ -84,12 +92,12 @@ export interface PersonType {
             WR: number,
             CR: number,
             NR: number
-        },
+        } | any[],
         average: {
             WR: number,
             CR: number,
             NR: number
-        }
+        } | any[]
     },
     results: object,
     img?: string,

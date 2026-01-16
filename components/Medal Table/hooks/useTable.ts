@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-import { EventType, FiltersType, MedalType, NationType, PagesType, RowsType } from "@/types";
+import { EventType, FiltersType, NationType, PagesType, RowsType } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import { showToast } from "@/lib/Toast";
-import { order } from "@/Utils/event-order";
+
 
 
 export default function useTable(screenWidth: number){
@@ -24,8 +24,6 @@ export default function useTable(screenWidth: number){
             no_bronzes: false
         }
     });
-    const [nations, setNations] = useState<NationType[]>([]);
-    const [events, setEvents] = useState<EventType[]>([]);
     const [years, setYears] = useState<{year: string}[]>([]);
     const [pages, setPages] = useState<PagesType>({page: 1, total: 0});
     const last_update = useRef<string>("")
@@ -66,32 +64,6 @@ export default function useTable(screenWidth: number){
             if (error) throw error.message
             setRows(data);
             if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
-        } catch (error) {
-            showToast("Attention!", JSON.stringify(error), "danger")
-        }
-    }
-
-    async function getNations(){
-        try {
-            const { data, error } = await supabase
-            .from("countries")
-            .select("*")
-            .order("name", { ascending: true });
-            if (error) throw error.message
-            setNations(data);
-        } catch (error) {
-            showToast("Attention!", JSON.stringify(error), "danger")
-        }
-    }
-
-    async function getEvents(){
-        try {
-            const { data, error } = await supabase
-            .from("events")
-            .select("id, name")
-            if (error) throw error.message
-            const sorted = data.sort((a, b) => { const ai = order.indexOf(a.id); const bi = order.indexOf(b.id); return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi); });
-            setEvents(sorted);
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
         }
@@ -148,8 +120,6 @@ export default function useTable(screenWidth: number){
     }
 
     useEffect(() => {
-        showLoader(getNations)
-        showLoader(getEvents)
         showLoader(getYears)
         showLoader(getLastUpdate)
         if (screenWidth < 1024) showLoader(() => getRows(1))
@@ -167,8 +137,6 @@ export default function useTable(screenWidth: number){
     return {
         rows,
         filters,
-        nations,
-        events,
         years,
         pages,
         last_update,

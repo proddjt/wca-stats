@@ -8,6 +8,7 @@ import Flag from 'react-world-flags'
 
 import useTable from "./hooks/useTable";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
+import useConfig from "@/Context/Config/useConfig"
 
 import Filterbar from "./Filterbar";
 import Loader from "../Layout/Loader";
@@ -71,8 +72,6 @@ export default function MedalTablePage() {
   const {
       rows,
       filters,
-      nations,
-      events,
       years,
       pages,
       last_update,
@@ -83,7 +82,12 @@ export default function MedalTablePage() {
       resetFilters
   } = useTable(screenWidth.current)
 
-  if (isPending && (!nations.length || !events.length || !years.length)) return <Loader />
+  const {
+    nations,
+    events
+  } = useConfig();
+
+  if (isPending && (!nations.current.length || !events.current.length || !years.length)) return <Loader />
   return (
       <>
       <div className="grow flex flex-col justify-center lg:items-center py-2">
@@ -101,7 +105,7 @@ export default function MedalTablePage() {
         topContent={
           screenWidth.current < 1024 ? 
           <Button onPress={onOpen} color="warning">Filters</Button> :
-          <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}} />
+          <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, years}} />
         }
         topContentPlacement="outside"
         bottomContent={
@@ -145,7 +149,7 @@ export default function MedalTablePage() {
                 <TableRow key={item.wca_id}>
                     {columnKey => columnKey === "country_id" ?
                     <TableCell className="flex flex-row gap-1">
-                      <Flag code={item.country_id} width={15}/> {nations.find(n => n.id === item.country_id)?.name}
+                      <Flag code={item.country_id} width={15}/> {nations.current.find(n => n.id === item.country_id)?.name}
                       </TableCell> :
                     <TableCell>{getKeyValue(item, columnKey)}</TableCell>
                     }
@@ -157,7 +161,7 @@ export default function MedalTablePage() {
         <p className="text-xs text-gray-400 text-center pt-1 italic">Last updated at: {dayjs(last_update.current).format("DD-MM-YYYY HH:mm")} UTC+1</p>}
       </div>
 
-      <FilterDrawer {...{resetFilters, isOpen, onOpenChange, getRows,handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}}/>
+      <FilterDrawer {...{resetFilters, isOpen, onOpenChange, getRows,handleFiltersChange, handleMoreFiltersChange, filters, years}}/>
       </>
   )
 }

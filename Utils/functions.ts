@@ -64,10 +64,10 @@ export function diffToHuman(date: string) {
   let days = end.diff(temp, "day");
 
   const parts = [];
-  if (years > 0) parts.push(`${years} ${years === 1 ? "anno" : "anni"}`);
-  if (months > 0) parts.push(`${months} ${months === 1 ? "mese" : "mesi"}`);
-  if (weeks > 0) parts.push(`${weeks} ${weeks === 1 ? "settimana" : "settimane"}`);
-  if (days > 0) parts.push(`${days} ${days === 1 ? "giorno" : "giorni"}`);
+  if (years > 0) parts.push(`${years} ${years === 1 ? "year" : "years"}`);
+  if (months > 0) parts.push(`${months} ${months === 1 ? "month" : "months"}`);
+  if (weeks > 0) parts.push(`${weeks} ${weeks === 1 ? "week" : "weeks"}`);
+  if (days > 0) parts.push(`${days} ${days === 1 ? "day" : "days"}`);
 
   return parts.join(", ");
 }

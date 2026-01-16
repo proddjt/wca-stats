@@ -12,8 +12,8 @@ import { it_cities } from "@/Utils/it_cities";
 export default function useStats(){
     const [person, setPerson] = useState<PersonType>();
     const regions = useRef<string[]>();
-    const int_cities = useRef<string[] | []>([]);
-    const ita_cities = useRef<string[] | []>([]);
+    const int_cities = useRef<{city: string, country: string}[]>([]);
+    const ita_cities = useRef<{city: string, region: string}[]>([]);
 
     const {showLoader} = useIsLoading();
 
@@ -35,8 +35,17 @@ export default function useStats(){
                 const img_data = await response.json();
                 if (img_data.person.avatar.status === "approved" && img_data.person.avatar.url && !img_data.person.avatar.is_default) person_data.img = img_data.person.avatar.url
 
-                const { data, error } = await supabase.
-                rpc("get_last_podiums", {
+                const { data: region_data, error: region_error } = await supabase
+                .from("persons")
+                .select("region")
+                .eq("wca_id", person_data.id)
+
+                if (region_error) throw region_error
+                if (region_data) person_data.region = region_data[0].region
+                else person_data.region = ""
+
+                const { data, error } = await supabase
+                .rpc("get_last_podiums", {
                     wca_id: person_data.id,
                     comp_ids: [...person_data.championshipIds, ...person_data.competitionIds]
                 })
@@ -57,19 +66,19 @@ export default function useStats(){
 
                         const data = await response.json();
                         const city = parseString(data.city);
-                        const ita_arr = ita_cities.current as string[]
-                        const int_arr = int_cities.current as string[]
+                        const ita_arr = ita_cities.current as {city: string, region: string}[]
+                        const int_arr = int_cities.current as {city: string, country: string}[]
                         if (data.country === "IT" && !data.isCanceled && dayjs(data.date.from) < dayjs()){
-                            if (!ita_arr.includes(city)) ita_cities.current = [...ita_cities.current, city]
+                            if (!ita_arr.some(c => c.city === city)) ita_cities.current.push({city: city, region: it_cities.find(citta => citta.denominazione_ita.toLowerCase() === city.toLowerCase() )?.denominazione_regione || `${city} non trovata nell'elenco`})
                         }
-                        if (!int_arr.includes(city)) int_cities.current = [...int_cities.current, city]
+                        if (!int_arr.some(c => c.city === city)) int_cities.current.push({city: city, country: data.country})
                     })
                 );
 
                 regions.current = ita_cities.current
-                .map(c => it_cities.find(city => city.denominazione_ita.toLowerCase() === c.toLowerCase() )?.denominazione_regione || `${c} non trovata nell'elenco` )
-                .filter((value, index, self) => self.indexOf(value) === index && !value.includes("Multiple cities non trovata nell'elenco"))
-                .sort((a, b) => a.localeCompare(b));
+                .filter((value, index, self) => self.indexOf(value) === index && !value.region.includes("Multiple cities non trovata nell'elenco"))
+                .sort((a, b) => a.region.localeCompare(b.region))
+                .map(r => r.region);
             }
         } catch (error: any) {
             if (error.code && error.code === 404) return showToast("Attention!", "WCA ID non found.", "danger")

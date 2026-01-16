@@ -10,8 +10,6 @@ export default function FilterDrawer({
     handleFiltersChange,
     handleMoreFiltersChange,
     filters,
-    nations,
-    events,
     years,
     getRows,
     resetFilters
@@ -21,8 +19,6 @@ export default function FilterDrawer({
     handleFiltersChange: (value: string | string[] | [], key: string, ascending?: boolean) => void,
     handleMoreFiltersChange: (value: string[]) => void,
     filters: FiltersType,
-    nations: NationType[],
-    events: EventType[],
     years: {year: string}[],
     getRows: (n?: number) => Promise<void>,
     resetFilters: () => void
@@ -36,7 +32,7 @@ export default function FilterDrawer({
                 <>
                 <DrawerHeader className="flex flex-col gap-1">Filters</DrawerHeader>
                 <DrawerBody>
-                    <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, nations, events, years}} isDrawer={true}/>
+                    <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, years}} isDrawer={true}/>
                 </DrawerBody>
                 <DrawerFooter className="flex justify-between">
                     <Button color="danger" onPress={() => {resetFilters(); onClose()}}>

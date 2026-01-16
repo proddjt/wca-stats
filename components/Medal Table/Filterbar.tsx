@@ -5,6 +5,8 @@ import {CheckboxGroup, Checkbox} from "@heroui/checkbox";
 import {RadioGroup, Radio} from "@heroui/radio";
 import Flag from 'react-world-flags'
 
+import useConfig from "@/Context/Config/useConfig"
+
 import { FaSearch } from "react-icons/fa";
 import { FaGlobeEurope } from "react-icons/fa";
 import { FaGlobeAsia } from "react-icons/fa";
@@ -36,21 +38,22 @@ export default function Filterbar({
     handleFiltersChange,
     handleMoreFiltersChange,
     filters,
-    nations,
-    events,
     years,
     isDrawer = false
 } : {
     handleFiltersChange: (value: string | string[] | [], key: string, ascending?: boolean) => void,
     handleMoreFiltersChange: (value: string[]) => void,
     filters: FiltersType,
-    nations: NationType[],
-    events: EventType[],
     years: {year: string}[],
     isDrawer?: boolean
 }){
 
     const [name, setName] = useState(filters.name);
+
+    const {
+        nations,
+        events
+    } = useConfig();
 
     useEffect(() => {
         if (isDrawer) {
@@ -115,42 +118,42 @@ export default function Filterbar({
                     <AutocompleteItem key="" textValue="World" onClick={() => handleFiltersChange("", "nationality")}>World</AutocompleteItem>
                     <AutocompleteSection showDivider title="Europe">
                         {
-                            [{ id: "europe", name: "All Europe", cont_id: "europe" },...nations].filter(n => n.cont_id === "europe").map(n => 
+                            [{ id: "europe", name: "All Europe", cont_id: "europe" },...nations.current].filter(n => n.cont_id === "europe").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="Africa">
                         {
-                            [{ id: "africa", name: "All Africa", cont_id: "africa" },...nations].filter(n => n.cont_id === "africa").map(n => 
+                            [{ id: "africa", name: "All Africa", cont_id: "africa" },...nations.current].filter(n => n.cont_id === "africa").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="Asia">
                         {
-                            [{ id: "asia", name: "All Asia", cont_id: "asia" },...nations].filter(n => n.cont_id === "asia").map(n => 
+                            [{ id: "asia", name: "All Asia", cont_id: "asia" },...nations.current].filter(n => n.cont_id === "asia").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="North America">
                         {
-                            [{ id: "north-america", name: "All North America", cont_id: "north-america" },...nations].filter(n => n.cont_id === "north-america").map(n => 
+                            [{ id: "north-america", name: "All North America", cont_id: "north-america" },...nations.current].filter(n => n.cont_id === "north-america").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="Oceania">
                         {
-                            [{ id: "oceania", name: "All Oceania", cont_id: "oceania" },...nations].filter(n => n.cont_id === "oceania").map(n => 
+                            [{ id: "oceania", name: "All Oceania", cont_id: "oceania" },...nations.current].filter(n => n.cont_id === "oceania").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="South America">
                         {
-                            [{ id: "south-america", name: "All South America", cont_id: "south-america" },...nations].filter(n => n.cont_id === "south-america").map(n => 
+                            [{ id: "south-america", name: "All South America", cont_id: "south-america" },...nations.current].filter(n => n.cont_id === "south-america").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
@@ -170,7 +173,7 @@ export default function Filterbar({
                 selectionMode="multiple"
                 onChange={handleEventChange}
                 >
-                    {events.map((event) =><SelectItem key={event.id} textValue={event.name}><span className={`cubing-icon event-${event.id}`}></span> {event.name}</SelectItem>)}
+                    {events.current.map((event) =><SelectItem key={event.id} textValue={event.name}><span className={`cubing-icon event-${event.id}`}></span> {event.name}</SelectItem>)}
                 </Select>
 
                 <Select

@@ -62,6 +62,11 @@ export default function AppNavbar(){
             Person Stats
           </Link>
         </NavbarItem>
+        <NavbarItem isActive={pathname === "/person-stats"}>
+          <Link color="secondary" isExternal showAnchorIcon href="https://wcaquiz.xyz" onClick={() => setIsMenuOpen(false)}>
+            Check out WCA Quiz
+          </Link>
+        </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
           <NavbarMenuItem isActive={pathname === "/"}>
@@ -77,6 +82,11 @@ export default function AppNavbar(){
         <NavbarMenuItem isActive={pathname === "/person-stats"}>
           <Link color={pathname === "/person-stats" ? "warning" : "foreground"} href="/person-stats" onClick={() => setIsMenuOpen(false)}>
             Person Stats
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Link color="secondary" isExternal showAnchorIcon href="https://wcaquiz.xyz" onClick={() => setIsMenuOpen(false)}>
+            Check out WCA Quiz
           </Link>
         </NavbarMenuItem>
       </NavbarMenu>
