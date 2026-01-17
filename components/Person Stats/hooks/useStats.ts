@@ -5,33 +5,33 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { createClient } from "@/lib/supabase/client";
 import { showToast } from "@/lib/Toast";
-import { EventResults, PersonType, ResultType, SolveRound } from "@/types";
+import { PersonType } from "@/types";
 import { decodeMBF, parseString, safe } from "@/Utils/functions";
 import { it_cities } from "@/Utils/it_cities";
-import useConfig from "@/Context/Config/useConfig";
 
-
+const LOADING_FUNC = 8
 
 export default function useStats(){
     const [person, setPerson] = useState<PersonType>();
+    const [loadingValue, setLoadingValue] = useState(0);
     const regions = useRef<string[]>();
     const int_cities = useRef<{city: string, country: string}[]>([]);
     const ita_cities = useRef<{city: string, region: string}[]>([]);
 
     const {showLoader} = useIsLoading();
 
-    const {events} = useConfig();
-
     const supabase = createClient();
 
     async function getPersonStats(id: string){
         try {
+            setLoadingValue(0);
 
             // PERSON
             const [person_error, response] = await safe(fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/persons/${id}.json`));
             if (person_error) throw person_error
             if (!response.ok) throw {code: response.status}
             const person_data = await response.json();
+            setLoadingValue(12.5);
 
             if (person_data){
 
@@ -41,6 +41,7 @@ export default function useStats(){
                 if (!response.ok) throw {code: response.status}
                 const img_data = await response.json();
                 if (img_data.person.avatar.status === "approved" && img_data.person.avatar.url && !img_data.person.avatar.is_default) person_data.img = img_data.person.avatar.url
+                setLoadingValue(25);
 
                 // REGION
                 const { data: region_data, error: region_error } = await supabase
@@ -50,6 +51,7 @@ export default function useStats(){
                 if (region_error) throw region_error
                 if (region_data) person_data.region = region_data[0].region
                 else person_data.region = ""
+                setLoadingValue(37.5);
 
                 // MEDALS BY COUNTRY
                 const { data: medals_data, error: medals_error } = await supabase
@@ -58,6 +60,7 @@ export default function useStats(){
                 })
                 if (medals_error) throw medals_error
                 if (medals_data) person_data.medals_by_country = medals_data
+                setLoadingValue(50);
 
                 // TIME PASSED SOLVING
                 const totals: Record<string, number> = {};
@@ -96,6 +99,7 @@ export default function useStats(){
                     }
                 }
                 person_data.time_passed = totals;
+                setLoadingValue(62.5);
 
                 // LAST PODIUMS
                 const { data, error } = await supabase
@@ -105,6 +109,7 @@ export default function useStats(){
                 })
                 if (error) throw error
                 if (data) person_data.last_medals = data[0]
+                setLoadingValue(75);
 
                 console.log(person_data);
 
@@ -130,11 +135,13 @@ export default function useStats(){
                         if (!int_arr.some(c => c.city === city)) int_cities.current.push({city: city, country: data.country})
                     })
                 );
+                setLoadingValue(87.5);
 
                 // REGIONS
                 regions.current = ita_cities.current.map(c => c.region)
                 .filter((value, index, self) => self.indexOf(value) === index && !value.includes("Multiple cities non trovata nell'elenco"))
                 .sort((a, b) => a.localeCompare(b))
+                setLoadingValue(100);
             }
         } catch (error: any) {
             if (error.code && error.code === 404) return showToast("Attention!", "WCA ID non found.", "danger")
@@ -158,6 +165,7 @@ export default function useStats(){
         regions,
         ita_cities,
         int_cities,
+        loadingValue,
         sendID,
         resetPerson
     }
