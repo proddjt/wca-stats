@@ -24,7 +24,7 @@ export default function useTable(screenWidth: number){
             no_bronzes: false
         }
     });
-    const [years, setYears] = useState<{year: string}[]>([]);
+    
     const [pages, setPages] = useState<PagesType>({page: 1, total: 0});
     const last_update = useRef<string>("")
 
@@ -64,17 +64,6 @@ export default function useTable(screenWidth: number){
             if (error) throw error.message
             setRows(data);
             if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
-        } catch (error) {
-            showToast("Attention!", JSON.stringify(error), "danger")
-        }
-    }
-
-    async function getYears(){
-        try {
-            const { data, error } = await supabase
-            .rpc("get_years");
-            if (error) throw error.message
-            setYears(data);
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
         }
@@ -120,7 +109,6 @@ export default function useTable(screenWidth: number){
     }
 
     useEffect(() => {
-        showLoader(getYears)
         showLoader(getLastUpdate)
         if (screenWidth < 1024) showLoader(() => getRows(1))
     }, []);
@@ -137,7 +125,6 @@ export default function useTable(screenWidth: number){
     return {
         rows,
         filters,
-        years,
         pages,
         last_update,
         changePage,

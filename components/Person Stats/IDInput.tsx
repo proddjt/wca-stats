@@ -4,15 +4,17 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 import { checkId } from "@/Utils/functions";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function IDInput({
+    id,
+    setId,
     sendID
 }: {
+    id: string,
+    setId: React.Dispatch<React.SetStateAction<string>>,
     sendID: (id: string) => void
 }){
-
-    const [id, setId] = useState<string>("");
     return (
         <>
         <h1 className="font-bold lg:text-5xl text-3xl">Insert a WCA ID</h1>

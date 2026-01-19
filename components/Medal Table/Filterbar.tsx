@@ -16,7 +16,7 @@ import { FaEarthOceania } from "react-icons/fa6";
 import { TfiWorld } from "react-icons/tfi";
 
 
-import { EventType, FiltersType, NationType } from "@/types";
+import { FiltersType } from "@/types";
 import { useEffect, useState } from "react";
 
 const icons = {
@@ -38,13 +38,11 @@ export default function Filterbar({
     handleFiltersChange,
     handleMoreFiltersChange,
     filters,
-    years,
     isDrawer = false
 } : {
     handleFiltersChange: (value: string | string[] | [], key: string, ascending?: boolean) => void,
     handleMoreFiltersChange: (value: string[]) => void,
     filters: FiltersType,
-    years: {year: string}[],
     isDrawer?: boolean
 }){
 
@@ -52,7 +50,8 @@ export default function Filterbar({
 
     const {
         nations,
-        events
+        events,
+        years
     } = useConfig();
 
     useEffect(() => {
@@ -189,7 +188,7 @@ export default function Filterbar({
                 selectionMode="multiple"
                 onChange={handleYearChange}
                 >
-                    {years.map((year) =><SelectItem key={year.year}>{year.year}</SelectItem>)}
+                    {years.current.sort((a, b) => Number(b.year) - Number(a.year)).map((year) =><SelectItem key={year.year}>{year.year}</SelectItem>)}
                 </Select>
 
                 {/* <Select

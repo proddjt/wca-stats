@@ -72,7 +72,6 @@ export default function MedalTablePage() {
   const {
       rows,
       filters,
-      years,
       pages,
       last_update,
       changePage,
@@ -84,10 +83,11 @@ export default function MedalTablePage() {
 
   const {
     nations,
-    events
+    events,
+    years
   } = useConfig();
 
-  if (isPending && (!nations.current.length || !events.current.length || !years.length)) return <Loader />
+  if (isPending && (!nations.current.length || !events.current.length || !years.current.length)) return <Loader />
   return (
       <>
       <div className="grow flex flex-col justify-center lg:items-center py-2">
@@ -105,7 +105,7 @@ export default function MedalTablePage() {
         topContent={
           screenWidth.current < 1024 ? 
           <Button onPress={onOpen} color="warning">Filters</Button> :
-          <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, years}} />
+          <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters}} />
         }
         topContentPlacement="outside"
         bottomContent={
@@ -161,7 +161,7 @@ export default function MedalTablePage() {
         <p className="text-xs text-gray-400 text-center pt-1 italic">Last updated at: {dayjs(last_update.current).format("DD-MM-YYYY HH:mm")} UTC+1</p>}
       </div>
 
-      <FilterDrawer {...{resetFilters, isOpen, onOpenChange, getRows,handleFiltersChange, handleMoreFiltersChange, filters, years}}/>
+      <FilterDrawer {...{resetFilters, isOpen, onOpenChange, getRows,handleFiltersChange, handleMoreFiltersChange, filters}}/>
       </>
   )
 }

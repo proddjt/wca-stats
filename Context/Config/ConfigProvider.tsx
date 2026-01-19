@@ -9,6 +9,7 @@ import useIsLoading from "../IsLoading/useIsLoading";
 export default function ConfigProvider({ children } : { children: React.ReactNode }) {
     const nations = useRef<NationType[]>([]);
     const events = useRef<EventType[]>([]);
+    const years = useRef<{year: string}[]>([]);
 
     const supabase = createClient();
     const {showLoader} = useIsLoading();
@@ -39,13 +40,25 @@ export default function ConfigProvider({ children } : { children: React.ReactNod
         }
     }
 
+    async function getYears(){
+        try {
+            const { data, error } = await supabase
+            .rpc("get_years");
+            if (error) throw error.message
+            years.current = data;
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+    }
+
     useEffect(() => {
         showLoader(getNations);
         showLoader(getEvents);
+        showLoader(getYears);
     }, []);
 
     return (
-        <ConfigContext.Provider value={{nations, events}}>
+        <ConfigContext.Provider value={{nations, events, years}}>
             {children}
         </ConfigContext.Provider>
     )

@@ -6,7 +6,7 @@ import { Chip } from "@heroui/chip"
 import Flag from "react-world-flags"
 import { CircleFlag } from "react-circle-flags";
 
-import { PersonType } from "@/types"
+import { PersonType, StatsFiltersType } from "@/types"
 
 import { TbArrowBackUp } from "react-icons/tb";
 import { BiSolidTimer } from "react-icons/bi";
@@ -18,6 +18,8 @@ import { regions_icon } from "@/Utils/regions_icon";
 import LocationSection from "./hooks/LocationSection";
 import ResultSection from "./ResultSection";
 import CompSection from "./CompSection";
+import { Select, SelectItem } from "@heroui/select";
+import useConfig from "@/Context/Config/useConfig";
 
 const sections = {
     results: ResultSection,
@@ -35,15 +37,21 @@ export default function PersonStatistics({
     regions,
     int_cities,
     ita_cities,
-    resetPerson
+    filters,
+    resetPerson,
+    handleFiltersChange
 } : {
     person: PersonType,
     regions: string[] | undefined,
     int_cities: {city: string, country: string}[] | undefined,
     ita_cities: {city: string, region: string}[] | undefined,
-    resetPerson: () => void
+    filters: StatsFiltersType,
+    resetPerson: () => void,
+    handleFiltersChange: (value: string | string[] | [], key: string) => void
 }){ 
     const [sectionSelected, setSectionSelected] = useState<string>("results");
+
+    const {years} = useConfig();
 
     return (
         <div className="p-5 grow flex flex-col items-center text-center">
@@ -82,6 +90,22 @@ export default function PersonStatistics({
                     </Chip>
                 }
             </div>
+
+            <Select
+            className="lg:w-1/4 w-full pb-4"
+            label="Year"
+            placeholder="Select a year"
+            description="Change the year to see the stats of that year."
+            variant="faded"
+            size="sm"
+            radius="sm"
+            isClearable
+            onClear={() => handleFiltersChange("", "year")}
+            selectedKeys={filters.year !== "all" ? [filters.year] : []}
+            onChange={(e) => handleFiltersChange(e.target.value, "year")}
+            >
+                {years.current.sort((a, b) => Number(b.year) - Number(a.year)).map((year) =><SelectItem key={year.year}>{year.year}</SelectItem>)}
+            </Select>
 
             <Tabs
             aria-label="Page section"

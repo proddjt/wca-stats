@@ -45,6 +45,7 @@ export interface IsLoadingContextType {
 export interface ConfigContextType {
     nations: MutableRefObject<NationType[]>,
     events: MutableRefObject<EventType[]>
+    years: MutableRefObject<{year: string}[]>
 }
 
 export interface FormType {
@@ -152,4 +153,8 @@ export interface PersonMetType {
     wca_id: string,
     comp_ids: string[]
     country: string
+}
+
+export interface StatsFiltersType {
+    year: string,
 }

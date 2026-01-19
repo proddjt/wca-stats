@@ -1,16 +1,20 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { createClient } from "@/lib/supabase/client";
 import { showToast } from "@/lib/Toast";
-import { PersonType } from "@/types";
+import { PersonType, StatsFiltersType } from "@/types";
 import { decodeMBF, parseString, safe } from "@/Utils/functions";
 import { it_cities } from "@/Utils/it_cities";
 
 export default function useStats(){
+    const [id, setId] = useState<string>("");
     const [person, setPerson] = useState<PersonType>();
+    const [filters, setFilters] = useState<StatsFiltersType>({
+        year: "all"
+    });
     const [loadingValue, setLoadingValue] = useState(0);
     const regions = useRef<string[]>();
     const int_cities = useRef<{city: string, country: string}[]>([]);
@@ -20,7 +24,7 @@ export default function useStats(){
 
     const supabase = createClient();
 
-    async function getPersonStats(id: string){
+    async function getPersonStats(){
         try {
             setLoadingValue(0);
 
@@ -54,7 +58,8 @@ export default function useStats(){
                 // MEDALS BY COUNTRY
                 const { data: medals_data, error: medals_error } = await supabase
                 .rpc("get_medals_by_country", {
-                    wca_id: person_data.id
+                    wca_id: person_data.id,
+                    year_input: filters.year
                 })
                 if (medals_error) throw medals_error
                 if (medals_data) person_data.medals_by_country = medals_data
@@ -64,6 +69,8 @@ export default function useStats(){
                 const totals: Record<string, number> = {};
 
                 for (const competitionId in person_data.results) {
+                    if (filters.year !== "all" && competitionId.slice(-4) !== filters.year) return
+
                     const events = person_data.results[competitionId];
 
                     for (const eventId in events) {
@@ -103,7 +110,14 @@ export default function useStats(){
                 const { data, error } = await supabase
                 .rpc("get_last_podiums", {
                     wca_id: person_data.id,
-                    comp_ids: [...person_data.championshipIds, ...person_data.competitionIds]
+                    comp_ids: [
+                        ...person_data.championshipIds.filter((c: string) => {
+                            filters.year === "all" ? true : c.slice(-4) === filters.year
+                        }),
+                        ...person_data.competitionIds.filter((c: string) => {
+                            filters.year === "all" ? true : c.slice(-4) === filters.year
+                        })
+                    ]
                 })
                 if (error) throw error
                 if (data) person_data.last_medals = data[0]
@@ -168,17 +182,30 @@ export default function useStats(){
         ita_cities.current = []
     }
 
-    function sendID(id: string){
-        showLoader(() => getPersonStats(id))
+    function sendID(){
+        showLoader(getPersonStats)
     }
 
+    function handleFiltersChange(value: string | string[] | [], key: string) {
+        if (!value) setFilters(prev => ({...prev, [key]: ""}))
+        else setFilters(prev => ({...prev, [key]: value}))
+    }
+
+    useEffect(() => {
+        if (id) showLoader(getPersonStats)
+    }, [filters])
+
     return {
+        id,
         person,
         regions,
         ita_cities,
         int_cities,
         loadingValue,
+        filters,
+        setId,
         sendID,
-        resetPerson
+        resetPerson,
+        handleFiltersChange
     }
 }
