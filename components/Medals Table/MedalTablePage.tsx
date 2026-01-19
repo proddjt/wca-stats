@@ -12,9 +12,11 @@ import useConfig from "@/Context/Config/useConfig"
 
 import Filterbar from "./Filterbar";
 import Loader from "../Layout/Loader";
-import { Button } from "@heroui/button";
+import { Button, PressEvent } from "@heroui/button";
 import FilterDrawer from "./FilterDrawer";
 import dayjs from "dayjs";
+import { Link } from "@heroui/link";
+import { useRouter } from "next/navigation";
 
 export const columns = [
   {
@@ -65,6 +67,8 @@ export default function MedalTablePage() {
   const {isPending} = useIsLoading();
   const screenWidth = useRef(0);
 
+  const router = useRouter();
+
   useEffect(() => {
     screenWidth.current = window.screen.availWidth;
   }, []);
@@ -87,7 +91,12 @@ export default function MedalTablePage() {
     years
   } = useConfig();
 
+  const handleClick = (id: string) => {
+    router.push(`/person-stats/${id}`)
+  }
+
   if (isPending && (!nations.current.length || !events.current.length || !years.current.length)) return <Loader />
+
   return (
       <>
       <div className="grow flex flex-col justify-center lg:items-center py-2">
@@ -100,7 +109,7 @@ export default function MedalTablePage() {
         color="warning"
         classNames={{
           wrapper: "h-[65vh] max-h-[65vh] lg:max-h-[55vh] min-w-[70vw] lg:h-[55vh] overflow-auto",
-          td: "whitespace-nowrap"
+          td: "whitespace-nowrap min-h-[40px]"
         }}
         topContent={
           screenWidth.current < 1024 ? 
@@ -148,9 +157,21 @@ export default function MedalTablePage() {
                 {(item) => (
                 <TableRow key={item.wca_id}>
                     {columnKey => columnKey === "country_id" ?
-                    <TableCell className="flex flex-row gap-1">
+                    <TableCell className="flex flex-row gap-1 items-center">
                       <Flag code={item.country_id} width={15}/> {nations.current.find(n => n.id === item.country_id)?.name}
-                      </TableCell> :
+                    </TableCell> :
+                    columnKey === "name" || columnKey === "wca_id" ?
+                    <TableCell>
+                      <Link
+                      isBlock
+                      onPress={() => handleClick(item.wca_id)}
+                      color="warning"
+                      size="sm"
+                      >
+                        {getKeyValue(item, columnKey)}
+                      </Link>
+                    </TableCell>
+                    :
                     <TableCell>{getKeyValue(item, columnKey)}</TableCell>
                     }
                 </TableRow>

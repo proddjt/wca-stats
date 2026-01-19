@@ -8,9 +8,9 @@ import { showToast } from "@/lib/Toast";
 import { PersonType, StatsFiltersType } from "@/types";
 import { decodeMBF, parseString, safe } from "@/Utils/functions";
 import { it_cities } from "@/Utils/it_cities";
+import { useRouter } from "next/navigation";
 
-export default function useStats(){
-    const [id, setId] = useState<string>("");
+export default function useStats(id: string){
     const [person, setPerson] = useState<PersonType>();
     const [filters, setFilters] = useState<StatsFiltersType>({
         year: "all"
@@ -23,6 +23,8 @@ export default function useStats(){
     const {showLoader} = useIsLoading();
 
     const supabase = createClient();
+
+    const router = useRouter();
 
     async function getPersonStats(){
         try {
@@ -126,6 +128,8 @@ export default function useStats(){
                 // PEOPLE MET
                 const { data: people_data, error: people_error } = await supabase
                 .rpc("get_related_persons", {wca_id_input: person_data.id})
+                console.log(people_data);
+                
                 if (people_error) throw people_error
                 if (people_data) person_data.people_met = people_data
                 setLoadingValue(70);
@@ -170,20 +174,19 @@ export default function useStats(){
                 setLoadingValue(100);
             }
         } catch (error: any) {
-            if (error.code && error.code === 404) return showToast("Attention!", "WCA ID non found.", "danger")
-            return showToast("Attention!", JSON.stringify(error), "danger")
+            if (error.code && error.code === 404) showToast("Attention!", "WCA ID non found.", "danger")
+            else showToast("Attention!", JSON.stringify(error), "danger")
+            return router.push("/person-stats")
         }
     }
 
     function resetPerson(){
         setPerson(undefined)
+        setLoadingValue(0)
         regions.current = []
         int_cities.current = []
         ita_cities.current = []
-    }
-
-    function sendID(){
-        showLoader(getPersonStats)
+        return router.push("/person-stats")
     }
 
     function handleFiltersChange(value: string | string[] | [], key: string) {
@@ -196,15 +199,12 @@ export default function useStats(){
     }, [filters])
 
     return {
-        id,
         person,
         regions,
         ita_cities,
         int_cities,
         loadingValue,
         filters,
-        setId,
-        sendID,
         resetPerson,
         handleFiltersChange
     }

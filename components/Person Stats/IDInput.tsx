@@ -4,17 +4,18 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 import { checkId } from "@/Utils/functions";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function IDInput({
-    id,
-    setId,
-    sendID
-}: {
-    id: string,
-    setId: React.Dispatch<React.SetStateAction<string>>,
-    sendID: (id: string) => void
-}){
+export default function IDInput(){
+    const [id, setId] = useState<string>("");
+
+    const router = useRouter();
+
+    function sendID(){
+        router.push(`/person-stats/${id}`)
+    }
+
     return (
         <>
         <h1 className="font-bold lg:text-5xl text-3xl">Insert a WCA ID</h1>
@@ -27,7 +28,7 @@ export default function IDInput({
             type="text"
             variant="faded"
             value={id}
-            onKeyDown={(e) => (e.key === "Enter" || e.key === "NumpadEnter") && checkId(id) && sendID(id)}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === "NumpadEnter") && checkId(id) && sendID()}
             onChange={(e) => e.target.value.length <= 10 && /^[A-Za-z0-9]*$/.test(e.target.value) ? setId(e.target.value.toUpperCase()) : null}
             endContent={id && id.length === 10 && checkId(id) ? <FaRegCheckCircle color="green" size="1.2em"/> : <MdOutlineCancel color="red" size="1.2em"/>}
             />
@@ -36,7 +37,7 @@ export default function IDInput({
             fullWidth
             color="warning"
             variant="bordered"
-            onPress={() => checkId(id) && sendID(id)}
+            onPress={() => checkId(id) && sendID()}
             >
                 Submit
             </Button>

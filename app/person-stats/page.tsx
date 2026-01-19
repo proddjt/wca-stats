@@ -1,7 +1,11 @@
-import PersonStatsPage from "@/components/Person Stats/PersonStatsPage";
+'use client'
 
-export default function PersonStats(){
+import IDInput from "@/components/Person Stats/IDInput";
+
+export default function PersonStatsInsertPage(){
     return (
-        <PersonStatsPage/>
+        <div className="grow flex flex-col justify-center items-center gap-5">
+            <IDInput />
+        </div>
     )
 }

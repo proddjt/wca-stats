@@ -148,7 +148,7 @@ export default function useDatabase () {
                     wca_id: p.id,
                     name: p.name,
                     country_id: p.country,
-                    comp_ids: [...p.competitionIds, ...p.championshipIds],
+                    comp_ids: [...p.competitionIds],
                     last_update: new Date().toISOString()
                 }))
                 try {
