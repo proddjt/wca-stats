@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import IsLoadingProvider from "@/Context/IsLoading/IsLoadingProvider";
 import ConfigProvider from "@/Context/Config/ConfigProvider";
+import UserProvider from "@/Context/User/UserProvider";
 
 
 export interface ProvidersProps {
@@ -31,9 +32,11 @@ export function Providers({ children, themeProps }: ProvidersProps) {
       
       <IsLoadingProvider>
         <ConfigProvider>
-          <NextThemesProvider {...themeProps}>
-            {children}
-          </NextThemesProvider>
+          <UserProvider>
+            <NextThemesProvider {...themeProps}>
+              {children}
+            </NextThemesProvider>
+          </UserProvider>
         </ConfigProvider>
       </IsLoadingProvider>
     </HeroUIProvider>

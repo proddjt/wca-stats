@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { User } from "@supabase/supabase-js";
 import dayjs from 'dayjs'
 import pLimit from "p-limit";
 
@@ -8,22 +7,16 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { showToast } from "@/lib/Toast";
 import { continentsTable } from "@/Utils/continents";
+import useUser from "@/Context/User/useUser";
 
 export default function useDatabase () {
-    const [user, setUser] = useState<User | null>(null);
-
     const {showLoader} = useIsLoading();
 
-    const supabase = createClient();
+    const {
+        user
+    } = useUser();
 
-    async function getUser(){
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            setUser(user);
-        } catch (error) {
-            showToast("Attention!", JSON.stringify(error), "danger")
-        }
-    }
+    const supabase = createClient();
 
     async function getPages(url: string){
         try {
@@ -33,30 +26,6 @@ export default function useDatabase () {
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
             return null
-        }
-    }
-
-    async function login({email, password}: {email: string, password: string}){
-        try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-            if (error) throw error.message
-            await getUser()
-            showToast("Success!", "User logged in", "success")
-        } catch (error) {
-            showToast("Attention!", JSON.stringify(error), "danger")
-        }
-    }
-
-    async function logout(){
-        try {
-            await supabase.auth.signOut()
-            setUser(null)
-            showToast("Success!", "User succesfully logged out", "success")
-        } catch (error) {
-            showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
 
@@ -242,14 +211,6 @@ export default function useDatabase () {
         }
     }
 
-    function doLogout() {
-        showLoader(logout)
-    }
-
-    function doLogin({email, password}: {email: string, password: string}){
-        showLoader(() => login({email, password}))
-    }
-
     function doUpdate(action: "events" | "countries" | "comps" | "persons" | "medals" | "results" | "continents"){
         switch (action) {
             case "events":
@@ -275,14 +236,8 @@ export default function useDatabase () {
         }
     }
 
-    useEffect(() => {
-        if (!user) showLoader(getUser)
-    }, [user]);
-
     return {
         user,
         doUpdate,
-        doLogout,
-        doLogin
     };
 }

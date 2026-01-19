@@ -1,3 +1,4 @@
+import { User } from "@supabase/supabase-js"
 import { MutableRefObject } from "react"
 
 export interface RowsType {
@@ -157,4 +158,12 @@ export interface PersonMetType {
 
 export interface StatsFiltersType {
     year: string,
+}
+
+export interface UserContextType {
+    user: {user: User, role: string} | null
+    doLogin: (form: FormType) => void
+    doLogout: () => void
+    doSignIn: (form: FormType) => void
+    getUser: () => Promise<void>
 }

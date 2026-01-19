@@ -8,26 +8,27 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import Loader from "../Layout/Loader";
 import { useRouter } from "next/navigation";
-import LoginPage from "./LoginPage";
+import FullPageMsg from "../Layout/FullPageMsg";
+import useUser from "@/Context/User/useUser";
 
 export default function UpdateDatabasePage(){
-    const router = useRouter();
-
     const {
         user,
         doUpdate,
-        doLogout,
-        doLogin
     } = useDatabase();
+
+    const {doLogout} = useUser()
+
+    const router = useRouter();
 
     const {isPending} = useIsLoading();
 
-    if (!user) return <LoginPage doLogin={doLogin}/>
+    if (user?.role !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
 
     return (
         <div className="flex flex-col grow justify-center gap-10 items-center">
             <h1 className="font-bold text-5xl">Update database</h1>
-            <div className="flex justify-center gap-10 items-center">
+            <div className="flex justify-center gap-10 items-center lg:flex-row flex-col">
                 <Button
                 onPress={() => doUpdate("continents")}
                 isDisabled={isPending}

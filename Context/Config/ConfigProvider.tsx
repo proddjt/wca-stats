@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ConfigContext } from "./ConfigContext";
 import { EventType, NationType } from "@/types";
 import { showToast } from "@/lib/Toast";

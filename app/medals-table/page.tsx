@@ -1,4 +1,4 @@
-import MedalTablePage from "@/components/Medal Table/MedalTablePage";
+import MedalTablePage from "@/components/Medals Table/MedalTablePage";
 
 export default function MedalTable(){
     return (

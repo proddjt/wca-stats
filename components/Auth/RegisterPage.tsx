@@ -3,21 +3,23 @@
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import useDatabase from "./hooks/useDatabase";
 import { FormType } from "@/types";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import Loader from "../Layout/Loader";
+import useUser from "@/Context/User/useUser";
 
-export default function LoginPage({doLogin} : {doLogin: (form: FormType) => void}){
+export default function RegisterPage(){
     const [form, setForm] = useState<FormType>({email: "", password: ""});
 
     const {isPending} = useIsLoading();
+
+    const {doLogin} = useUser();
 
     if (isPending) return <Loader />
 
     return (
         <div className="flex flex-col justify-center items-center gap-5 grow">
-            <h1 className="font-bold text-5xl">Login for update</h1>
+            <h1 className="font-bold text-3xl text-center">Create your account</h1>
             <Input
             label="Email"
             placeholder="Email"
@@ -41,7 +43,7 @@ export default function LoginPage({doLogin} : {doLogin: (form: FormType) => void
             onPress={() => doLogin(form)}
             color="primary"
             >
-                Login
+                Create account
             </Button>
         </div>
     )

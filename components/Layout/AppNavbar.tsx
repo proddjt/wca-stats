@@ -52,8 +52,8 @@ export default function AppNavbar(){
             Home
           </Link>
         </NavbarItem>
-        <NavbarItem isActive={pathname === "/medal-table"}>
-          <Link color={pathname === "/medal-table" ? "warning" : "foreground"} href="/medal-table">
+        <NavbarItem isActive={pathname === "/medals-table"}>
+          <Link color={pathname === "/medals-table" ? "warning" : "foreground"} href="/medals-table">
             Medals Table
           </Link>
         </NavbarItem>
@@ -74,8 +74,8 @@ export default function AppNavbar(){
               Home
             </Link>
           </NavbarMenuItem>
-          <NavbarMenuItem isActive={pathname === "/medal-table"}>
-          <Link color={pathname === "/medal-table" ? "warning" : "foreground"} href="/medal-table" onClick={() => setIsMenuOpen(false)}>
+          <NavbarMenuItem isActive={pathname === "/medals-table"}>
+          <Link color={pathname === "/medals-table" ? "warning" : "foreground"} href="/medals-table" onClick={() => setIsMenuOpen(false)}>
             Medals Table
           </Link>
         </NavbarMenuItem>
