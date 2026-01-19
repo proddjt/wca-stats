@@ -7,9 +7,6 @@ export function checkId(id: string) {
     return pattern.test(value);
 }
 
-
-const int_cities = [{en: "Rome", it: "Roma"}, {en: "Milan", it: "Milano"}, {en: "Turin", it: "Torino"}, {en: "Naples", it: "Napoli"}, {en: "Genoa", it: "Genova"}, {en: "Florence", it: "Firenze"}]
-
 export function parseString(input: string) {
     if (typeof input !== "string") return "";
 
