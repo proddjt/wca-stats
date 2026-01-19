@@ -145,7 +145,7 @@ export default function PersonStatistics({
                 />
             </Tabs>
 
-            {getSection(sectionSelected, {person, regions, int_cities, ita_cities})}
+            {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters})}
             
             <p className="text-xs italic text-gray-400 pb-1">(*) Il numero di regioni e di città potrebbe essere leggermente inesatto in alcuni casi, poichè la WCA non fornisce dati riguardanti la sede in cui si ha partecipato in una gara con multiple venues.</p>
             <p className="text-xs italic text-gray-400">(**) Se all'interno della lista delle regioni dovesse apparire una dicitura del tipo "Roma non trovata nell'elenco", si prega di contattare lo sviluppatore per comunicare il nome della città non riconosciuta e sistemare il bug.</p>

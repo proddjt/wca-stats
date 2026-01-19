@@ -105,18 +105,18 @@ export default function useStats(){
                 }
                 person_data.time_passed = totals;
                 setLoadingValue(50);
-
+                
                 // LAST PODIUMS
                 const { data, error } = await supabase
                 .rpc("get_last_podiums", {
                     wca_id: person_data.id,
                     comp_ids: [
-                        ...person_data.championshipIds.filter((c: string) => {
+                        ...person_data.championshipIds.filter((c: string) => 
                             filters.year === "all" ? true : c.slice(-4) === filters.year
-                        }),
-                        ...person_data.competitionIds.filter((c: string) => {
+                        ),
+                        ...person_data.competitionIds.filter((c: string) => 
                             filters.year === "all" ? true : c.slice(-4) === filters.year
-                        })
+                        )
                     ]
                 })
                 if (error) throw error
