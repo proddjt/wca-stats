@@ -137,7 +137,6 @@ export default function MedalTablePage() {
         sortDescriptor={{column: filters.col_order, direction: filters.ascending ? "ascending" : "descending"}}
         onSortChange={(d) => {
           if (isPending) return
-          console.log(d)
           handleFiltersChange(d.column.toString(), "col_order", d.direction === "ascending")
         }}
         >

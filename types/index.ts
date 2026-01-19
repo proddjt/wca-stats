@@ -128,7 +128,12 @@ export interface PersonType {
         } | any[]
     },
     time_passed: TimePassedType,
-    people_met: PersonMetType[],
+    people_met: {
+        page: number,
+        page_size: number,
+        total: number,
+        results: PersonMetType[]
+    },
     delegates_met: PersonMetType[],
     results: ResultType,
     img?: string,

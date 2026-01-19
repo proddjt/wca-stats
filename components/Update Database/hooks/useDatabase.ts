@@ -127,7 +127,6 @@ export default function useDatabase () {
                     .from("competitions")
                     .upsert(competitions, { onConflict: "id" });
                     if (error){
-                        console.log(error, competitions);
                         throw error.message
                     }
                 } catch (error) {
@@ -156,7 +155,6 @@ export default function useDatabase () {
                     .from("persons")
                     .upsert(persons, { onConflict: "wca_id" });
                     if (error){
-                        console.log(error, persons);
                         throw error.message
                     }
                 } catch (error) {

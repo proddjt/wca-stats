@@ -39,7 +39,8 @@ export default function PersonStatistics({
     ita_cities,
     filters,
     resetPerson,
-    handleFiltersChange
+    handleFiltersChange,
+    calculatePeopleMet
 } : {
     person: PersonType,
     regions: string[] | undefined,
@@ -47,7 +48,8 @@ export default function PersonStatistics({
     ita_cities: {city: string, region: string}[] | undefined,
     filters: StatsFiltersType,
     resetPerson: () => void,
-    handleFiltersChange: (value: string | string[] | [], key: string) => void
+    handleFiltersChange: (value: string | string[] | [], key: string) => void,
+    calculatePeopleMet: (id: string, page: number, pageSize: number) => Promise<any>
 }){ 
     const [sectionSelected, setSectionSelected] = useState<string>("results");
 
@@ -145,7 +147,7 @@ export default function PersonStatistics({
                 />
             </Tabs>
 
-            {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters})}
+            {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters, calculatePeopleMet})}
             
             <p className="text-xs italic text-gray-400 pb-1">(*) Il numero di regioni e di città potrebbe essere leggermente inesatto in alcuni casi, poichè la WCA non fornisce dati riguardanti la sede in cui si ha partecipato in una gara con multiple venues.</p>
             <p className="text-xs italic text-gray-400">(**) Se all'interno della lista delle regioni dovesse apparire una dicitura del tipo "Roma non trovata nell'elenco", si prega di contattare lo sviluppatore per comunicare il nome della città non riconosciuta e sistemare il bug.</p>

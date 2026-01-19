@@ -11,20 +11,28 @@ import { Pagination } from "@heroui/pagination";
 export default function StatTable({
     mode,
     data,
-    paginated
+    paginated,
+    page_number = 1,
+    pageSize = 50,
+    total,
+    handlePagination
 } : {
     mode: string,
     data: {rows: any[], cols: any[]},
     paginated?: boolean
+    page_number?: number
+    pageSize?: number
+    total?: number,
+    handlePagination?: (page: number, pageSize: number) => void
 }){
     const {nations, events} = useConfig();
 
-    const [page, setPage] = useState(1);
-    const rowsPerPage = 50;
-    const pages = Math.ceil(data.rows.length / rowsPerPage);
+    const [page, setPage] = useState(page_number);
+    const rowsPerPage = pageSize;
+    const pages = Math.ceil((total || data.rows.length) / rowsPerPage);
 
     let items
-    if(paginated){
+    if(paginated && !total){
         items = useMemo(() => {
             const start = (page - 1) * rowsPerPage;
             const end = start + rowsPerPage;
@@ -32,16 +40,13 @@ export default function StatTable({
             return data.rows.slice(start, end);
         }, [page, data.rows]);
     }
-
-    console.log(data.rows);
-    
     
     return (
         <Table
         aria-label="stats-table"
         isCompact
         isStriped
-        key={mode}
+        key={page_number || mode}
         className="mt-2"
         classNames={{
           wrapper: "max-h-[50vh] lg:max-h-[60vh] w-[90vw] max-w-[90vw] lg:w-[65vw] lg:max-w-[65vw] overflow-auto",
@@ -58,7 +63,10 @@ export default function StatTable({
                 color="warning"
                 page={page}
                 total={pages}
-                onChange={(page) => setPage(page)}
+                onChange={(page) => {
+                    if (handlePagination) return handlePagination(page, rowsPerPage)
+                    return setPage(page)
+                }}
               />
             </div>
           ) : null
@@ -68,7 +76,7 @@ export default function StatTable({
             <TableHeader columns={data?.cols||[]}>
                 {(column) => <TableColumn key={column.key} allowsSorting={column.sortable}>{column.label}</TableColumn>}
             </TableHeader>
-            <TableBody items={paginated ? items :data?.rows||[]} emptyContent="No data available">
+            <TableBody items={paginated && !total ? items : data.rows ||[]} emptyContent="No data available">
                 {(item) => (
                 <TableRow key={item.key||item.city||item.country}>
                     {(columnKey) => <TableCell>

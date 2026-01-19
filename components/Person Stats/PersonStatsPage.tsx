@@ -19,7 +19,8 @@ export default function PersonStatsPage(){
         loadingValue,
         filters,
         resetPerson,
-        handleFiltersChange
+        handleFiltersChange,
+        calculatePeopleMet
     } = useStats(id.current);
 
     const {isPending} = useIsLoading();
@@ -36,6 +37,7 @@ export default function PersonStatsPage(){
             resetPerson={resetPerson}
             handleFiltersChange={handleFiltersChange}
             filters={filters}
+            calculatePeopleMet={calculatePeopleMet}
             />
         </div>
     )
