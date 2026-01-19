@@ -7,7 +7,6 @@ import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import Navbar from "@/components/Layout/AppNavbar";
 import {ToastProvider} from "@heroui/toast"
 import AppNavbar from "@/components/Layout/AppNavbar";
 import Footer from "@/components/Layout/Footer";

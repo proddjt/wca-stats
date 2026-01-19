@@ -9,8 +9,6 @@ import { PersonType } from "@/types";
 import { decodeMBF, parseString, safe } from "@/Utils/functions";
 import { it_cities } from "@/Utils/it_cities";
 
-const LOADING_FUNC = 8
-
 export default function useStats(){
     const [person, setPerson] = useState<PersonType>();
     const [loadingValue, setLoadingValue] = useState(0);
@@ -31,7 +29,7 @@ export default function useStats(){
             if (person_error) throw person_error
             if (!response.ok) throw {code: response.status}
             const person_data = await response.json();
-            setLoadingValue(12.5);
+            setLoadingValue(10);
 
             if (person_data){
 
@@ -41,7 +39,7 @@ export default function useStats(){
                 if (!response.ok) throw {code: response.status}
                 const img_data = await response.json();
                 if (img_data.person.avatar.status === "approved" && img_data.person.avatar.url && !img_data.person.avatar.is_default) person_data.img = img_data.person.avatar.url
-                setLoadingValue(25);
+                setLoadingValue(20);
 
                 // REGION
                 const { data: region_data, error: region_error } = await supabase
@@ -51,7 +49,7 @@ export default function useStats(){
                 if (region_error) throw region_error
                 if (region_data) person_data.region = region_data[0].region
                 else person_data.region = ""
-                setLoadingValue(37.5);
+                setLoadingValue(30);
 
                 // MEDALS BY COUNTRY
                 const { data: medals_data, error: medals_error } = await supabase
@@ -60,7 +58,7 @@ export default function useStats(){
                 })
                 if (medals_error) throw medals_error
                 if (medals_data) person_data.medals_by_country = medals_data
-                setLoadingValue(50);
+                setLoadingValue(40);
 
                 // TIME PASSED SOLVING
                 const totals: Record<string, number> = {};
@@ -99,7 +97,7 @@ export default function useStats(){
                     }
                 }
                 person_data.time_passed = totals;
-                setLoadingValue(62.5);
+                setLoadingValue(50);
 
                 // LAST PODIUMS
                 const { data, error } = await supabase
@@ -109,7 +107,21 @@ export default function useStats(){
                 })
                 if (error) throw error
                 if (data) person_data.last_medals = data[0]
-                setLoadingValue(75);
+                setLoadingValue(60);
+
+                // PEOPLE MET
+                const { data: people_data, error: people_error } = await supabase
+                .rpc("get_related_persons", {wca_id_input: person_data.id})
+                if (people_error) throw people_error
+                if (people_data) person_data.people_met = people_data
+                setLoadingValue(70);
+
+                // DELEGATES MET
+                const { data: delegate_data, error: delegate_error } = await supabase
+                .rpc("get_delegates", {wca_id_input: person_data.id})
+                if (delegate_error) throw delegate_error
+                if (delegate_data) person_data.delegates_met = delegate_data.filter((delegate: PersonType) => delegate.name !== person_data.name)
+                setLoadingValue(80);
 
                 console.log(person_data);
 
@@ -135,7 +147,7 @@ export default function useStats(){
                         if (!int_arr.some(c => c.city === city)) int_cities.current.push({city: city, country: data.country})
                     })
                 );
-                setLoadingValue(87.5);
+                setLoadingValue(90);
 
                 // REGIONS
                 regions.current = ita_cities.current.map(c => c.region)

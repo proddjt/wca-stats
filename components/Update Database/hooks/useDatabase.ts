@@ -149,7 +149,7 @@ export default function useDatabase () {
                     end_date: c.date.till,
                     year: c.date.from.slice(0, 4),
                     delegates: [
-                        c.wcaDelegates.map((d: any) => d.name)
+                        ...c.wcaDelegates.map((d: any) => d.name)
                     ],
                     last_update: new Date().toISOString()
                 }))
@@ -179,6 +179,7 @@ export default function useDatabase () {
                     wca_id: p.id,
                     name: p.name,
                     country_id: p.country,
+                    comp_ids: [...p.competitionIds, ...p.championshipIds],
                     last_update: new Date().toISOString()
                 }))
                 try {

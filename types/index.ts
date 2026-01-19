@@ -126,15 +126,30 @@ export interface PersonType {
         } | any[]
     },
     time_passed: TimePassedType,
+    people_met: PersonMetType[],
+    delegates_met: PersonMetType[],
     results: ResultType,
     img?: string,
     last_medals: {
         last_pos1_date: string,
         first_pos1_date: string,
+        first_pos1_comp: string,
+        last_pos1_comp: string,
         last_pos2_date: string,
         first_pos2_date: string,
+        first_pos2_comp: string,
+        last_pos2_comp: string,
         last_pos3_date: string,
         first_pos3_date: string,
+        first_pos3_comp: string,
+        last_pos3_comp: string,
         first_comp: string
     }
+}
+
+export interface PersonMetType {
+    name: string,
+    wca_id: string,
+    comp_ids: string[]
+    country: string
 }

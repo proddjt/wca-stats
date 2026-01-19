@@ -106,7 +106,6 @@ export function secondDiffToHuman(totalSeconds: number) {
     return parts.join(", ");
 }
 
-
 const normalized_cities = [
     {original: "Bucuresti", normalized: "Bucharest"},
     {original: "Rome", normalized: "Roma"},
