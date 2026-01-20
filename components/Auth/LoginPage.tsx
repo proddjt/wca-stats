@@ -15,42 +15,42 @@ export default function LoginPage(){
 
     const {isPending} = useIsLoading();
 
-    // const {doLogin} = useUser();
-
-    const doLogin = (arg: any) => {}
+    const {doLogin} = useUser();
 
     if (isPending) return <Loader />
 
     return (
-        <div className="flex flex-col justify-center items-center gap-5 grow lg:w-1/2">
-            <h1 className="font-bold text-3xl text-center">Login into your account</h1>
-            <Input
-            label="Email"
-            placeholder="Email"
-            type="email"
-            variant="bordered"
-            fullWidth={false}
-            className="w-3/4"
-            value={form.email}
-            onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
-            onChange={(e) => setForm(prev => ({...prev, email: e.target.value}))}
-            />
-            <PasswordInput
-            label="Password"
-            placeholder="Password"
-            variant="bordered"
-            className="w-3/4"
-            value={form.password}
-            onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))}
-            onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
-            />
-            <Button
-            onPress={() => doLogin(form)}
-            color="primary"
-            >
-                Login
-            </Button>
-            <p className="text-sm">or <Link className="text-sm" href="/register">create your account</Link></p>
+        <div className="grow flex flex-col justify-center items-center">
+            <div className="flex flex-col justify-center items-center gap-5 grow lg:w-1/5">
+                <h1 className="font-bold text-3xl text-center">Login into your account</h1>
+                <Input
+                label="Email"
+                placeholder="Email"
+                type="email"
+                variant="bordered"
+                fullWidth={false}
+                className="w-full"
+                value={form.email}
+                onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
+                onChange={(e) => setForm(prev => ({...prev, email: e.target.value}))}
+                />
+                <PasswordInput
+                label="Password"
+                placeholder="Password"
+                variant="bordered"
+                className="w-full"
+                value={form.password}
+                onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))}
+                onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
+                />
+                <Button
+                onPress={() => doLogin(form)}
+                color="primary"
+                >
+                    Login
+                </Button>
+                <p className="text-sm">or <Link className="text-sm" href="/register">create your account</Link></p>
+            </div>
         </div>
     )
 }
