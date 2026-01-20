@@ -56,26 +56,37 @@ export default function AppNavbar(){
       </NavbarContent>
       
       <NavbarContent className="hidden md:flex gap-4" justify="center">
+
         <NavbarItem isActive={pathname === "/"}>
           <Link color={pathname === "/" ? "warning" : "foreground"} href="/">
             Home
           </Link>
         </NavbarItem>
+
         <NavbarItem isActive={pathname === "/medals-table"}>
           <Link color={pathname === "/medals-table" ? "warning" : "foreground"} href="/medals-table">
             Medals Table
           </Link>
         </NavbarItem>
+
         <NavbarItem isActive={pathname === "/person-stats"}>
           <Link color={pathname === "/person-stats" ? "warning" : "foreground"} href="/person-stats">
             Person Stats
           </Link>
         </NavbarItem>
+
+        <NavbarItem isActive={pathname === "/personal-diary"}>
+          <Link color={pathname === "/personal-diary" ? "warning" : "foreground"} href="/personal-diary" onClick={() => setIsMenuOpen(false)}>
+            Personal Diary
+          </Link>
+        </NavbarItem>
+
         <NavbarItem>
           <Link color="secondary" isExternal showAnchorIcon href="https://wcaquiz.xyz" onClick={() => setIsMenuOpen(false)}>
             Check out WCA Quiz
           </Link>
         </NavbarItem>
+
         {
           user ?
           <NavbarItem>
@@ -83,7 +94,8 @@ export default function AppNavbar(){
             <Avatar showFallback name={user.user.email} src="https://images.unsplash.com/broken" />
               {user.user.email}
             </Link>
-          </NavbarItem> :
+          </NavbarItem>
+          :
           <NavbarItem>
             <Link onClick={() => router.push("/login")}>
               Login
@@ -94,27 +106,39 @@ export default function AppNavbar(){
           </NavbarItem>
         }
       </NavbarContent>
+
       <NavbarMenu>
+
           <NavbarMenuItem isActive={pathname === "/"}>
             <Link color={pathname === "/" ? "warning" : "foreground"} href="/" onClick={() => setIsMenuOpen(false)}>
               Home
             </Link>
           </NavbarMenuItem>
+
           <NavbarMenuItem isActive={pathname === "/medals-table"}>
           <Link color={pathname === "/medals-table" ? "warning" : "foreground"} href="/medals-table" onClick={() => setIsMenuOpen(false)}>
             Medals Table
           </Link>
         </NavbarMenuItem>
+
         <NavbarMenuItem isActive={pathname === "/person-stats"}>
           <Link color={pathname === "/person-stats" ? "warning" : "foreground"} href="/person-stats" onClick={() => setIsMenuOpen(false)}>
             Person Stats
           </Link>
         </NavbarMenuItem>
+
+        <NavbarMenuItem isActive={pathname === "/personal-diary"}>
+          <Link color={pathname === "/personal-diary" ? "warning" : "foreground"} href="/personal-diary" onClick={() => setIsMenuOpen(false)}>
+            Personal Diary
+          </Link>
+        </NavbarMenuItem>
+
         <NavbarMenuItem>
           <Link color="secondary" isExternal showAnchorIcon href="https://wcaquiz.xyz" onClick={() => setIsMenuOpen(false)}>
             Check out WCA Quiz
           </Link>
         </NavbarMenuItem>
+
         {
           user ?
           <>
@@ -124,6 +148,7 @@ export default function AppNavbar(){
               Your account
             </Link>
           </NavbarMenuItem>
+          
           <NavbarMenuItem aria-label="logout">
             <Link onClick={() => {doLogout(); router.push("/"); setIsMenuOpen(false)}} className="flex gap-2">
               Logout

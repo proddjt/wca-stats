@@ -4,6 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { showToast } from "@/lib/Toast";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "../IsLoading/useIsLoading";
+import { useRouter } from "next/navigation";
 
 export default function UserProvider({ children } : { children: React.ReactNode }) {
     const [user, setUser] = useState<{user: User, role: string} | null>(null);
@@ -11,6 +12,7 @@ export default function UserProvider({ children } : { children: React.ReactNode 
     const {showLoader} = useIsLoading();
 
     const supabase = createClient();
+    const router = useRouter();
 
     async function login({email, password}: {email: string, password: string}){
         try {
@@ -21,6 +23,7 @@ export default function UserProvider({ children } : { children: React.ReactNode 
             if (error) throw error.message
             await getUser()
             showToast("Success!", "User logged in", "success")
+            router.push("/")
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
         }

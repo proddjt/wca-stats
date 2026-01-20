@@ -141,3 +141,35 @@ export function decodeMBF(value: number): number | null {
 
     return null; // formato non valido
 }
+
+export const formatTime = (value: string): string => {
+    if (!value) return "";
+
+    let v = value;
+
+    const cc = v.slice(-2);
+    
+    v = v.slice(0, -2);
+
+    if (!v) return `${cc}`;
+
+    const ss = v.slice(-2);
+    v = v.slice(0, -2);
+
+    if (!v) return `${ss}.${cc}`;
+
+    const mm = v.slice(-2);
+    v = v.slice(0, -2);
+
+    if (!v) return `${mm}:${ss}.${cc}`;
+
+    const hh = v;
+
+    return `${hh}:${mm}:${ss}.${cc}`;
+};
+
+
+export const reverseFormatTime = (value: string): string => {
+    return value.replace(/\D/g, "");
+};
+

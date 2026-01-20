@@ -57,7 +57,7 @@ export default function RegisterPage(){
             >
                 Create account
             </Button>
-            <p className="text-sm">or <Link className="text-sm" href="/register">log into your account</Link></p>
+            <p className="text-sm">or <Link className="text-sm" href="/login">log into your account</Link></p>
         </div>
     )
 }

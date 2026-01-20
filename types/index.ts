@@ -177,3 +177,12 @@ export interface UserContextType {
     doSignIn: (form: FormType) => void
     getUser: () => Promise<void>
 }
+
+export interface ResultInputType {
+    event?: string,
+    result_type?: string,
+    result?: string[],
+    date?: string
+    scrambles?: string[]
+    notes?: string
+}
