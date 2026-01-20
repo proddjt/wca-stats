@@ -34,11 +34,11 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/medals-table') &&
-    !request.nextUrl.pathname.startsWith('/') &&
-    !request.nextUrl.pathname.startsWith('/person-stats') &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/register')
+    request.nextUrl.pathname !== '/medals-table' &&
+    request.nextUrl.pathname !== '/' &&
+    request.nextUrl.pathname !== '/person-stats' &&
+    request.nextUrl.pathname !== '/login' &&
+    request.nextUrl.pathname !== '/register'
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
@@ -48,8 +48,8 @@ export async function updateSession(request: NextRequest) {
 
   if (
     user && (
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/register'))
+    request.nextUrl.pathname === '/login' ||
+    request.nextUrl.pathname === '/register')
   ) {
     const url = request.nextUrl.clone()
     url.pathname = '/'

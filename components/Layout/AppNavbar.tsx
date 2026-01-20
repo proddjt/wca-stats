@@ -55,7 +55,7 @@ export default function AppNavbar(){
         </NavbarBrand>
       </NavbarContent>
       
-      <NavbarContent className="hidden md:flex gap-4" justify="center">
+      <NavbarContent className="hidden md:flex gap-5" justify="center">
 
         <NavbarItem isActive={pathname === "/"}>
           <Link color={pathname === "/" ? "warning" : "foreground"} href="/">
@@ -96,11 +96,11 @@ export default function AppNavbar(){
             </Link>
           </NavbarItem>
           :
-          <NavbarItem>
-            <Link onClick={() => router.push("/login")}>
+          <NavbarItem className="flex items-center gap-2">
+            <Link onClick={() => router.push("/login")} className="cursor-pointer">
               Login
             </Link>
-            <Link onClick={() => router.push("/register")}>
+            <Link onClick={() => router.push("/register")} className="cursor-pointer">
               Register
             </Link>
           </NavbarItem>

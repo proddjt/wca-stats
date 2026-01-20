@@ -179,9 +179,9 @@ export interface UserContextType {
 }
 
 export interface ResultInputType {
-    event?: string,
-    result_type?: string,
-    result?: string[],
+    event: string,
+    result_type: string,
+    result: string[] | [],
     date?: string
     scrambles?: string[]
     notes?: string

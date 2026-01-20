@@ -144,6 +144,7 @@ export function decodeMBF(value: number): number | null {
 
 export const formatTime = (value: string): string => {
     if (!value) return "";
+    if (value === "/") return "DNF"
 
     let v = value;
 
@@ -172,4 +173,94 @@ export const formatTime = (value: string): string => {
 export const reverseFormatTime = (value: string): string => {
     return value.replace(/\D/g, "");
 };
+
+export const normalizeRawTime = (value: string): string => {
+    if (!value) return "";
+
+    if (value === "/") return value
+
+    let v = value;
+
+    // estraggo da destra verso sinistra
+    const cc = Number(v.slice(-2));
+    v = v.slice(0, -2);
+
+    const ss = v ? Number(v.slice(-2)) : 0;
+    v = v.slice(0, -2);
+
+    const mm = v ? Number(v.slice(-2)) : 0;
+    v = v.slice(0, -2);
+
+    const hh = v ? Number(v) : 0;
+
+    // NORMALIZZAZIONE
+    let totalCenti = cc + ss * 100 + mm * 6000 + hh * 360000;
+
+    // ricostruzione
+    const hours = Math.floor(totalCenti / 360000);
+    totalCenti %= 360000;
+
+    const minutes = Math.floor(totalCenti / 6000);
+    totalCenti %= 6000;
+
+    const seconds = Math.floor(totalCenti / 100);
+    const centi = totalCenti % 100;
+
+    // ricompongo SENZA formattazione
+    const hhStr = hours > 0 ? String(hours) : "";
+    const mmStr = hours > 0 ? String(minutes).padStart(2, "0") : (minutes > 0 ? String(minutes) : "");
+    const ssStr = (hours > 0 || minutes > 0) ? String(seconds).padStart(2, "0") : (seconds > 0 ? String(seconds) : "0");
+    const ccStr = String(centi).padStart(2, "0");
+
+    return `${hhStr}${mmStr}${ssStr}${ccStr}`;
+};
+
+
+export const getMean = (arr: string[]) => {
+    const okResults = arr.filter(r => r !== "/" && r !== "0").map(r => {
+        const cc = Number(r.slice(-2));
+        r = r.slice(0, -2);
+
+        const ss = r ? Number(r.slice(-2)) : 0;
+        r = r.slice(0, -2);
+
+        const mm = r ? Number(r.slice(-2)) : 0;
+        r = r.slice(0, -2);
+
+        const hh = r ? Number(r) : 0;
+
+        return (hh * 360000 + mm * 6000 + ss * 100 + cc) / 100
+    })
+    if (okResults.length < 3) return "DNF"
+
+    const sum = okResults.reduce((a, b) => a + b, 0)
+    return (sum / okResults.length).toFixed(2)
+}
+
+export const getAvg = (arr: string[]) => {
+    const okResults = arr
+    .filter(r => r !== "/" && r !== "0")
+    .map(r => {
+        const cc = Number(r.slice(-2));
+        r = r.slice(0, -2);
+
+        const ss = r ? Number(r.slice(-2)) : 0;
+        r = r.slice(0, -2);
+
+        const mm = r ? Number(r.slice(-2)) : 0;
+        r = r.slice(0, -2);
+
+        const hh = r ? Number(r) : 0;
+
+        return (hh * 360000 + mm * 6000 + ss * 100 + cc) / 100
+    })
+    .sort((a, b) => a - b)
+    .slice(0, 1)
+    .slice(-1)
+    
+    if (!okResults || okResults.length < 3) return "DNF"
+
+    const sum = okResults.reduce((a, b) => a + b, 0)
+    return (sum / okResults.length).toFixed(2)
+}
 

@@ -52,7 +52,7 @@ export default function LocationSection({
         <div className="py-5">
             <p className="text-lg">This person competed in:</p>
             <p className="text-lg">{int_cities?.length || 0} total {int_cities?.length === 1 ? "city" : "cities"}*</p>
-            <p className="text-lg">{(int_cities?.length || 0) - (ita_cities?.length || 0)} international {(int_cities?.length || 0) - (ita_cities?.length || 0) === 1 ? "city" : "cities"}</p>
+            <p className="text-lg">{(int_cities?.length || 0) - (ita_cities?.length || 0)} non-Italian {(int_cities?.length || 0) - (ita_cities?.length || 0) === 1 ? "city" : "cities"}</p>
             <p className="text-lg pb-5">{ita_cities?.length} Italian {ita_cities?.length === 1 ? "city" : "cities"}</p>
             <Tabs
             aria-label="Table mode"
@@ -65,7 +65,7 @@ export default function LocationSection({
                 title={
                     <div className="flex items-center space-x-2">
                         <BiWorld size={15}/>
-                        <span>International</span>
+                        <span>Non-Italian</span>
                     </div>
                 }
                 className="font-bold"

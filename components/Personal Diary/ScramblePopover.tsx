@@ -11,11 +11,16 @@ export default function ScramblePopover({
     index: number,
     changeScramble: (value: string, index: number) => void
 }) {
+    const checkScramble = (scramble: string) => {
+
+        if (/^[BLRDUF2' ]*$/.test(scramble)) changeScramble(scramble, index);
+    }
+
     return (
         <Popover
         showArrow
         offset={10}
-        placement="bottom"
+        placement="top"
         backdrop="opaque"
         >
             <PopoverTrigger>
@@ -27,11 +32,14 @@ export default function ScramblePopover({
                     Scramble
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[240px]">
+            <PopoverContent className="p-0">
                 <Input
                 placeholder="Scramble (optional)"
                 value={scramble}
-                onChange={(e) => changeScramble(e.target.value, index)}
+                isClearable
+                size="sm"
+                onClear={() => changeScramble("", index)}
+                onChange={(e) => checkScramble(e.target.value.toUpperCase())}
                 />
             </PopoverContent>
         </Popover>

@@ -15,12 +15,14 @@ export default function RegisterPage(){
 
     const {isPending} = useIsLoading();
 
-    const {doSignIn} = useUser();
+    // const {doSignIn} = useUser();
+
+    const doSignIn = (arg: any) => {}
 
     if (isPending) return <Loader />
 
     return (
-        <div className="flex flex-col justify-center items-center gap-5 grow">
+        <div className="flex flex-col justify-center items-center gap-5 grow lg:w-1/2">
             <h1 className="font-bold text-3xl text-center">Create your account</h1>
             <Input
             label="Email"
