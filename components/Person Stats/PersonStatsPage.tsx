@@ -18,6 +18,7 @@ export default function PersonStatsPage(){
         ita_cities,
         loadingValue,
         filters,
+        peopleMet,
         resetPerson,
         handleFiltersChange,
         calculatePeopleMet
@@ -38,6 +39,7 @@ export default function PersonStatsPage(){
             handleFiltersChange={handleFiltersChange}
             filters={filters}
             calculatePeopleMet={calculatePeopleMet}
+            peopleMet={peopleMet}
             />
         </div>
     )

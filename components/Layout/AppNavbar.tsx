@@ -2,16 +2,20 @@
 
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle} from "@heroui/navbar";
 import {Link} from "@heroui/link";
-import {Button} from "@heroui/button";
+import {Avatar} from "@heroui/avatar";
 import {Image} from "@heroui/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import Logo from "@/public/logo_little.png"
 import { useState } from "react";
+import useUser from "@/Context/User/useUser";
 
 export default function AppNavbar(){
   const pathname = usePathname();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const {user, doLogout} = useUser();
   
   return (
     <Navbar
@@ -33,6 +37,11 @@ export default function AppNavbar(){
         "data-[active=true]:after:rounded-[2px]",
         "data-[active=true]:after:bg-warning",
       ],
+      menu: [
+        "flex",
+        "flex-col",
+        "justify-start",
+      ]
     }}
     >
       <NavbarContent>
@@ -67,6 +76,23 @@ export default function AppNavbar(){
             Check out WCA Quiz
           </Link>
         </NavbarItem>
+        {
+          user ?
+          <NavbarItem>
+            <Link onClick={() => {}}>
+            <Avatar showFallback name={user.user.email} src="https://images.unsplash.com/broken" />
+              {user.user.email}
+            </Link>
+          </NavbarItem> :
+          <NavbarItem>
+            <Link onClick={() => router.push("/login")}>
+              Login
+            </Link>
+            <Link onClick={() => router.push("/register")}>
+              Register
+            </Link>
+          </NavbarItem>
+        }
       </NavbarContent>
       <NavbarMenu>
           <NavbarMenuItem isActive={pathname === "/"}>
@@ -89,6 +115,32 @@ export default function AppNavbar(){
             Check out WCA Quiz
           </Link>
         </NavbarMenuItem>
+        {
+          user ?
+          <>
+          <NavbarMenuItem>
+            <Link onClick={() => {}} className="flex gap-2">
+              <Avatar showFallback size="sm" src="https://images.unsplash.com/broken" />
+              Your account
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem aria-label="logout">
+            <Link onClick={() => {doLogout(); router.push("/"); setIsMenuOpen(false)}} className="flex gap-2">
+              Logout
+            </Link>
+          </NavbarMenuItem>
+          </>
+          :
+          <NavbarMenuItem className="flex gap-2" aria-label="login">
+            <Link onClick={() => {router.push("/login"); setIsMenuOpen(false)}}>
+              Login
+            </Link>
+            
+            <Link onClick={() => {router.push("/register"); setIsMenuOpen(false)}}>
+              Register
+            </Link>
+          </NavbarMenuItem>
+        }
       </NavbarMenu>
     </Navbar>
   )

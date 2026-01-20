@@ -6,7 +6,7 @@ import { Chip } from "@heroui/chip"
 import Flag from "react-world-flags"
 import { CircleFlag } from "react-circle-flags";
 
-import { PersonType, StatsFiltersType } from "@/types"
+import { PersonMetType, PersonType, StatsFiltersType } from "@/types"
 
 import { TbArrowBackUp } from "react-icons/tb";
 import { BiSolidTimer } from "react-icons/bi";
@@ -15,7 +15,7 @@ import { BsClipboardDataFill } from "react-icons/bs";
 
 import { regions_icon } from "@/Utils/regions_icon";
 
-import LocationSection from "./hooks/LocationSection";
+import LocationSection from "./LocationSection";
 import ResultSection from "./ResultSection";
 import CompSection from "./CompSection";
 import { Select, SelectItem } from "@heroui/select";
@@ -38,15 +38,17 @@ export default function PersonStatistics({
     int_cities,
     ita_cities,
     filters,
+    peopleMet,
     resetPerson,
     handleFiltersChange,
-    calculatePeopleMet
+    calculatePeopleMet,
 } : {
     person: PersonType,
     regions: string[] | undefined,
     int_cities: {city: string, country: string}[] | undefined,
     ita_cities: {city: string, region: string}[] | undefined,
     filters: StatsFiltersType,
+    peopleMet: PersonMetType | undefined,
     resetPerson: () => void,
     handleFiltersChange: (value: string | string[] | [], key: string) => void,
     calculatePeopleMet: (id: string, page: number, pageSize: number) => Promise<any>
@@ -93,7 +95,7 @@ export default function PersonStatistics({
                 }
             </div>
 
-            <Select
+            {/* <Select
             className="lg:w-1/4 w-full pb-4"
             label="Year"
             placeholder="Select a year"
@@ -107,7 +109,7 @@ export default function PersonStatistics({
             onChange={(e) => handleFiltersChange(e.target.value, "year")}
             >
                 {years.current.sort((a, b) => Number(b.year) - Number(a.year)).map((year) =><SelectItem key={year.year}>{year.year}</SelectItem>)}
-            </Select>
+            </Select> */}
 
             <Tabs
             aria-label="Page section"
@@ -147,7 +149,7 @@ export default function PersonStatistics({
                 />
             </Tabs>
 
-            {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters, calculatePeopleMet})}
+            {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters, peopleMet, calculatePeopleMet})}
             
             <p className="text-xs italic text-gray-400 pb-1">(*) Il numero di regioni e di città potrebbe essere leggermente inesatto in alcuni casi, poichè la WCA non fornisce dati riguardanti la sede in cui si ha partecipato in una gara con multiple venues.</p>
             <p className="text-xs italic text-gray-400">(**) Se all'interno della lista delle regioni dovesse apparire una dicitura del tipo "Roma non trovata nell'elenco", si prega di contattare lo sviluppatore per comunicare il nome della città non riconosciuta e sistemare il bug.</p>

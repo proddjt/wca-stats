@@ -5,13 +5,14 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { createClient } from "@/lib/supabase/client";
 import { showToast } from "@/lib/Toast";
-import { PersonType, StatsFiltersType } from "@/types";
+import { PersonMetType, PersonType, StatsFiltersType } from "@/types";
 import { decodeMBF, parseString, safe } from "@/Utils/functions";
 import { it_cities } from "@/Utils/it_cities";
 import { useRouter } from "next/navigation";
 
 export default function useStats(id: string){
     const [person, setPerson] = useState<PersonType>();
+    const [peopleMet, setPeopleMet] = useState<PersonMetType | undefined>();
     const [filters, setFilters] = useState<StatsFiltersType>({
         year: "all"
     });
@@ -107,7 +108,7 @@ export default function useStats(id: string){
                 setLoadingValue(60);
 
                 // PEOPLE MET
-                person_data.people_met = await calculatePeopleMet(person_data.id, 1, 50);
+                person_data.people_met = calculatePeopleMet(person_data.id, 1, 50);
                 setLoadingValue(70);
 
                 // DELEGATES MET
@@ -138,6 +139,7 @@ export default function useStats(id: string){
 
     function resetPerson(){
         setPerson(undefined)
+        setPeopleMet(undefined)
         setLoadingValue(0)
         regions.current = []
         int_cities.current = []
@@ -185,10 +187,8 @@ export default function useStats(id: string){
             page: page,
             page_size: pageSize
         })
-        console.log(people_data);
-        
         if (people_error) throw people_error
-        if (people_data) return people_data
+        if (people_data) return setPeopleMet(people_data)
     }
 
     async function calculateLastPodiums(person_data: PersonType){
@@ -229,6 +229,7 @@ export default function useStats(id: string){
         int_cities,
         loadingValue,
         filters,
+        peopleMet,
         resetPerson,
         handleFiltersChange,
         calculatePeopleMet

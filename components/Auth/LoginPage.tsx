@@ -7,6 +7,8 @@ import { FormType } from "@/types";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import Loader from "../Layout/Loader";
 import useUser from "@/Context/User/useUser";
+import PasswordInput from "./PasswordInput";
+import { Link } from "@heroui/link";
 
 export default function LoginPage(){
     const [form, setForm] = useState<FormType>({email: "", password: ""});
@@ -26,15 +28,16 @@ export default function LoginPage(){
             type="email"
             variant="bordered"
             fullWidth={false}
+            className="w-3/4"
             value={form.email}
+            onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
             onChange={(e) => setForm(prev => ({...prev, email: e.target.value}))}
             />
-            <Input
+            <PasswordInput
             label="Password"
             placeholder="Password"
-            type="password"
             variant="bordered"
-            fullWidth={false}
+            className="w-3/4"
             value={form.password}
             onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))}
             onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
@@ -45,6 +48,7 @@ export default function LoginPage(){
             >
                 Login
             </Button>
+            <p className="text-sm">or <Link className="text-sm" href="/register">create your account</Link></p>
         </div>
     )
 }

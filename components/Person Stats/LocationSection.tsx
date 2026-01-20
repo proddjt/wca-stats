@@ -4,7 +4,7 @@ import { Tab, Tabs } from "@heroui/tabs";
 import { BiWorld } from "react-icons/bi";
 import Flag from "react-world-flags";
 
-import StatTable from "../StatTable";
+import StatTable from "./StatTable";
 
 import { PersonType } from "@/types";
 

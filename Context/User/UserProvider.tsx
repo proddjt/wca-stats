@@ -78,7 +78,8 @@ export default function UserProvider({ children } : { children: React.ReactNode 
         showLoader(() => login({email, password}))
     }
 
-    function doSignIn({email, password}: {email: string, password: string}){
+    function doSignIn({email, password, password_confirm}: {email: string, password: string, password_confirm?: string}){
+        if (password !== password_confirm) return showToast("Attention!", "Passwords do not match", "danger")
         showLoader(() => signIn({email, password}))
     }
 

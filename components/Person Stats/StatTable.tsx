@@ -12,8 +12,8 @@ export default function StatTable({
     mode,
     data,
     paginated,
-    page_number = 1,
-    pageSize = 50,
+    page_number,
+    pageSize,
     total,
     handlePagination
 } : {
@@ -27,8 +27,8 @@ export default function StatTable({
 }){
     const {nations, events} = useConfig();
 
-    const [page, setPage] = useState(page_number);
-    const rowsPerPage = pageSize;
+    const [page, setPage] = useState(1);
+    const rowsPerPage = pageSize || 50;
     const pages = Math.ceil((total || data.rows.length) / rowsPerPage);
 
     let items
@@ -40,6 +40,8 @@ export default function StatTable({
             return data.rows.slice(start, end);
         }, [page, data.rows]);
     }
+
+    console.log(page_number)
     
     return (
         <Table
@@ -61,7 +63,7 @@ export default function StatTable({
                 showControls
                 showShadow
                 color="warning"
-                page={page}
+                page={page_number || page}
                 total={pages}
                 onChange={(page) => {
                     if (handlePagination) return handlePagination(page, rowsPerPage)
@@ -76,7 +78,10 @@ export default function StatTable({
             <TableHeader columns={data?.cols||[]}>
                 {(column) => <TableColumn key={column.key} allowsSorting={column.sortable}>{column.label}</TableColumn>}
             </TableHeader>
-            <TableBody items={paginated && !total ? items : data.rows ||[]} emptyContent="No data available">
+            <TableBody
+            items={paginated && !total ? items : data.rows ||[]}
+            emptyContent="No data available"
+            >
                 {(item) => (
                 <TableRow key={item.key||item.city||item.country}>
                     {(columnKey) => <TableCell>

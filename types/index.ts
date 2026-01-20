@@ -52,6 +52,7 @@ export interface ConfigContextType {
 export interface FormType {
     email: string,
     password: string
+    password_confirm?: string
 }
 
 export interface NationType {
@@ -128,13 +129,12 @@ export interface PersonType {
         } | any[]
     },
     time_passed: TimePassedType,
-    people_met: {
-        page: number,
-        page_size: number,
-        total: number,
-        results: PersonMetType[]
-    },
-    delegates_met: PersonMetType[],
+    delegates_met: {
+        name: string,
+        wca_id: string,
+        comp_ids: string[]
+        country: string
+    }[],
     results: ResultType,
     img?: string,
     last_medals: {
@@ -155,10 +155,15 @@ export interface PersonType {
 }
 
 export interface PersonMetType {
-    name: string,
-    wca_id: string,
-    comp_ids: string[]
-    country: string
+    page: number,
+    page_size: number,
+    total: number,
+    results: {
+        name: string,
+        wca_id: string,
+        comp_ids: string[]
+        country: string
+    }[]
 }
 
 export interface StatsFiltersType {
