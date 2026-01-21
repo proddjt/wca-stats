@@ -7,6 +7,9 @@ import { FaTableList } from "react-icons/fa6";
 import { MdAddCircle } from "react-icons/md";
 import ResultInsert from "./ResultInsert";
 import ResultsTable from "./ResultsTable";
+import useDiary from "./hooks/useDiary";
+import useIsLoading from "@/Context/IsLoading/useIsLoading";
+import Loader from "../Layout/Loader";
 
 const sections = {
     table: ResultsTable,
@@ -18,9 +21,18 @@ const getSection = (key: string, props?: any) => {
     return <Page {...props}/>
 }
 
-
 export default function PersonalDiaryPage(){
     const [sectionSelected, setSectionSelected] = useState<string>("table");
+
+    const {isPending} = useIsLoading();
+
+    const {
+        results,
+        upsertResult
+    } = useDiary();
+
+    if (isPending) return <Loader />
+
     return (
         <div className="grow flex flex-col justify-center items-center gap-5 p-2">
             <Tabs
@@ -50,7 +62,7 @@ export default function PersonalDiaryPage(){
                 className="font-bold"
                 />
             </Tabs>
-            {getSection(sectionSelected)}
+            {getSection(sectionSelected, {upsertResult, results})}
         </div>
     )
 }

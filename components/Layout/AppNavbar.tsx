@@ -15,7 +15,10 @@ export default function AppNavbar(){
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const {user, doLogout} = useUser();
+  const {
+    user,
+    doLogout
+  } = useUser();
   
   return (
     <Navbar

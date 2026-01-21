@@ -40,8 +40,6 @@ export default function StatTable({
             return data.rows.slice(start, end);
         }, [page, data.rows]);
     }
-
-    console.log(page_number)
     
     return (
         <Table
@@ -51,7 +49,7 @@ export default function StatTable({
         key={page_number || mode}
         className="mt-2"
         classNames={{
-          wrapper: "max-h-[50vh] lg:max-h-[60vh] w-[90vw] max-w-[90vw] lg:w-[65vw] lg:max-w-[65vw] overflow-auto",
+          wrapper: "max-h-[50vh] lg:max-h-[60vh] min-w-[70vw] max-w-[90vw] lg:min-w-[40vw] lg:max-w-[65vw] overflow-auto",
           td: "whitespace-nowrap overflow-hidden text-ellipsis",
         }}
         isHeaderSticky

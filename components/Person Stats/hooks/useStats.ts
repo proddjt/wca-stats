@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import dayjs from "dayjs";
 
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { createClient } from "@/lib/supabase/client";
 import { showToast } from "@/lib/Toast";
 import { PersonMetType, PersonType, StatsFiltersType } from "@/types";
-import { decodeMBF, parseString, safe } from "@/Utils/functions";
-import { it_cities } from "@/Utils/it_cities";
+import { decodeMBF, safe } from "@/Utils/functions";
 import { useRouter } from "next/navigation";
+import { calculateCities, calculateDelegatesMet, calculateLastPodiums, calculateMedalsByCountry, calculatePeopleMet } from "@/app/actions/stats";
 
 export default function useStats(id: string){
     const [person, setPerson] = useState<PersonType>();
@@ -59,7 +58,7 @@ export default function useStats(id: string){
                 setLoadingValue(30);
 
                 // MEDALS BY COUNTRY
-                person_data.medals_by_country = await calculateMedalsByCountry(person_data);
+                person_data.medals_by_country = await calculateMedalsByCountry(person_data, filters);
                 setLoadingValue(40);
 
                 // TIME PASSED SOLVING
@@ -104,11 +103,12 @@ export default function useStats(id: string){
                 setLoadingValue(50);
                 
                 // LAST PODIUMS
-                person_data.last_medals = await calculateLastPodiums(person_data);
+                person_data.last_medals = await calculateLastPodiums(person_data, filters);
                 setLoadingValue(60);
 
                 // PEOPLE MET
-                person_data.people_met = calculatePeopleMet(person_data.id, 1, 50);
+                const people_met = await calculatePeopleMet(person_data.id, 1, 50);
+                if (people_met) setPeopleMet(people_met)
                 setLoadingValue(70);
 
                 // DELEGATES MET
@@ -121,7 +121,9 @@ export default function useStats(id: string){
                 setPerson(person_data)
 
                 // CITIES
-                await calculateCities(person_data);
+                const {new_ita, new_int} = await calculateCities(person_data);
+                if (new_ita) ita_cities.current = new_ita
+                if (new_int) int_cities.current = new_int
                 setLoadingValue(90);
 
                 // REGIONS
@@ -131,6 +133,8 @@ export default function useStats(id: string){
                 setLoadingValue(100);
             }
         } catch (error: any) {
+            console.log(error);
+            
             if (error.code && error.code === 404) showToast("Attention!", "WCA ID non found.", "danger")
             else showToast("Attention!", JSON.stringify(error), "danger")
             return router.push("/person-stats")
@@ -150,72 +154,6 @@ export default function useStats(id: string){
     function handleFiltersChange(value: string | string[] | [], key: string) {
         if (!value) setFilters(prev => ({...prev, [key]: ""}))
         else setFilters(prev => ({...prev, [key]: value}))
-    }
-
-    async function calculateCities(person_data: PersonType){
-        const comps_ids = [...person_data.championshipIds, ...person_data.competitionIds]
-        await Promise.all(
-            comps_ids.map(async compId => {
-
-                const [error, response] = await safe(fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/competitions/${compId}.json`));
-                if (error) throw error
-                if (!response.ok) throw {code: response.status}
-
-                const data = await response.json();
-                const city = parseString(data.city);
-                const ita_arr = ita_cities.current as {city: string, region: string}[]
-                const int_arr = int_cities.current as {city: string, country: string}[]
-                if (data.country === "IT" && !data.isCanceled && dayjs(data.date.from) < dayjs()){
-                    if (!ita_arr.some(c => c.city === city)) ita_cities.current.push({city: city, region: it_cities.find(citta => citta.denominazione_ita.toLowerCase() === city.toLowerCase() )?.denominazione_regione || `${city} non trovata nell'elenco`})
-                }
-                if (!int_arr.some(c => c.city === city)) int_cities.current.push({city: city, country: data.country})
-            })
-        );
-    }
-
-    async function calculateDelegatesMet(person_data: PersonType){
-        const { data: delegate_data, error: delegate_error } = await supabase
-        .rpc("get_delegates", {wca_id_input: person_data.id})
-        if (delegate_error) throw delegate_error
-        if (delegate_data) return delegate_data.filter((delegate: PersonType) => delegate.name !== person_data.name)
-    }
-
-    async function calculatePeopleMet(id: string, page: number, pageSize: number){
-        const { data: people_data, error: people_error } = await supabase
-        .rpc("get_related_persons", {
-            wca_id_input: id,
-            page: page,
-            page_size: pageSize
-        })
-        if (people_error) throw people_error
-        if (people_data) return setPeopleMet(people_data)
-    }
-
-    async function calculateLastPodiums(person_data: PersonType){
-        const { data, error } = await supabase
-        .rpc("get_last_podiums", {
-            wca_id: person_data.id,
-            comp_ids: [
-                ...person_data.championshipIds.filter((c: string) => 
-                    filters.year === "all" ? true : c.slice(-4) === filters.year
-                ),
-                ...person_data.competitionIds.filter((c: string) => 
-                    filters.year === "all" ? true : c.slice(-4) === filters.year
-                )
-            ]
-        })
-        if (error) throw error
-        if (data) return data[0]
-    }
-
-    async function calculateMedalsByCountry(person_data: PersonType){
-        const { data: medals_data, error: medals_error } = await supabase
-        .rpc("get_medals_by_country", {
-            wca_id: person_data.id,
-            year_input: filters.year
-        })
-        if (medals_error) throw medals_error
-        if (medals_data) return medals_data
     }
 
     useEffect(() => {

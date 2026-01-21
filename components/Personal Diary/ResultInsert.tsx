@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { DateInput } from "@heroui/date-input";
-import { CalendarDate, now, parseZonedDateTime, ZonedDateTime } from "@internationalized/date";
+import { now, ZonedDateTime } from "@internationalized/date";
 import dayjs from "dayjs";
 
 import useConfig from "@/Context/Config/useConfig";
@@ -16,7 +16,11 @@ import { Button } from "@heroui/button";
 
 const oldEvents = ["333ft", "magic", "mmagic", "333mbo"]
 
-export default function ResultInsert(){
+export default function ResultInsert({
+    upsertResult
+} : {
+    upsertResult: (result: ResultInputType) => void
+}){
     const [result, setResult] = useState<ResultInputType>({
         event: "",
         result_type: "",
@@ -24,11 +28,10 @@ export default function ResultInsert(){
         date: dayjs().format("YYYY-MM-DD"),
         scrambles: []
     })
+
     const {events} = useConfig()
 
     const validateResult = (value: string, index: number) => {
-        console.log(value);
-        
         const newResults = [...(result?.result || [])];
         if (value.startsWith("/") && value.length > 1) return
         if (!/^\d*$/.test(value) && value !== "/") return;
@@ -54,9 +57,9 @@ export default function ResultInsert(){
 
     return (
         <div className="grow flex justify-center items-center w-full">
-            <div className="bg-neutral-900 rounded-md shadow-amber-50 p-3 flex flex-col gap-3 justify-center items-center w-9/10 ">
+            <div className="bg-neutral-900 rounded-md shadow-amber-50 p-5 flex flex-col gap-3 justify-center items-center w-9/10">
                 <p className="text-2xl font-bold">Add result</p>
-                <div className="flex flex-col gap-2 max-h-[60vh] overflow-auto">
+                <div className="flex flex-col gap-2 h-[40vh] max-h-[40vh] overflow-auto w-full">
                     <Select
                     label="Event"
                     placeholder="Choose an event"
@@ -181,7 +184,8 @@ export default function ResultInsert(){
             variant="bordered"
             size="sm"
             radius="sm"
-            isDisabled={!result?.event || !result.result_type || (result.result_type === "single" && !result.result.length) || (result.result_type === "ao5" && result.result.length < 5) || (result.result_type === "mo3" && result.result.length < 3) || !result?.date}
+            onPress={() => upsertResult(result)}
+            isDisabled={!result?.event || !result.result_type || (result.result_type === "single" && (!result.result.length || result.result[0] === "/")) || (result.result_type === "ao5" && result.result.length < 5) || (result.result_type === "mo3" && result.result.length < 3) || !result?.date || avg === "DNF"}
             >
                 Add result
             </Button>

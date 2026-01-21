@@ -175,7 +175,6 @@ export interface UserContextType {
     doLogin: (form: FormType) => void
     doLogout: () => void
     doSignIn: (form: FormType) => void
-    getUser: () => Promise<void>
 }
 
 export interface ResultInputType {
@@ -185,4 +184,9 @@ export interface ResultInputType {
     date?: string
     scrambles?: string[]
     notes?: string
+    final?: string 
+}
+
+export interface DiaryResultType {
+    [key: string]: object
 }

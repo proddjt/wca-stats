@@ -239,7 +239,7 @@ export const getMean = (arr: string[]) => {
 
 export const getAvg = (arr: string[]) => {
     const okResults = arr
-    .filter(r => r !== "/" && r !== "0")
+    .filter(r => r !== "/" && r !== "0" && r !== "")
     .map(r => {
         const cc = Number(r.slice(-2));
         r = r.slice(0, -2);
@@ -255,9 +255,9 @@ export const getAvg = (arr: string[]) => {
         return (hh * 360000 + mm * 6000 + ss * 100 + cc) / 100
     })
     .sort((a, b) => a - b)
-    .slice(0, 1)
-    .slice(-1)
-    
+    .slice(1)
+    if (okResults.length === 4) okResults.pop();
+
     if (!okResults || okResults.length < 3) return "DNF"
 
     const sum = okResults.reduce((a, b) => a + b, 0)

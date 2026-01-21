@@ -5,6 +5,7 @@ import { showToast } from "@/lib/Toast";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "../IsLoading/useIsLoading";
 import { useRouter } from "next/navigation";
+import { getRole, getUser } from "@/app/actions/user";
 
 export default function UserProvider({ children } : { children: React.ReactNode }) {
     const [user, setUser] = useState<{user: User, role: string} | null>(null);
@@ -21,7 +22,7 @@ export default function UserProvider({ children } : { children: React.ReactNode 
                 password: password
             });
             if (error) throw error.message
-            await getUser()
+            await getUserRole()
             showToast("Success!", "User logged in", "success")
             router.push("/")
         } catch (error) {
@@ -46,7 +47,7 @@ export default function UserProvider({ children } : { children: React.ReactNode 
                 password: password
             });
             if (error) throw error.message
-            await getUser()
+            await getUserRole()
             showToast("Success!", "User logged in", "success")
         }
         catch (error){
@@ -54,22 +55,15 @@ export default function UserProvider({ children } : { children: React.ReactNode 
         }
     }
 
-    async function getUser(){
+    async function getUserRole(){
         try {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            
-            if (error) throw error.message
+            const user = await getUser()
             if (user){
-                const { data: role, error: role_error } = await supabase
-                .from("auth_roles")
-                .select("role")
-                .eq("email", user?.email)
-                if (role_error) throw role_error.message
-                if (role[0]?.role === "admin") setUser({user, role: "admin"})
-                else setUser({user, role: "user"})
+                const role = await getRole()
+                setUser({user, role})
             }
-        } catch (error) {
-            if (error !== "Auth session missing!") showToast("Attention!", JSON.stringify(error), "danger")
+        } catch (error: any) {
+            if (error.toString() !== "Error: Auth session missing!") showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
 
@@ -87,11 +81,11 @@ export default function UserProvider({ children } : { children: React.ReactNode 
     }
 
     useEffect(() => {
-        getUser()
+        getUserRole()
     }, [])
 
     return (
-        <UserContext.Provider value={{user, doLogin, doLogout, doSignIn, getUser}}>
+        <UserContext.Provider value={{user, doLogin, doLogout, doSignIn}}>
             {children}
         </UserContext.Provider>
     )
