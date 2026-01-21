@@ -1,5 +1,6 @@
 import { getHomeDiary, insertResult } from "@/app/actions/diary";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
+import useUser from "@/Context/User/useUser";
 import { showToast } from "@/lib/Toast";
 import { DiaryResultType, ResultInputType } from "@/types";
 import { getAvg, getMean, reverseFormatTime } from "@/Utils/functions";
@@ -7,6 +8,8 @@ import { useEffect, useRef } from "react";
 
 export default function useDiary(){
     const results = useRef<DiaryResultType>({})
+
+    const {user} = useUser()
 
     const {showLoader} = useIsLoading();
 
@@ -16,7 +19,7 @@ export default function useDiary(){
         if (result.result_type === "single") result.final = result.result[0]
 
         try{
-            const data = await insertResult(result)
+            const data = await insertResult(result, user?.user.email)
             console.log(data);
         } catch (error: any) {
             showToast("Attention!", error.toString(), "danger")
@@ -25,7 +28,7 @@ export default function useDiary(){
 
     async function getResults(){
         try{
-            const data = await getHomeDiary()
+            const data = await getHomeDiary(user?.user.email)
             if (data) results.current = data[0].pb_home
         } catch (error: any) {
             showToast("Attention!", error.toString(), "danger")

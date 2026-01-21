@@ -2,17 +2,13 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { ResultInputType } from "@/types"
-import { getUser } from "./user"
 
-export async function insertResult(result: ResultInputType){
+export async function insertResult(result: ResultInputType, email?: string){
     const supabase = await createClient()
-
-    const user = await getUser()
-    if (!user) throw "Error in authentication!"
 
     const { data, error } = await supabase
     .rpc("update_diary", {
-        p_email: user?.email,
+        p_email: email,
         p_action: "insert",
         p_event: result.event,
         p_result_type: result.result_type,
@@ -27,16 +23,12 @@ export async function insertResult(result: ResultInputType){
     
 }
 
-export async function getHomeDiary(){
+export async function getHomeDiary(email?: string){
     const supabase = await createClient()
-
-    const user = await getUser()
-    if (!user) throw "Error in authentication!"
-
     const { data, error } = await supabase
     .from("personal_diary")
     .select("pb_home")
-    .eq("email", user?.email)
+    .eq("email", email)
     if (error) throw error.message
     if (data) return data
 }
