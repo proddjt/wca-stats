@@ -5,7 +5,6 @@ import { showToast } from "@/lib/Toast";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "../IsLoading/useIsLoading";
 import { useRouter } from "next/navigation";
-import { getRole, getUser } from "@/app/actions/user";
 
 export default function UserProvider({ children } : { children: React.ReactNode }) {
     const [user, setUser] = useState<{user: User, role: string} | null>(null);
@@ -65,6 +64,28 @@ export default function UserProvider({ children } : { children: React.ReactNode 
         } catch (error: any) {
             if (error.toString() !== "Error: Auth session missing!") showToast("Attention!", JSON.stringify(error), "danger")
         }
+    }
+
+    async function getUser(){
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) {
+            throw error
+        }
+        return user
+    }
+
+    async function getRole(){
+        const user = await getUser()
+
+        const { data: role, error: role_error } = await supabase
+        .from("auth_roles")
+        .select("role")
+        .eq("email", user?.email)
+        if (role_error) {
+            throw role_error
+        }
+        if (role[0]?.role === "admin") return "admin"
+        return "user"
     }
 
     function doLogout() {
