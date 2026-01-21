@@ -7,18 +7,27 @@ import {Image} from "@heroui/image";
 import { usePathname, useRouter } from "next/navigation";
 
 import Logo from "@/public/logo_little.png"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useUser from "@/Context/User/useUser";
+import { createClient } from "@/lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export default function AppNavbar(){
+  const [user, setUser] = useState<User | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const {
-    user,
     doLogout
   } = useUser();
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+  })
   
   return (
     <Navbar
@@ -94,8 +103,8 @@ export default function AppNavbar(){
           user ?
           <NavbarItem>
             <Link onClick={() => {}}>
-            <Avatar showFallback name={user.user.email} src="https://images.unsplash.com/broken" />
-              {user.user.email}
+            <Avatar showFallback src="https://images.unsplash.com/broken" />
+              {user.email}
             </Link>
           </NavbarItem>
           :

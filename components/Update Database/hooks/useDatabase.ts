@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import dayjs from 'dayjs'
 import pLimit from "p-limit";
@@ -7,14 +6,9 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { showToast } from "@/lib/Toast";
 import { continentsTable } from "@/Utils/continents";
-import useUser from "@/Context/User/useUser";
 
 export default function useDatabase () {
     const {showLoader} = useIsLoading();
-
-    const {
-        user
-    } = useUser();
 
     const supabase = createClient();
 
@@ -235,7 +229,6 @@ export default function useDatabase () {
     }
 
     return {
-        user,
         doUpdate,
     };
 }

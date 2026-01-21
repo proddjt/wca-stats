@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { UserContext } from "./UserContext";
-import { User } from "@supabase/supabase-js";
 import { showToast } from "@/lib/Toast";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "../IsLoading/useIsLoading";
 import { useRouter } from "next/navigation";
 
 export default function UserProvider({ children } : { children: React.ReactNode }) {
-    const [user, setUser] = useState<{user: User, role: string} | null>(null);
+    const user_role = useRef<string>("");
 
     const {showLoader} = useIsLoading();
 
@@ -32,8 +31,9 @@ export default function UserProvider({ children } : { children: React.ReactNode 
     async function logout(){
         try {
             await supabase.auth.signOut()
-            setUser(null)
+            user_role.current = ""
             showToast("Success!", "User succesfully logged out", "success")
+            router.push("/")
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
         }
@@ -41,13 +41,20 @@ export default function UserProvider({ children } : { children: React.ReactNode 
 
     async function signIn({email, password} : {email: string, password: string}){
         try{
-            const { error } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email: email,
                 password: password
             });
             if (error) throw error.message
+            showToast("Success!", "User created succesfully", "success")
             await getUserRole()
-            showToast("Success!", "User logged in", "success")
+            
+            const { error: diary_error } = await supabase
+            .from("personal_diary")
+            .insert({email: data.user?.email})
+            if (diary_error) throw diary_error
+            
+            router.push("/")
         }
         catch (error){
             showToast("Attention!", JSON.stringify(error), "danger")
@@ -58,18 +65,17 @@ export default function UserProvider({ children } : { children: React.ReactNode 
         try {
             const user = await getUser()
             if (user){
-                const role = await getRole()
-                setUser({user, role})
+                user_role.current = await getRole()
             }
         } catch (error: any) {
-            if (error.toString() !== "Error: Auth session missing!") showToast("Attention!", JSON.stringify(error), "danger")
+            if (error.toString() !== "Auth session missing!") showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
 
     async function getUser(){
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error) {
-            throw error
+            throw error.message
         }
         return user
     }
@@ -106,7 +112,7 @@ export default function UserProvider({ children } : { children: React.ReactNode 
     }, [])
 
     return (
-        <UserContext.Provider value={{user, doLogin, doLogout, doSignIn}}>
+        <UserContext.Provider value={{user_role, doLogin, doLogout, doSignIn}}>
             {children}
         </UserContext.Provider>
     )

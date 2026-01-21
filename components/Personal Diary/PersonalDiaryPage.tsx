@@ -28,7 +28,10 @@ export default function PersonalDiaryPage(){
 
     const {
         results,
-        upsertResult
+        result,
+        setResult,
+        upsertResult,
+        deleteAction
     } = useDiary();
 
     if (isPending) return <Loader />
@@ -62,7 +65,7 @@ export default function PersonalDiaryPage(){
                 className="font-bold"
                 />
             </Tabs>
-            {getSection(sectionSelected, {upsertResult, results})}
+            {getSection(sectionSelected, {upsertResult, results, deleteAction, result, setResult})}
         </div>
     )
 }

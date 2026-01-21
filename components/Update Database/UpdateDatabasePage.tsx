@@ -13,17 +13,16 @@ import useUser from "@/Context/User/useUser";
 
 export default function UpdateDatabasePage(){
     const {
-        user,
         doUpdate,
     } = useDatabase();
 
     const {doLogout} = useUser()
 
-    const router = useRouter();
+    const {user_role} = useUser();
 
     const {isPending} = useIsLoading();
 
-    if (user?.role !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
+    if (user_role.current !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
 
     return (
         <div className="flex flex-col grow justify-center gap-10 items-center">

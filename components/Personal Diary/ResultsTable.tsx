@@ -1,19 +1,34 @@
-import { DiaryResultType } from "@/types"
-import { MutableRefObject } from "react"
-import StatTable from "../Person Stats/StatTable"
-import { formatTime } from "@/Utils/functions"
+import { MutableRefObject, useMemo } from "react"
 import dayjs from "dayjs"
 
+import useConfig from "@/Context/Config/useConfig"
+import { extractDiaryEntries, formatTime } from "@/Utils/functions"
+
+import ResTable from "./ResTable"
+
+import { DiaryResultType } from "@/types"
+
 export default function ResultsTable({
-    results
+    results,
+    deleteAction,
 } : {
-    results: MutableRefObject<DiaryResultType>
+    results: MutableRefObject<DiaryResultType>,
+    deleteAction: (result: any) => void
 }){
+    const {events} = useConfig()
+
+    const eventOrder: Record<string, number> = useMemo(() => events.current.reduce((acc, ev, index) => {
+        acc[ev.id] = index;
+        return acc;
+    }, {} as Record<string, number>), [events.current]);
+
+    console.log();
     
+
     return (
-        <div className="grow flex justify-center items-center w-full">
-            <StatTable
-            mode=""
+        <div className="grow flex flex-col justify-center items-center w-full p-5">
+            <p className="text-2xl font-bold">Your best results</p>
+            <ResTable
             data={{
                 cols: [
                     {label: "Event", key: "event_id"},
@@ -21,21 +36,9 @@ export default function ResultsTable({
                     {label: "Result", key: "result"},
                     {label: "Date", key: "date"},
                 ],
-                rows: Object
-                .entries(results.current)
-                .map(([key, value]) => {
-                    return Object
-                    .entries(value)
-                    .map(([key2, value2]) => ({
-                        ...value2[0],
-                        event_id: key,
-                        result_type: key2.charAt(0).toUpperCase() + key2.slice(1),
-                        key: value2[0].id,
-                        result: formatTime(value2[0].result),
-                        date: dayjs(value2[0].date).format("DD-MM-YYYY")
-                    }))[0]
-                })
+                rows: extractDiaryEntries(results.current)
             }}
+            deleteAction={deleteAction}
             />
         </div>
     )

@@ -23,12 +23,32 @@ export async function insertResult(result: ResultInputType, email?: string){
     
 }
 
+export async function deleteResult(result: any, email?: string){
+    const supabase = await createClient()
+
+    const { error } = await supabase
+    .rpc("update_diary", {
+        p_email: email,
+        p_action: "delete",
+        p_event: result.event_id,
+        p_result_type: result.result_type.toLowerCase(),
+        p_result: "",
+        p_results: [],
+        p_date: "",
+        p_scrambles: [],
+        p_notes: "",
+        p_id: result.id,
+    })
+    if (error) throw error.message
+}
+
 export async function getHomeDiary(email?: string){
     const supabase = await createClient()
     const { data, error } = await supabase
     .from("personal_diary")
     .select("pb_home")
     .eq("email", email)
+    
     if (error) throw error.message
     if (data) return data
 }

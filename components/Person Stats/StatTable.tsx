@@ -49,7 +49,7 @@ export default function StatTable({
         key={page_number || mode}
         className="mt-2"
         classNames={{
-          wrapper: "max-h-[50vh] lg:max-h-[60vh] min-w-[70vw] max-w-[90vw] lg:min-w-[40vw] lg:max-w-[65vw] overflow-auto",
+          wrapper: "max-h-[50vh] lg:max-h-[60vh] w-full max-w-[90vw] lg:w-[40vw] lg:max-w-[65vw] overflow-auto",
           td: "whitespace-nowrap overflow-hidden text-ellipsis",
         }}
         isHeaderSticky

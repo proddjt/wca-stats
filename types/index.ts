@@ -171,7 +171,7 @@ export interface StatsFiltersType {
 }
 
 export interface UserContextType {
-    user: {user: User, role: string} | null
+    user_role: MutableRefObject<string>
     doLogin: (form: FormType) => void
     doLogout: () => void
     doSignIn: (form: FormType) => void

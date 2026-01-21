@@ -264,3 +264,27 @@ export const getAvg = (arr: string[]) => {
     return (sum / okResults.length).toFixed(2)
 }
 
+export function extractDiaryEntries(data: any) {
+  const output = [] as any[];
+
+  Object.entries(data).forEach(([eventId, eventObj] : [string, any]) => {
+    Object.entries(eventObj).forEach(([resultType, arr]) => {
+      if (!Array.isArray(arr) || arr.length === 0) return; // ignora array vuoti
+
+      const item = arr[0]; // prende sempre il primo elemento
+
+      output.push({
+        ...item,
+        event_id: eventId,
+        result_type: resultType.charAt(0).toUpperCase() + resultType.slice(1),
+        key: item.id,
+        result: formatTime(item.result),
+        date: dayjs(item.date).format("DD-MM-YYYY")
+      });
+    });
+  });
+
+  return output;
+}
+
+

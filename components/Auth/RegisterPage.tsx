@@ -15,9 +15,9 @@ export default function RegisterPage(){
 
     const {isPending} = useIsLoading();
 
-    // const {doSignIn} = useUser();
+    const {doSignIn} = useUser();
 
-    const doSignIn = (arg: any) => {}
+    // const doSignIn = (arg: any) => {}
 
     if (isPending) return <Loader />
 

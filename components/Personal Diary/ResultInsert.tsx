@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { DateInput } from "@heroui/date-input";
@@ -17,18 +17,14 @@ import { Button } from "@heroui/button";
 const oldEvents = ["333ft", "magic", "mmagic", "333mbo"]
 
 export default function ResultInsert({
-    upsertResult
+    upsertResult,
+    result,
+    setResult
 } : {
-    upsertResult: (result: ResultInputType) => void
+    upsertResult: (result: ResultInputType) => void,
+    result: ResultInputType,
+    setResult: React.Dispatch<React.SetStateAction<ResultInputType>>
 }){
-    const [result, setResult] = useState<ResultInputType>({
-        event: "",
-        result_type: "",
-        result: [],
-        date: dayjs().format("YYYY-MM-DD"),
-        scrambles: []
-    })
-
     const {events} = useConfig()
 
     const validateResult = (value: string, index: number) => {
@@ -156,6 +152,7 @@ export default function ResultInsert({
                         size="sm"
                         variant="faded"
                         radius="sm"
+                        key={result.event}
                         defaultValue={now("Europe/Rome")}
                         granularity="day"
                         hideTimeZone
