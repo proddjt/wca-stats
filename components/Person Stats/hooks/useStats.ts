@@ -7,7 +7,7 @@ import { showToast } from "@/lib/Toast";
 import { PersonMetType, PersonType, StatsFiltersType } from "@/types";
 import { decodeMBF, safe } from "@/Utils/functions";
 import { useRouter } from "next/navigation";
-import { calculateCities, calculateDelegatesMet, calculateLastPodiums, calculateMedalsByCountry, calculatePeopleMet } from "@/app/actions/stats";
+import { calculateCities, calculateDelegatesMet, calculateLastPodiums, calculateMedalsByCountry } from "@/app/actions/stats";
 
 export default function useStats(id: string){
     const [person, setPerson] = useState<PersonType>();
@@ -154,6 +154,18 @@ export default function useStats(id: string){
     function handleFiltersChange(value: string | string[] | [], key: string) {
         if (!value) setFilters(prev => ({...prev, [key]: ""}))
         else setFilters(prev => ({...prev, [key]: value}))
+    }
+
+    async function calculatePeopleMet(id: string, page: number, pageSize: number){
+    
+        const { data: people_data, error: people_error } = await supabase
+        .rpc("get_related_persons", {
+            wca_id_input: id,
+            page: page,
+            page_size: pageSize
+        })
+        if (people_error) throw people_error
+        if (people_data) return people_data
     }
 
     useEffect(() => {

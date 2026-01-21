@@ -6,20 +6,6 @@ import { parseString, safe } from "@/Utils/functions"
 import { it_cities } from "@/Utils/it_cities"
 import dayjs from "dayjs"
 
-export async function calculatePeopleMet(id: string, page: number, pageSize: number){
-
-    const supabase = await createClient()
-
-    const { data: people_data, error: people_error } = await supabase
-    .rpc("get_related_persons", {
-        wca_id_input: id,
-        page: page,
-        page_size: pageSize
-    })
-    if (people_error) throw people_error
-    if (people_data) return people_data
-}
-
 export async function calculateCities(person_data: PersonType){
     const new_ita = [] as any
     const new_int = [] as any

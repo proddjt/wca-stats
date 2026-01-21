@@ -63,6 +63,8 @@ export default function UserProvider({ children } : { children: React.ReactNode 
                 setUser({user, role})
             }
         } catch (error: any) {
+            console.log(error);
+            
             if (error.toString() !== "Error: Auth session missing!") showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
