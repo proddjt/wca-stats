@@ -113,7 +113,7 @@ export default function MedalTablePage() {
   } = useConfig();
 
   const handleClick = (id: string) => {
-    router.push(`/person-stats/${id}`)
+    if (!isPending) router.push(`/person-stats/${id}`)
   }
 
   const tableColumns = useMemo(() => {
@@ -202,7 +202,7 @@ export default function MedalTablePage() {
                     <TableCell>
                       <Link
                       isBlock
-                      onPress={() => !isPending && handleClick(item.wca_id)}
+                      onPress={() => handleClick(item.wca_id)}
                       color="warning"
                       size="sm"
                       >
