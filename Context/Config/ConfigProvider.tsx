@@ -10,6 +10,7 @@ export default function ConfigProvider({ children } : { children: React.ReactNod
     const nations = useRef<NationType[]>([]);
     const events = useRef<EventType[]>([]);
     const years = useRef<{year: string}[]>([]);
+    const firstLoadState = useRef<boolean>(false);
 
     const supabase = createClient();
     const {showLoader} = useIsLoading();
@@ -58,13 +59,14 @@ export default function ConfigProvider({ children } : { children: React.ReactNod
             page: 1,
             page_size: 1
         })
+        firstLoadState.current = true
     }
 
     useEffect(() => {
         showLoader(getNations);
         showLoader(getEvents);
         showLoader(getYears);
-        dummyQuery();
+        if (!firstLoadState.current) dummyQuery();
     }, []);
 
     return (

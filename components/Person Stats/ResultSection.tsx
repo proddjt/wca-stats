@@ -40,12 +40,12 @@ export default function ResultSection({
                 {
                     person.last_medals.last_pos2_date ?
                     <span>
-                        Last gold was on {dayjs(person.last_medals.last_pos2_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.last_pos2_date)} ago` : ""} at {person.last_medals.last_pos2_comp}</b>. <br />
-                        First gold was on {dayjs(person.last_medals.first_pos2_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.first_pos2_date)} ago` : ""} at {person.last_medals.first_pos2_comp}</b>.
+                        Last silver was on {dayjs(person.last_medals.last_pos2_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.last_pos2_date)} ago` : ""} at {person.last_medals.last_pos2_comp}</b>. <br />
+                        First silver was on {dayjs(person.last_medals.first_pos2_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.first_pos2_date)} ago` : ""} at {person.last_medals.first_pos2_comp}</b>.
                     </span>
                     :
                     <span>
-                        This person has never won a gold in {filters.year === "all" ? diffToHuman(person.last_medals.first_comp) : filters.year}
+                        This person has never won a silver in {filters.year === "all" ? diffToHuman(person.last_medals.first_comp) : filters.year}
                     </span>
                 }
                 </p>
@@ -53,17 +53,17 @@ export default function ResultSection({
                 {
                     person.last_medals.last_pos3_date ?
                     <span>
-                        Last gold was on {dayjs(person.last_medals.last_pos3_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.last_pos3_date)} ago` : ""} at {person.last_medals.last_pos3_comp}</b>. <br />
-                        First gold was on {dayjs(person.last_medals.first_pos3_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.first_pos3_date)} ago` : ""} at {person.last_medals.first_pos3_comp}</b>.
+                        Last bronze was on {dayjs(person.last_medals.last_pos3_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.last_pos3_date)} ago` : ""} at {person.last_medals.last_pos3_comp}</b>. <br />
+                        First bronze was on {dayjs(person.last_medals.first_pos3_date).format("DD-MM-YYYY")}, <b>{filters.year === "all" ? `${diffToHuman(person.last_medals.first_pos3_date)} ago` : ""} at {person.last_medals.first_pos3_comp}</b>.
                     </span>
                     :
                     <span>
-                        This person has never won a gold in {filters.year === "all" ? diffToHuman(person.last_medals.first_comp) : filters.year}
+                        This person has never won a bronze in {filters.year === "all" ? diffToHuman(person.last_medals.first_comp) : filters.year}
                     </span>
                 }
                 </p>
             </div>
-            <p className="text-lg">This person got {person.medals_by_country.reduce((a, b) => a + b.total_medals, 0)} medals in {person.medals_by_country.length} different countries across the world*</p>
+            <p className="text-lg">This person got {person.medals_by_country.reduce((a, b) => a + b.total_medals, 0)} medals in {person.medals_by_country.length} different {person.medals_by_country.length === 1 ? "country" : "countries"} across the world*</p>
             <StatTable
             data={{cols: medals_by_country_cols, rows: person.medals_by_country.map((medal) => ({...medal, key: medal.country}))}}
             mode=""
