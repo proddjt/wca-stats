@@ -12,6 +12,8 @@ export default function PasswordInput({
     fullWidth = false,
     value,
     className,
+    isInvalid,
+    errorMessage,
     onChange,
     onKeyDown,
 } : {
@@ -21,6 +23,8 @@ export default function PasswordInput({
     fullWidth?: boolean,
     value: string,
     className?: string,
+    isInvalid?: boolean,
+    errorMessage?: string,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }){
@@ -40,6 +44,9 @@ export default function PasswordInput({
             <MdVisibilityOff className="cursor-pointer" onClick={toggleVisibility}/>
         }
         className={className}
+        isRequired
+        isInvalid={isInvalid}
+        errorMessage={errorMessage}
         variant={variant}
         fullWidth={fullWidth}
         value={value}

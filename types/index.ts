@@ -10,7 +10,8 @@ export interface RowsType {
     silvers: number,
     bronzes: number,
     total_medals: number,
-    col_order: string
+    col_order: string,
+    region: string
 }
 
 export interface MedalType {
@@ -36,6 +37,7 @@ export interface FiltersType {
         no_silvers: boolean,
         no_bronzes: boolean
     }
+    region: string
 }
 
 export interface IsLoadingContextType {
@@ -53,6 +55,7 @@ export interface FormType {
     email: string,
     password: string
     password_confirm?: string
+    name?: string
 }
 
 export interface NationType {

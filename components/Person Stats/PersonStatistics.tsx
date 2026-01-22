@@ -20,15 +20,31 @@ import ResultSection from "./ResultSection";
 import CompSection from "./CompSection";
 import { Select, SelectItem } from "@heroui/select";
 import useConfig from "@/Context/Config/useConfig";
+import TabNavigation from "../Layout/TabNavigation";
 
-const sections = {
-    results: ResultSection,
-    competitions: CompSection,
-    locations: LocationSection
-}
+const sections = [
+    {
+        key: "results",
+        title: "Results",
+        icon: BiSolidTimer,
+        component: ResultSection
+    },
+    {
+        key: "competitions",
+        title: "Competitions",
+        icon: BsClipboardDataFill,
+        component: CompSection
+    },
+    {
+        key: "locations",
+        title: "Locations",
+        icon: FaLocationDot,
+        component: LocationSection
+    }
+]
 
 const getSection = (key: string, props: any) => {
-    const Page = sections[key as keyof typeof sections]
+    const Page = sections?.find((s: any) => s.key === key)?.component || sections[0].component
     return <Page {...props}/>
 }
 
@@ -111,43 +127,11 @@ export default function PersonStatistics({
                 {years.current.sort((a, b) => Number(b.year) - Number(a.year)).map((year) =><SelectItem key={year.year}>{year.year}</SelectItem>)}
             </Select> */}
 
-            <Tabs
-            aria-label="Page section"
+            <TabNavigation
+            sections={sections}
             selectedKey={sectionSelected}
-            onSelectionChange={(key) => setSectionSelected(key as string)}
-            color="warning"
-            >
-                <Tab
-                key="results"
-                title={
-                    <div className="flex items-center space-x-2">
-                        <BsClipboardDataFill size={15}/>
-                        <span>Results</span>
-                    </div>
-                }
-                className="font-bold"
-                />
-                <Tab
-                key="locations"
-                title={
-                    <div className="flex items-center space-x-2">
-                        <FaLocationDot size={15}/>
-                        <span>Locations</span>
-                    </div>
-                }
-                className="font-bold"
-                />
-                <Tab
-                key="competitions"
-                title={
-                    <div className="flex items-center space-x-2">
-                        <BiSolidTimer size={25}/>
-                        <span>Competitions</span>
-                    </div>
-                }
-                className="font-bold"
-                />
-            </Tabs>
+            onSelectionChange={setSectionSelected}
+            />
 
             {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters, peopleMet, calculatePeopleMet})}
             

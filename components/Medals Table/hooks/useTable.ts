@@ -7,7 +7,7 @@ import { showToast } from "@/lib/Toast";
 
 
 
-export default function useTable(screenWidth: number){
+export default function useTable(screenWidth: number, sectionSelected: string){
     const supabase = createClient();
     const [rows, setRows] = useState<RowsType[]>([]);
     const [filters, setFilters] = useState<FiltersType>({
@@ -16,13 +16,14 @@ export default function useTable(screenWidth: number){
         event: [],
         name: '',
         col_order: 'golds',
-        ascending: true,
+        ascending: false,
         country: "all",
         more_filters: {
             no_golds: false,
             no_silvers: false,
             no_bronzes: false
-        }
+        },
+        region: 'all'
     });
     
     const [pages, setPages] = useState<PagesType>({page: 1, total: 0});
@@ -54,11 +55,13 @@ export default function useTable(screenWidth: number){
                 in_event_id: newFilters.event || null,
                 in_country_id: newFilters.nationality || null,
                 in_order_col: newFilters.col_order,
-                in_ascending: newFilters.ascending,
+                in_ascending: !newFilters.ascending,
                 in_no_bronzes: newFilters.more_filters.no_bronzes,
                 in_no_silvers: newFilters.more_filters.no_silvers,
                 in_no_golds: newFilters.more_filters.no_golds,
-                in_location_filter: newFilters.country
+                in_location_filter: newFilters.country,
+                in_mode: sectionSelected,
+                in_region: newFilters.region === "all" || newFilters.region === "" ? null : newFilters.region
             }, {count: "exact"})
             .range((page - 1) * 50, page * 50 - 1);
             if (error) throw error.message
@@ -96,13 +99,14 @@ export default function useTable(screenWidth: number){
             event: [],
             name: '',
             col_order: 'golds',
-            ascending: true,
+            ascending: false,
             country: 'all',
             more_filters: {
                 no_golds: false,
                 no_silvers: false,
                 no_bronzes: false
-            }
+            },
+            region: 'all'
         }
         setFilters(resettedFilters)
         showLoader(() => getRows(1, resettedFilters))
@@ -110,17 +114,16 @@ export default function useTable(screenWidth: number){
 
     useEffect(() => {
         showLoader(getLastUpdate)
-        if (screenWidth < 1024) showLoader(() => getRows(1))
     }, []);
 
     useEffect(() => {
         if (screenWidth < 1024) return
         showLoader(() => getRows(1))
-    }, [filters.country, filters.event, filters.name, filters.nationality, filters.year, filters.more_filters]);
+    }, [filters.country, filters.event, filters.name, filters.nationality, filters.year, filters.more_filters, filters.region]);
 
     useEffect(() => {
         showLoader(() => getRows(1))
-    }, [filters.col_order, filters.ascending]);
+    }, [filters.col_order, filters.ascending, sectionSelected]);
 
     return {
         rows,

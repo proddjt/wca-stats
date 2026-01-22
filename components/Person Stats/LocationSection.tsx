@@ -54,6 +54,7 @@ export default function LocationSection({
             <p className="text-lg">{int_cities?.length || 0} total {int_cities?.length === 1 ? "city" : "cities"}*</p>
             <p className="text-lg">{(int_cities?.length || 0) - (ita_cities?.length || 0)} non-Italian {(int_cities?.length || 0) - (ita_cities?.length || 0) === 1 ? "city" : "cities"}</p>
             <p className="text-lg pb-5">{ita_cities?.length} Italian {ita_cities?.length === 1 ? "city" : "cities"}</p>
+
             <Tabs
             aria-label="Table mode"
             selectedKey={tableMode}

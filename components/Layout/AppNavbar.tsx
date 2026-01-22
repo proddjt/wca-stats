@@ -27,7 +27,7 @@ export default function AppNavbar(){
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
     });
-  })
+  }, [])
   
   return (
     <Navbar
@@ -102,9 +102,9 @@ export default function AppNavbar(){
         {
           user ?
           <NavbarItem>
-            <Link onClick={() => {}}>
-            <Avatar showFallback src="https://images.unsplash.com/broken" />
-              {user.email}
+            <Link onClick={() => {}} className="flex gap-2 cursor-pointer">
+            <Avatar showFallback size="sm" name={user.user_metadata.display_name.split(" ")[0]} src="https://images.unsplash.com/broken" />
+              {user.user_metadata.display_name.split(" ")[0]}
             </Link>
           </NavbarItem>
           :
@@ -156,8 +156,8 @@ export default function AppNavbar(){
           <>
           <NavbarMenuItem>
             <Link onClick={() => {}} className="flex gap-2">
-              <Avatar showFallback size="sm" src="https://images.unsplash.com/broken" />
-              Your account
+              <Avatar showFallback size="sm" name={user.user_metadata.display_name.split(" ")[0]} src="https://images.unsplash.com/broken" />
+              {user.user_metadata.display_name.split(" ")[0]}
             </Link>
           </NavbarMenuItem>
           

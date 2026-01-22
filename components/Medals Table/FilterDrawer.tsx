@@ -11,7 +11,8 @@ export default function FilterDrawer({
     handleMoreFiltersChange,
     filters,
     getRows,
-    resetFilters
+    resetFilters,
+    sectionSelected
 } : {
     isOpen: boolean,
     onOpenChange: () => void,
@@ -19,7 +20,8 @@ export default function FilterDrawer({
     handleMoreFiltersChange: (value: string[]) => void,
     filters: FiltersType,
     getRows: (n?: number) => Promise<void>,
-    resetFilters: () => void
+    resetFilters: () => void,
+    sectionSelected: string
 }){
     const {showLoader} = useIsLoading();
 
@@ -30,7 +32,7 @@ export default function FilterDrawer({
                 <>
                 <DrawerHeader className="flex flex-col gap-1">Filters</DrawerHeader>
                 <DrawerBody>
-                    <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters}} isDrawer={true}/>
+                    <Filterbar {...{handleFiltersChange, handleMoreFiltersChange, filters, sectionSelected}} isDrawer={true}/>
                 </DrawerBody>
                 <DrawerFooter className="flex justify-between">
                     <Button color="danger" onPress={() => {resetFilters(); onClose()}}>

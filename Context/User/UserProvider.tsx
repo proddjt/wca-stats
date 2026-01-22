@@ -39,11 +39,16 @@ export default function UserProvider({ children } : { children: React.ReactNode 
         }
     }
 
-    async function signIn({email, password} : {email: string, password: string}){
+    async function signIn({email, password, name} : {email: string, password: string, name?: string}){
         try{
             const { data, error } = await supabase.auth.signUp({
                 email: email,
-                password: password
+                password: password,
+                options: {
+                    data: {
+                        display_name: name || ""
+                    }
+                }
             });
             if (error) throw error.message
             showToast("Success!", "User created succesfully", "success")
@@ -102,13 +107,13 @@ export default function UserProvider({ children } : { children: React.ReactNode 
         showLoader(() => login({email, password}))
     }
 
-    function doSignIn({email, password, password_confirm}: {email: string, password: string, password_confirm?: string}){
+    function doSignIn({email, password, password_confirm, name}: {email: string, password: string, password_confirm?: string, name?: string}){
         if (password !== password_confirm) return showToast("Attention!", "Passwords do not match", "danger")
-        showLoader(() => signIn({email, password}))
+        showLoader(() => signIn({email, password, name}))
     }
 
     useEffect(() => {
-        getUserRole()
+        if (!user_role.current) getUserRole()
     }, [])
 
     return (

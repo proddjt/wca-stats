@@ -18,6 +18,10 @@ import { TfiWorld } from "react-icons/tfi";
 
 import { FiltersType } from "@/types";
 import { useEffect, useState } from "react";
+import { regions_icon } from "@/Utils/regions_icon";
+import { CircleFlag } from "react-circle-flags";
+import { select } from "@heroui/theme";
+import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 const icons = {
     "": TfiWorld,
@@ -38,12 +42,14 @@ export default function Filterbar({
     handleFiltersChange,
     handleMoreFiltersChange,
     filters,
-    isDrawer = false
+    isDrawer = false,
+    sectionSelected
 } : {
     handleFiltersChange: (value: string | string[] | [], key: string, ascending?: boolean) => void,
     handleMoreFiltersChange: (value: string[]) => void,
     filters: FiltersType,
     isDrawer?: boolean
+    sectionSelected?: string
 }){
 
     const [name, setName] = useState(filters.name);
@@ -53,6 +59,8 @@ export default function Filterbar({
         events,
         years
     } = useConfig();
+
+    const {isPending} = useIsLoading();
 
     useEffect(() => {
         if (isDrawer) {
@@ -94,32 +102,41 @@ export default function Filterbar({
                 variant="faded"
                 onChange={(e) => setName(e.target.value)}
                 onClear={() => setName("")}
+                isDisabled={isPending}
                 />
 
                 <Autocomplete
-                label="Nationality"
+                label={sectionSelected === "worldwide" ? "Nationality" : "Region"}
                 shouldCloseOnBlur
-                selectedKey={filters.nationality}
-                onSelectionChange={(key) => handleFiltersChange(key as string, "nationality")}
-                placeholder="Search by nationality"
+                key={sectionSelected === "worldwide" ? filters.nationality : filters.region}
+                selectedKey={sectionSelected === "worldwide" ? filters.nationality : filters.region === "" ? "all" : filters.region}
+                onSelectionChange={(key) => handleFiltersChange(key as string, sectionSelected === "worldwide" ? "nationality" : "region")}
+                placeholder={sectionSelected === "worldwide" ? "Search by nationality" : "Search by region"}
                 variant="faded"
+                isDisabled={isPending}
                 size="sm"
                 radius="sm"
                 startContent={
-                    filters.nationality && !["europe","africa","asia","oceania","north-america","south-america"].includes(filters.nationality) ?
-                    <Flag code={filters.nationality} width={20}/> :
-                    getIcon(filters.nationality)
+                    sectionSelected === "worldwide" ?
+                        filters.nationality && !["europe","africa","asia","oceania","north-america","south-america"].includes(filters.nationality) ?
+                        <Flag code={filters.nationality} width={20}/> :
+                        getIcon(filters.nationality)
+                    :
+                        <CircleFlag countryCode={regions_icon.find((region) => region.name === filters.region.trim())?.icon||"it"} width="18" />
                 }
                 fullWidth={isDrawer}
                 className="lg:w-1/5 w-full"
-                onClear={() => handleFiltersChange("", "nationality")}
+                onClear={() => handleFiltersChange("", sectionSelected === "worldwide" ? "nationality" : "region")}
                 >
+                    {
+                    sectionSelected === "worldwide" ?
+                    <>
                     <AutocompleteItem key="" textValue="World" onClick={() => handleFiltersChange("", "nationality")}>World</AutocompleteItem>
                     <AutocompleteSection showDivider title="Europe">
                         {
                             [{ id: "europe", name: "All Europe", cont_id: "europe" },...nations.current].filter(n => n.cont_id === "europe").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
-                            )
+                        )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="Africa">
@@ -133,30 +150,41 @@ export default function Filterbar({
                         {
                             [{ id: "asia", name: "All Asia", cont_id: "asia" },...nations.current].filter(n => n.cont_id === "asia").map(n => 
                             <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
-                            )
+                        )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="North America">
                         {
                             [{ id: "north-america", name: "All North America", cont_id: "north-america" },...nations.current].filter(n => n.cont_id === "north-america").map(n => 
-                            <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
+                                <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="Oceania">
                         {
                             [{ id: "oceania", name: "All Oceania", cont_id: "oceania" },...nations.current].filter(n => n.cont_id === "oceania").map(n => 
-                            <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
+                                <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
                     <AutocompleteSection showDivider title="South America">
                         {
                             [{ id: "south-america", name: "All South America", cont_id: "south-america" },...nations.current].filter(n => n.cont_id === "south-america").map(n => 
-                            <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
+                                <AutocompleteItem key={n.id} onClick={() => handleFiltersChange(n.id, "nationality")}>{n.name}</AutocompleteItem>
                             )
                         }
                     </AutocompleteSection>
+                    </>
+                    :
+                    <>
+                    <AutocompleteItem key="all" textValue="All regions" onClick={() => handleFiltersChange("all", "region")}>All regions</AutocompleteItem>
+                    {
+                        regions_icon
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((region) => <AutocompleteItem key={region.name} onClick={() => handleFiltersChange(region.name, "region")}>{region.name}</AutocompleteItem>)
+                    }
+                    </>
+                    }
                 </Autocomplete>
 
                 <Select
@@ -165,6 +193,7 @@ export default function Filterbar({
                 placeholder="Select one or more events"
                 variant="faded"
                 size="sm"
+                isDisabled={isPending}
                 radius="sm"
                 isClearable
                 onClear={() => handleFiltersChange([], "event")}
@@ -181,6 +210,7 @@ export default function Filterbar({
                 placeholder="Select one or more years"
                 variant="faded"
                 size="sm"
+                isDisabled={isPending}
                 radius="sm"
                 isClearable
                 onClear={() => handleFiltersChange([], "year")}
@@ -214,6 +244,8 @@ export default function Filterbar({
                 color="warning"
                 label="Filter by medals"
                 className="lg:w-1/3 w-auto"
+                isDisabled={isPending}
+                size="sm"
                 orientation={isDrawer ? "horizontal" : "vertical"}
                 onChange={(v) => handleMoreFiltersChange(v)}
                 value={[filters.more_filters.no_golds ? "no_golds" : "", filters.more_filters.no_silvers ? "no_silvers" : "", filters.more_filters.no_bronzes ? "no_bronzes" : "",]}
@@ -227,6 +259,8 @@ export default function Filterbar({
                 label="Filter by country"
                 className="lg:w-1/3 w-auto"
                 value={filters.country}
+                size="sm"
+                isDisabled={isPending}
                 orientation={isDrawer ? "horizontal" : "vertical"}
                 onValueChange={handleRadioChange}
                 >
