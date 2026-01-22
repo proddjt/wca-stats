@@ -19,7 +19,7 @@ export default function useStats(id: string){
     const regions = useRef<string[]>();
     const int_cities = useRef<{city: string, country: string}[]>([]);
     const ita_cities = useRef<{city: string, region: string}[]>([]);
-    const firstLoadState = useRef<boolean>(false);
+    
 
     const {showLoader} = useIsLoading();
 
@@ -58,8 +58,8 @@ export default function useStats(id: string){
                 else person_data.region = ""
                 setLoadingValue(30);
 
-                // MEDALS BY COUNTRY
-                person_data.medals_by_country = await calculateMedalsByCountry(person_data, filters);
+                // PEOPLE MET
+                await calculatePeopleMet(person_data.id, 1, 50);
                 setLoadingValue(40);
 
                 // TIME PASSED SOLVING
@@ -106,10 +106,9 @@ export default function useStats(id: string){
                 // LAST PODIUMS
                 person_data.last_medals = await calculateLastPodiums(person_data, filters);
                 setLoadingValue(60);
-
-                // PEOPLE MET
-                const people_met = await calculatePeopleMet(person_data.id, 1, 50);
-                if (people_met) setPeopleMet(people_met)
+                
+                // MEDALS BY COUNTRY
+                person_data.medals_by_country = await calculateMedalsByCountry(person_data, filters);
                 setLoadingValue(70);
 
                 // DELEGATES MET
@@ -149,7 +148,7 @@ export default function useStats(id: string){
         regions.current = []
         int_cities.current = []
         ita_cities.current = []
-        return router.push("/person-stats")
+        return router.back()
     }
 
     function handleFiltersChange(value: string | string[] | [], key: string) {
@@ -157,35 +156,40 @@ export default function useStats(id: string){
         else setFilters(prev => ({...prev, [key]: value}))
     }
 
-    async function calculatePeopleMet(id: string, page: number, pageSize: number){
-    
-        const { data: people_data, error: people_error } = await supabase
-        .rpc("get_related_persons", {
-            wca_id_input: id,
-            page: page,
-            page_size: pageSize
-        })
-        if (people_error) throw people_error
-        if (people_data) return people_data
-    }
+    // async function calculatePeopleMet(id: string, page: number, pageSize: number){
+    //     const { data: people_data, error: people_error } = await supabase
+    //     .rpc("get_related_persons", {
+    //         wca_id_input: id,
+    //         page: page,
+    //         page_size: pageSize
+    //     })
+    //     if (people_error) throw people_error
+    //     if (people_data) setPeopleMet(people_data)
+    // }
 
-    async function dummyQuery(){
-        await supabase
-        .rpc("get_related_persons", {
-            wca_id_input: "2009CONT01",
-            page: 1,
-            page_size: 1
-        })
-        firstLoadState.current = true
+    async function calculatePeopleMet(id: string, page: number, pageSize: number){
+        try{
+            const { data, error } = await supabase.functions.invoke('get_related_person', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    wca_id_input: id,
+                    page,
+                    page_size: pageSize
+                })
+            })
+            console.log(error);
+            
+            if (error) throw error
+            if (data) setPeopleMet(data)
+        } catch (error) {
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
     }
 
     useEffect(() => {
         if (id) showLoader(getPersonStats)
     }, [filters])
-
-    useEffect(() => {
-        if (!firstLoadState.current) dummyQuery();
-    }, [])
 
     return {
         person,

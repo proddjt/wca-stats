@@ -48,29 +48,58 @@ export default function useTable(screenWidth: number, sectionSelected: string){
     }
 
     async function getRows(page = pages.page, newFilters = filters){
-        try {
-            const { data, count, error } = await supabase.rpc('get_medal_leaderboard', {
-                in_name: newFilters.name || null,
-                in_year: newFilters.year,
-                in_event_id: newFilters.event || null,
-                in_country_id: newFilters.nationality || null,
-                in_order_col: newFilters.col_order,
-                in_ascending: !newFilters.ascending,
-                in_no_bronzes: newFilters.more_filters.no_bronzes,
-                in_no_silvers: newFilters.more_filters.no_silvers,
-                in_no_golds: newFilters.more_filters.no_golds,
-                in_location_filter: newFilters.country,
-                in_mode: sectionSelected,
-                in_region: newFilters.region === "all" || newFilters.region === "" ? null : newFilters.region
-            }, {count: "exact"})
-            .range((page - 1) * 50, page * 50 - 1);
+        try{
+            const { data, error } = await supabase.functions.invoke('get_medal_leaderboard', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    page,
+                    in_name: newFilters.name || null,
+                    in_year: newFilters.year,
+                    in_event_id: newFilters.event || null,
+                    in_country_id: newFilters.nationality || null,
+                    in_order_col: newFilters.col_order,
+                    in_ascending: !newFilters.ascending,
+                    in_no_bronzes: newFilters.more_filters.no_bronzes,
+                    in_no_silvers: newFilters.more_filters.no_silvers,
+                    in_no_golds: newFilters.more_filters.no_golds,
+                    in_location_filter: newFilters.country,
+                    in_mode: sectionSelected,
+                    in_region: newFilters.region === "all" || newFilters.region === "" ? null : newFilters.region
+                })
+            })
             if (error) throw error.message
-            setRows(data);
-            if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
+            setRows(data.data);
+            if (data.count) setPages(prev => ({...prev, total: Math.ceil(data.count / 50)}));
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
+
+    // async function getRows(page = pages.page, newFilters = filters){
+    //     try {
+    //         const { data, count, error } = await supabase.rpc('get_medal_leaderboard', {
+    //             in_name: newFilters.name || null,
+    //             in_year: newFilters.year,
+    //             in_event_id: newFilters.event || null,
+    //             in_country_id: newFilters.nationality || null,
+    //             in_order_col: newFilters.col_order,
+    //             in_ascending: !newFilters.ascending,
+    //             in_no_bronzes: newFilters.more_filters.no_bronzes,
+    //             in_no_silvers: newFilters.more_filters.no_silvers,
+    //             in_no_golds: newFilters.more_filters.no_golds,
+    //             in_location_filter: newFilters.country,
+    //             in_mode: sectionSelected,
+    //             in_region: newFilters.region === "all" || newFilters.region === "" ? null : newFilters.region
+    //         }, {count: "exact"})
+    //         .range((page - 1) * 50, page * 50 - 1);
+    //         if (error) throw error.message
+    //         setRows(data);
+    //         if (count) setPages(prev => ({...prev, total: Math.ceil(count / 50)}));
+    //     } catch (error) {
+    //         showToast("Attention!", JSON.stringify(error), "danger")
+    //     }
+    // }
 
     async function getLastUpdate(){
         try {

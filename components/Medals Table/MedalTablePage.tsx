@@ -202,7 +202,7 @@ export default function MedalTablePage() {
                     <TableCell>
                       <Link
                       isBlock
-                      onPress={() => handleClick(item.wca_id)}
+                      onPress={() => !isPending && handleClick(item.wca_id)}
                       color="warning"
                       size="sm"
                       >

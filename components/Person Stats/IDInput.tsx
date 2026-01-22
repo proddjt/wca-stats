@@ -1,11 +1,13 @@
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
+import { useRouter } from "next/navigation";
+
 import { FaRegCheckCircle } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 import { checkId } from "@/Utils/functions";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function IDInput(){
     const [id, setId] = useState<string>("");
