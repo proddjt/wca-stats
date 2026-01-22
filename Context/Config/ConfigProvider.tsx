@@ -10,7 +10,6 @@ export default function ConfigProvider({ children } : { children: React.ReactNod
     const nations = useRef<NationType[]>([]);
     const events = useRef<EventType[]>([]);
     const years = useRef<{year: string}[]>([]);
-    const firstLoadState = useRef<boolean>(false);
 
     const supabase = createClient();
     const {showLoader} = useIsLoading();
@@ -52,21 +51,10 @@ export default function ConfigProvider({ children } : { children: React.ReactNod
         }
     }
 
-    async function dummyQuery(){
-        await supabase
-        .rpc("get_related_persons", {
-            wca_id_input: "2009CONT01",
-            page: 1,
-            page_size: 1
-        })
-        firstLoadState.current = true
-    }
-
     useEffect(() => {
         showLoader(getNations);
         showLoader(getEvents);
         showLoader(getYears);
-        if (!firstLoadState.current) dummyQuery();
     }, []);
 
     return (

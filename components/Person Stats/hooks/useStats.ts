@@ -19,6 +19,7 @@ export default function useStats(id: string){
     const regions = useRef<string[]>();
     const int_cities = useRef<{city: string, country: string}[]>([]);
     const ita_cities = useRef<{city: string, region: string}[]>([]);
+    const firstLoadState = useRef<boolean>(false);
 
     const {showLoader} = useIsLoading();
 
@@ -168,9 +169,23 @@ export default function useStats(id: string){
         if (people_data) return people_data
     }
 
+    async function dummyQuery(){
+        await supabase
+        .rpc("get_related_persons", {
+            wca_id_input: "2009CONT01",
+            page: 1,
+            page_size: 1
+        })
+        firstLoadState.current = true
+    }
+
     useEffect(() => {
         if (id) showLoader(getPersonStats)
     }, [filters])
+
+    useEffect(() => {
+        if (!firstLoadState.current) dummyQuery();
+    }, [])
 
     return {
         person,
