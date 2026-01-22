@@ -113,7 +113,7 @@ export default function MedalTablePage() {
   } = useConfig();
 
   const handleClick = (id: string) => {
-    if (!isPending) router.push(`/person-stats/${id}`)
+    router.push(`/person-stats/${id}`)
   }
 
   const tableColumns = useMemo(() => {
