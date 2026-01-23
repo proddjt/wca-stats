@@ -9,18 +9,21 @@ import Loader from "../Layout/Loader";
 import useUser from "@/Context/User/useUser";
 import PasswordInput from "./PasswordInput";
 import { Link } from "@heroui/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage(){
     const [form, setForm] = useState<FormType>({email: "", password: ""});
 
-    const redirectLink = useSearchParams().get("redirectTo") || undefined;
+    const searchParams = useSearchParams()
+    
+    const redirectLink = searchParams.get("redirectTo") || undefined;
     
     const {isPending} = useIsLoading();
-
+    
     const {doLogin} = useUser();
-
+    
     if (isPending) return <Loader />
+    
 
     return (
         <div className="grow flex flex-col justify-center items-center">
@@ -46,6 +49,7 @@ export default function LoginPage(){
                 onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))}
                 onKeyDown={(e) => {if (e.key === "Enter") doLogin(form, redirectLink)}}
                 />
+
                 <Button
                 onPress={() => doLogin(form, redirectLink)}
                 color="primary"
