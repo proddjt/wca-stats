@@ -216,6 +216,9 @@ export const normalizeRawTime = (value: string): string => {
 };
 
 function timeToSeconds(str: string) {
+    if (!str.includes(".")) {
+        str = (Number(str)/100).toString();
+    }
   // separo parte intera e centesimi
   const [intPart, centPart = "0"] = str.split(".");
 
@@ -230,17 +233,52 @@ function timeToSeconds(str: string) {
 
   // calcolo totale in secondi + centesimi
   const cent = Number("0." + centPart);
+  console.log(hours * 3600 + minutes * 60 + seconds + cent);
+  
   return hours * 3600 + minutes * 60 + seconds + cent;
 }
 
+function secondsToRawTime(value: number): string {
+  if (value == null || isNaN(value)) return "";
+
+  // separo parte intera e centesimi
+  const secondsInt = Math.floor(value);
+  const cent = Math.round((value - secondsInt) * 100);
+
+  let totalCenti = secondsInt * 100 + cent;
+
+  // ricostruzione
+  const hours = Math.floor(totalCenti / 360000);
+  totalCenti %= 360000;
+
+  const minutes = Math.floor(totalCenti / 6000);
+  totalCenti %= 6000;
+
+  const seconds = Math.floor(totalCenti / 100);
+  const centi = totalCenti % 100;
+
+  // ricompongo SENZA formattazione
+  const hhStr = hours > 0 ? String(hours) : "";
+  const mmStr = hours > 0
+    ? String(minutes).padStart(2, "0")
+    : (minutes > 0 ? String(minutes) : "");
+  const ssStr = (hours > 0 || minutes > 0)
+    ? String(seconds).padStart(2, "0")
+    : String(seconds);
+  const ccStr = String(centi).padStart(2, "0");
+
+  return `${hhStr}${mmStr}${ssStr}${ccStr}`;
+}
 
 export const getMean = (arr: string[]) => {
     const okResults = arr
-    .filter(r => r !== "/" && r !== "0").map(r => Number(normalizeRawTime(r)) / 100)
+    .filter(r => r !== "/" && r !== "0" && r !== "").map(r => Number(timeToSeconds(r)))
     if (okResults.length < 3) return "DNF"
-
+    console.log(okResults);
+    
     const sum = okResults.reduce((a, b) => a + b, 0)
-    return (sum / okResults.length).toFixed(2)
+    console.log(secondsToRawTime(Number((sum / okResults.length).toFixed(2))));
+    return secondsToRawTime(Number((sum / okResults.length).toFixed(2)))
 }
 
 export const getAvg = (arr: string[]) => {
@@ -254,9 +292,7 @@ export const getAvg = (arr: string[]) => {
     if (!okResults || okResults.length < 3) return "DNF"
     
     const sum = okResults.reduce((a, b) => a + b, 0)
-    console.log((sum / okResults.length).toFixed(2));
-    
-    return (sum / okResults.length).toFixed(2)
+    return secondsToRawTime(Number((timeToSeconds(sum.toString()) / okResults.length).toFixed(2)))
 }
 
 export function extractDiaryEntries(data: any) {
