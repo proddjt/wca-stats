@@ -215,22 +215,28 @@ export const normalizeRawTime = (value: string): string => {
     return `${hhStr}${mmStr}${ssStr}${ccStr}`;
 };
 
+function timeToSeconds(str: string) {
+  // separo parte intera e centesimi
+  const [intPart, centPart = "0"] = str.split(".");
+
+  // prendo gli ultimi 2 caratteri come secondi
+  const seconds = Number(intPart.slice(-2));
+
+  // i due caratteri prima sono i minuti
+  const minutes = Number(intPart.slice(-4, -2) || 0);
+
+  // tutto ciò che rimane a sinistra sono le ore
+  const hours = Number(intPart.slice(0, -4) || 0);
+
+  // calcolo totale in secondi + centesimi
+  const cent = Number("0." + centPart);
+  return hours * 3600 + minutes * 60 + seconds + cent;
+}
+
 
 export const getMean = (arr: string[]) => {
-    const okResults = arr.filter(r => r !== "/" && r !== "0").map(r => {
-        const cc = Number(r.slice(-2));
-        r = r.slice(0, -2);
-
-        const ss = r ? Number(r.slice(-2)) : 0;
-        r = r.slice(0, -2);
-
-        const mm = r ? Number(r.slice(-2)) : 0;
-        r = r.slice(0, -2);
-
-        const hh = r ? Number(r) : 0;
-
-        return (hh * 360000 + mm * 6000 + ss * 100 + cc) / 100
-    })
+    const okResults = arr
+    .filter(r => r !== "/" && r !== "0").map(r => Number(normalizeRawTime(r)) / 100)
     if (okResults.length < 3) return "DNF"
 
     const sum = okResults.reduce((a, b) => a + b, 0)
@@ -240,27 +246,16 @@ export const getMean = (arr: string[]) => {
 export const getAvg = (arr: string[]) => {
     const okResults = arr
     .filter(r => r !== "/" && r !== "0" && r !== "")
-    .map(r => {
-        const cc = Number(r.slice(-2));
-        r = r.slice(0, -2);
-
-        const ss = r ? Number(r.slice(-2)) : 0;
-        r = r.slice(0, -2);
-
-        const mm = r ? Number(r.slice(-2)) : 0;
-        r = r.slice(0, -2);
-
-        const hh = r ? Number(r) : 0;
-
-        return (hh * 360000 + mm * 6000 + ss * 100 + cc) / 100
-    })
+    .map(r => Number(normalizeRawTime(r)) / 100)
     .sort((a, b) => a - b)
     .slice(1)
     if (okResults.length === 4) okResults.pop();
 
     if (!okResults || okResults.length < 3) return "DNF"
-
+    
     const sum = okResults.reduce((a, b) => a + b, 0)
+    console.log((sum / okResults.length).toFixed(2));
+    
     return (sum / okResults.length).toFixed(2)
 }
 

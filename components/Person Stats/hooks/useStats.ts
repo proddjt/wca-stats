@@ -178,10 +178,8 @@ export default function useStats(id: string){
                     page_size: pageSize
                 })
             })
-            console.log(error);
-            
-            if (error) throw error
-            if (data) setPeopleMet(data)
+            if (error) throw error + "people met"
+            if (data) setPeopleMet(data.data)
         } catch (error) {
             showToast("Attention!", JSON.stringify(error), "danger")
         }

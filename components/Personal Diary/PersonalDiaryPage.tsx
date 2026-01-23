@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from "react";
-import { Tab, Tabs } from "@heroui/tabs";
 
 import { FaTableList } from "react-icons/fa6";
 import { MdAddCircle } from "react-icons/md";
@@ -10,14 +9,25 @@ import ResultsTable from "./ResultsTable";
 import useDiary from "./hooks/useDiary";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import Loader from "../Layout/Loader";
+import TabNavigation from "../Layout/TabNavigation";
 
-const sections = {
-    table: ResultsTable,
-    insert: ResultInsert,
-}
+const sections = [
+    {
+        component: ResultsTable,
+        key: "table",
+        title: "Diary",
+        icon: FaTableList
+    },
+    {
+        component: ResultInsert,
+        key: "insert",
+        title: "Insert",
+        icon: MdAddCircle
+    }
+]
 
-const getSection = (key: string, props?: any) => {
-    const Page = sections[key as keyof typeof sections]
+const getSection = (key: string, props: any) => {
+    const Page = sections?.find((s: any) => s.key === key)?.component || sections[0].component
     return <Page {...props}/>
 }
 
@@ -30,42 +40,24 @@ export default function PersonalDiaryPage(){
         results,
         result,
         setResult,
+        getResults,
         upsertResult,
-        deleteAction
+        deleteAction,
+        filters,
+        setFilters
     } = useDiary();
 
     if (isPending) return <Loader />
 
     return (
         <div className="grow flex flex-col justify-center items-center gap-5 p-2">
-            <Tabs
-            aria-label="Diary section"
+            <TabNavigation
+            sections={sections}
             selectedKey={sectionSelected}
-            onSelectionChange={(key) => setSectionSelected(key as string)}
-            color="warning"
-            >
-                <Tab
-                key="table"
-                title={
-                    <div className="flex items-center space-x-2">
-                        <FaTableList size={15}/>
-                        <span>Diary</span>
-                    </div>
-                }
-                className="font-bold"
-                />
-                <Tab
-                key="insert"
-                title={
-                    <div className="flex items-center space-x-2">
-                        <MdAddCircle size={15}/>
-                        <span>Add result</span>
-                    </div>
-                }
-                className="font-bold"
-                />
-            </Tabs>
-            {getSection(sectionSelected, {upsertResult, results, deleteAction, result, setResult})}
+            onSelectionChange={setSectionSelected}
+            />
+
+            {getSection(sectionSelected, {upsertResult, results, deleteAction, result, setResult, filters, setFilters, getResults})}
         </div>
     )
 }

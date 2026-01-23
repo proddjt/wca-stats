@@ -9,10 +9,13 @@ import Loader from "../Layout/Loader";
 import useUser from "@/Context/User/useUser";
 import PasswordInput from "./PasswordInput";
 import { Link } from "@heroui/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function LoginPage(){
     const [form, setForm] = useState<FormType>({email: "", password: ""});
 
+    const redirectLink = useSearchParams().get("redirectTo") || undefined;
+    
     const {isPending} = useIsLoading();
 
     const {doLogin} = useUser();
@@ -31,7 +34,7 @@ export default function LoginPage(){
                 fullWidth={false}
                 className="w-full"
                 value={form.email}
-                onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
+                onKeyDown={(e) => {if (e.key === "Enter") doLogin(form, redirectLink)}}
                 onChange={(e) => setForm(prev => ({...prev, email: e.target.value}))}
                 />
                 <PasswordInput
@@ -41,10 +44,10 @@ export default function LoginPage(){
                 className="w-full"
                 value={form.password}
                 onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))}
-                onKeyDown={(e) => {if (e.key === "Enter") doLogin(form)}}
+                onKeyDown={(e) => {if (e.key === "Enter") doLogin(form, redirectLink)}}
                 />
                 <Button
-                onPress={() => doLogin(form)}
+                onPress={() => doLogin(form, redirectLink)}
                 color="primary"
                 >
                     Login

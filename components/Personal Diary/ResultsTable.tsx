@@ -1,29 +1,26 @@
 import { MutableRefObject, useMemo } from "react"
-import dayjs from "dayjs"
 
 import useConfig from "@/Context/Config/useConfig"
-import { extractDiaryEntries, formatTime } from "@/Utils/functions"
+import { extractDiaryEntries } from "@/Utils/functions"
 
 import ResTable from "./ResTable"
 
-import { DiaryResultType } from "@/types"
+import { DiaryFilterType, DiaryResultType } from "@/types"
 
 export default function ResultsTable({
     results,
     deleteAction,
+    filters,
+    setFilters,
+    getResults,
 } : {
     results: MutableRefObject<DiaryResultType>,
-    deleteAction: (result: any) => void
+    deleteAction: (result: any) => void,
+    filters: DiaryFilterType,
+    setFilters: React.Dispatch<React.SetStateAction<DiaryFilterType>>,
+    getResults: () => Promise<void>
 }){
     const {events} = useConfig()
-
-    const eventOrder: Record<string, number> = useMemo(() => events.current.reduce((acc, ev, index) => {
-        acc[ev.id] = index;
-        return acc;
-    }, {} as Record<string, number>), [events.current]);
-
-    console.log();
-    
 
     return (
         <div className="grow flex flex-col justify-center items-center w-full p-5">
@@ -39,6 +36,9 @@ export default function ResultsTable({
                 rows: extractDiaryEntries(results.current)
             }}
             deleteAction={deleteAction}
+            filters={filters}
+            setFilters={setFilters}
+            getResults={getResults}
             />
         </div>
     )

@@ -1,9 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { DateInput } from "@heroui/date-input";
 import { now, ZonedDateTime } from "@internationalized/date";
-import dayjs from "dayjs";
 
 import useConfig from "@/Context/Config/useConfig";
 
@@ -43,10 +42,10 @@ export default function ResultInsert({
 
     const avg = useMemo(() => {
         if (result.result_type === "ao5" && result.result.length === 5) {
-            return getAvg(result.result);
+            return formatTime(normalizeRawTime(getAvg(result.result).replace('.', '')));
         }
         if (result.result_type === "mo3" && result.result.length === 3) {
-            return getMean(result.result);
+            return formatTime(normalizeRawTime(getMean(result.result).replace('.', '')));
         }
         return "";
     }, [result.result, result.result_type]);

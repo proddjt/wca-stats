@@ -20,7 +20,6 @@ import { FiltersType } from "@/types";
 import { useEffect, useState } from "react";
 import { regions_icon } from "@/Utils/regions_icon";
 import { CircleFlag } from "react-circle-flags";
-import { select } from "@heroui/theme";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 const icons = {

@@ -2,7 +2,7 @@ import { deleteResult, getHomeDiary, insertResult } from "@/app/actions/diary";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import { createClient } from "@/lib/supabase/client";
 import { showToast } from "@/lib/Toast";
-import { DiaryResultType, ResultInputType } from "@/types";
+import { DiaryFilterType, DiaryResultType, ResultInputType } from "@/types";
 import { getAvg, getMean, reverseFormatTime } from "@/Utils/functions";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
@@ -14,6 +14,11 @@ export default function useDiary(){
         result: [],
         date: dayjs().format("YYYY-MM-DD"),
         scrambles: []
+    })
+    const [filters, setFilters] = useState<DiaryFilterType>({
+        date: dayjs().format("YYYY-MM-DD"),
+        event: "all",
+        result_type: "all"
     })
     const results = useRef<DiaryResultType>({})
 
@@ -46,9 +51,8 @@ export default function useDiary(){
     async function getResults(){
         const user = await supabase.auth.getUser()
         try{
-            const data = await getHomeDiary(user.data.user?.email)
-
-            if (data && data[0] && data[0].pb_home) results.current = data[0].pb_home
+            const data = await getHomeDiary(user.data.user?.email || "", filters)
+            if (data ) results.current = data
             else results.current = {}
         } catch (error: any) {
             showToast("Attention!", error.toString(), "danger")
@@ -62,8 +66,6 @@ export default function useDiary(){
             showToast("Success!", "Result deleted successfully", "success")
             await getResults()
         } catch (error: any) {
-            console.log(error);
-            
             showToast("Attention!", error.toString(), "danger")
         }
     }
@@ -77,6 +79,9 @@ export default function useDiary(){
         setResult,
         results,
         upsertResult,
-        deleteAction
+        getResults,
+        deleteAction,
+        filters,
+        setFilters
     }
 }

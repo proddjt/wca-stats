@@ -1,4 +1,3 @@
-import { User } from "@supabase/supabase-js"
 import { MutableRefObject } from "react"
 
 export interface RowsType {
@@ -175,7 +174,8 @@ export interface StatsFiltersType {
 
 export interface UserContextType {
     user_role: MutableRefObject<string>
-    doLogin: (form: FormType) => void
+    isUser: MutableRefObject<boolean>
+    doLogin: (form: FormType, redirect?: string) => void
     doLogout: () => void
     doSignIn: (form: FormType) => void
 }
@@ -192,4 +192,10 @@ export interface ResultInputType {
 
 export interface DiaryResultType {
     [key: string]: object
+}
+
+export interface DiaryFilterType {
+    date: string,
+    event: string | string[],
+    result_type: string
 }

@@ -1,7 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { ResultInputType } from "@/types"
+import { DiaryFilterType, ResultInputType } from "@/types"
 
 export async function insertResult(result: ResultInputType, email?: string){
     const supabase = await createClient()
@@ -42,12 +42,20 @@ export async function deleteResult(result: any, email?: string){
     if (error) throw error.message
 }
 
-export async function getHomeDiary(email?: string){
+export async function getHomeDiary(email: string, filters: DiaryFilterType){
     const supabase = await createClient()
+    // const { data, error } = await supabase
+    // .from("personal_diary")
+    // .select("pb_home")
+    // .eq("email", email)
+
     const { data, error } = await supabase
-    .from("personal_diary")
-    .select("pb_home")
-    .eq("email", email)
+    .rpc("get_filtered_pb_home", {
+        in_email: email,
+        in_date: filters.date,
+        in_events: filters.event,
+        in_result_type: filters.result_type
+    })
     
     if (error) throw error.message
     if (data) return data

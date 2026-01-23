@@ -36,7 +36,7 @@ export async function calculateDelegatesMet(person_data: PersonType){
 
     const { data: delegate_data, error: delegate_error } = await supabase
     .rpc("get_delegates", {wca_id_input: person_data.id})
-    if (delegate_error) throw delegate_error
+    if (delegate_error) throw delegate_error + "delegates met"
     if (delegate_data) return delegate_data.filter((delegate: PersonType) => delegate.name !== person_data.name)
 }
 
@@ -55,7 +55,7 @@ export async function calculateLastPodiums(person_data: PersonType, filters: Sta
             )
         ]
     })
-    if (error) throw error
+    if (error) throw error + "last podiums"
     if (data) return data[0]
 }
 
@@ -67,6 +67,6 @@ export async function calculateMedalsByCountry(person_data: PersonType, filters:
         wca_id: person_data.id,
         year_input: filters.year
     })
-    if (medals_error) throw medals_error
+    if (medals_error) throw medals_error + "medals by country"
     if (medals_data) return medals_data
 }

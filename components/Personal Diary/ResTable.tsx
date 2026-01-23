@@ -4,13 +4,21 @@ import useConfig from "@/Context/Config/useConfig"
 import { useDisclosure } from "@heroui/modal";
 import ResultModal from "../Layout/ResultModal";
 import { useRef } from "react";
+import Filters from "./Filters";
+import { DiaryFilterType } from "@/types";
 
 export default function ResTable({
     data,
     deleteAction,
+    filters,
+    setFilters,
+    getResults
 } : {
     data: {rows: any[], cols: any[]},
-    deleteAction: (result: any) => void
+    deleteAction: (result: any) => void,
+    filters: DiaryFilterType,
+    setFilters: React.Dispatch<React.SetStateAction<DiaryFilterType>>
+    getResults: () => Promise<void>
 }){
     const modalResult = useRef()
     const {events} = useConfig();
@@ -25,9 +33,17 @@ export default function ResTable({
         isStriped
         className="mt-2"
         classNames={{
-          wrapper: "max-h-[50vh] lg:max-h-[60vh] w-full max-w-[90vw] lg:w-[40vw] lg:max-w-[65vw] overflow-auto",
+          wrapper: "h-[60vh] lg:h-[50vh] max-h-[50vh] lg:max-h-[60vh] w-full max-w-[90vw] lg:w-[40vw] lg:max-w-[65vw] overflow-auto",
           td: "whitespace-nowrap overflow-hidden text-ellipsis",
         }}
+        topContent={
+            <Filters
+            filters={filters}
+            setFilters={setFilters}
+            getResults={getResults}
+            />
+        }
+        topContentPlacement="outside"
         isHeaderSticky
         >
             <TableHeader columns={data?.cols||[]}>

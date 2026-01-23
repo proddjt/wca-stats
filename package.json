@@ -20,6 +20,7 @@
     "@heroui/chip": "2.2.24",
     "@heroui/code": "2.2.22",
     "@heroui/date-input": "^2.3.29",
+    "@heroui/date-picker": "^2.3.30",
     "@heroui/divider": "2.2.21",
     "@heroui/drawer": "2.2.26",
     "@heroui/dropdown": "2.3.29",

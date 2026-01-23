@@ -104,7 +104,7 @@ export default function useTable(screenWidth: number, sectionSelected: string){
     async function getLastUpdate(){
         try {
             const { data, error } = await supabase
-            .from("medals")
+            .from("results")
             .select("last_update")
             .order("last_update", { ascending: false })
             .limit(1)

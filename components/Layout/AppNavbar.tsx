@@ -19,7 +19,8 @@ export default function AppNavbar(){
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const {
-    doLogout
+    doLogout,
+    isUser
   } = useUser();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function AppNavbar(){
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
     });
-  }, [])
+  }, [isUser.current])
   
   return (
     <Navbar
@@ -103,8 +104,8 @@ export default function AppNavbar(){
           user ?
           <NavbarItem>
             <Link onClick={() => {}} className="flex gap-2 cursor-pointer">
-            <Avatar showFallback size="sm" name={user.user_metadata.display_name.split(" ")[0]} src="https://images.unsplash.com/broken" />
-              {user.user_metadata.display_name.split(" ")[0]}
+            <Avatar showFallback size="sm" name={user?.user_metadata?.display_name?.split(" ")[0]||"Scubanni"} src="https://images.unsplash.com/broken" />
+              {user?.user_metadata?.display_name?.split(" ")[0]||"Scubanni"}
             </Link>
           </NavbarItem>
           :
@@ -156,8 +157,8 @@ export default function AppNavbar(){
           <>
           <NavbarMenuItem>
             <Link onClick={() => {}} className="flex gap-2">
-              <Avatar showFallback size="sm" name={user.user_metadata.display_name.split(" ")[0]} src="https://images.unsplash.com/broken" />
-              {user.user_metadata.display_name.split(" ")[0]}
+              <Avatar showFallback size="sm" name={user?.user_metadata?.display_name?.split(" ")[0]||"Scubanni"} src="https://images.unsplash.com/broken" />
+              {user?.user_metadata?.display_name?.split(" ")[0]||"Scubanni"}
             </Link>
           </NavbarMenuItem>
           
