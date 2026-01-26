@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { EventType, FiltersType, NationType, PagesType, RowsType } from "@/types";
+import { FiltersType, PagesType, RowsType } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import useIsLoading from "@/Context/IsLoading/useIsLoading";
 import { showToast } from "@/lib/Toast";
@@ -16,7 +16,7 @@ export default function useTable(screenWidth: number, sectionSelected: string){
         event: [],
         name: '',
         col_order: 'golds',
-        ascending: false,
+        ascending: true,
         country: "all",
         more_filters: {
             no_golds: false,
@@ -59,7 +59,7 @@ export default function useTable(screenWidth: number, sectionSelected: string){
                     in_event_id: newFilters.event || null,
                     in_country_id: newFilters.nationality || null,
                     in_order_col: newFilters.col_order,
-                    in_ascending: !newFilters.ascending,
+                    in_ascending: newFilters.ascending,
                     in_no_bronzes: newFilters.more_filters.no_bronzes,
                     in_no_silvers: newFilters.more_filters.no_silvers,
                     in_no_golds: newFilters.more_filters.no_golds,
@@ -128,7 +128,7 @@ export default function useTable(screenWidth: number, sectionSelected: string){
             event: [],
             name: '',
             col_order: 'golds',
-            ascending: false,
+            ascending: true,
             country: 'all',
             more_filters: {
                 no_golds: false,
