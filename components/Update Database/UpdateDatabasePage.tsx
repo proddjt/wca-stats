@@ -26,7 +26,9 @@ export default function UpdateDatabasePage(){
 
     const {isPending} = useIsLoading();
 
-    if (user_role.current !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
+    console.log(user_role.current);
+
+    // if (user_role.current !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
 
     return (
         <div className="flex flex-col grow justify-center gap-10 items-center">
