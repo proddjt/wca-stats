@@ -10,11 +10,15 @@ import Loader from "../Layout/Loader";
 import { useRouter } from "next/navigation";
 import FullPageMsg from "../Layout/FullPageMsg";
 import useUser from "@/Context/User/useUser";
+import { Input } from "@heroui/input";
+import { useRef } from "react";
 
 export default function UpdateDatabasePage(){
     const {
         doUpdate,
+        getRegistrations
     } = useDatabase();
+    const comp_id = useRef<string>("")
 
     const {doLogout} = useUser()
 
@@ -63,6 +67,21 @@ export default function UpdateDatabasePage(){
                 isDisabled={isPending}
                 >
                     Update Results
+                </Button>
+            </div>
+            <div className="flex flex-col justify-center items-center gap-3">
+                <p className="text-xl">Get registrations list</p>
+                <Input
+                type="text"
+                placeholder="Insert competition id..."
+                onChange={(e) => comp_id.current = e.target.value}
+                />
+                <Button
+                onPress={() => getRegistrations(comp_id.current)}
+                isDisabled={isPending}
+                fullWidth
+                >
+                    Search
                 </Button>
             </div>
             <Button

@@ -6,6 +6,7 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { showToast } from "@/lib/Toast";
 import { continentsTable } from "@/Utils/continents";
+import { safe } from "@/Utils/functions";
 
 export default function useDatabase () {
     const {showLoader} = useIsLoading();
@@ -228,7 +229,21 @@ export default function useDatabase () {
         }
     }
 
+    async function getRegistrations(comp_id: string){
+        try{
+            const [res, error] = await safe(fetch (`https://www.worldcubeassociation.org/api/v0/competitions/${comp_id}/registrations`))
+            if (error) throw error
+            const data = await res.json();
+            console.log(data);
+            
+        } catch (error) {
+            console.log(error);
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+    }
+
     return {
         doUpdate,
+        getRegistrations,
     };
 }
