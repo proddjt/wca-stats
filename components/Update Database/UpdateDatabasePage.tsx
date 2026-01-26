@@ -16,7 +16,8 @@ import { useRef } from "react";
 export default function UpdateDatabasePage(){
     const {
         doUpdate,
-        getRegistrations
+        getRegistrations,
+        registrations
     } = useDatabase();
     const comp_id = useRef<string>("")
 
@@ -24,9 +25,9 @@ export default function UpdateDatabasePage(){
 
     const {user_role} = useUser();
 
-    const {isPending} = useIsLoading();
+    const {isPending, showLoader} = useIsLoading();
 
-    console.log(user_role.current);
+    console.log(registrations);
 
     // if (user_role.current !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
 
@@ -79,7 +80,7 @@ export default function UpdateDatabasePage(){
                 onChange={(e) => comp_id.current = e.target.value}
                 />
                 <Button
-                onPress={() => getRegistrations(comp_id.current)}
+                onPress={() => showLoader(() => getRegistrations(comp_id.current))}
                 isDisabled={isPending}
                 fullWidth
                 >
