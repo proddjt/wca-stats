@@ -24,7 +24,7 @@ export async function calculateCities(person_data: PersonType){
             if (data.country === "IT" && !data.isCanceled && dayjs(data.date.from) < dayjs()){
                 if (!ita_arr.some(c => c.city === city)) new_ita.push({city: city, region: it_cities.find(citta => citta.denominazione_ita.toLowerCase() === city.toLowerCase() )?.denominazione_regione || `${city} non trovata nell'elenco`})
             }
-            if (!int_arr.some(c => c.city === city)) new_int.push({city: city, country: data.country})
+            if (!int_arr.some(c => c.city === city) && city !== "Flere byer") new_int.push({city: city, country: data.country})
         })
     );
     

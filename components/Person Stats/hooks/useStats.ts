@@ -115,8 +115,6 @@ export default function useStats(id: string){
                 person_data.delegates_met = await calculateDelegatesMet(person_data);
                 setLoadingValue(80);
 
-                console.log(person_data);
-
                 // STATE SET
                 setPerson(person_data)
 
