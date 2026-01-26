@@ -1,12 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Input, Textarea } from "@heroui/input";
+import { NumberInput } from "@heroui/number-input";
 import { Select, SelectItem } from "@heroui/select";
 import { DateInput } from "@heroui/date-input";
 import { now, ZonedDateTime } from "@internationalized/date";
 
 import useConfig from "@/Context/Config/useConfig";
 
-import { formatTime, getAvg, getMean, normalizeRawTime } from "@/Utils/functions";
+import { decodeMBF, encodeMBF, formatTime, getAvg, getMean, normalizeRawTime, parseMBF } from "@/Utils/functions";
 
 import { ResultInputType } from "@/types";
 import ScramblePopover from "./ScramblePopover";
@@ -24,14 +25,31 @@ export default function ResultInsert({
     result: ResultInputType,
     setResult: React.Dispatch<React.SetStateAction<ResultInputType>>
 }){
+    const [mbfResult, setMbfResult] = useState({
+        solved: 1,
+        total: 99,
+        time: [""]
+    })
+
+    useEffect(() => {
+        console.log(mbfResult.solved, mbfResult.total, mbfResult.time);
+        
+        if (mbfResult.solved && mbfResult.total && mbfResult.time[0] && mbfResult.total >= mbfResult.solved){
+            const encoded = encodeMBF(mbfResult.solved, mbfResult.total, mbfResult.time[0])
+            setResult(prev => ({ ...prev, result: [encoded] }))
+        }
+    }, [mbfResult.solved, mbfResult.total, mbfResult.time])
+
     const {events} = useConfig()
 
     const validateResult = (value: string, index: number) => {
-        const newResults = [...(result?.result || [])];
+        let newResults = [] as any[]
+        if (result.event !== "333mbf") newResults = [...(result?.result || [])];
         if (value.startsWith("/") && value.length > 1) return
         if (!/^\d*$/.test(value) && value !== "/") return;
         newResults[index] = value;
-        return setResult(prev => ({ ...prev, result: newResults }));
+        if (result.event !== "333mbf") setResult(prev => ({ ...prev, result: newResults }));
+        else setMbfResult(prev => ({ ...prev, time: newResults })) 
     };
 
     const changeScramble = (value: string, index: number) => {
@@ -49,6 +67,9 @@ export default function ResultInsert({
         }
         return "";
     }, [result.result, result.result_type]);
+
+    console.log(result.result[0]);
+    
 
     return (
         <div className="grow flex justify-center items-center w-full">
@@ -128,7 +149,8 @@ export default function ResultInsert({
                                 description={`Formatted time: ${formatTime(result?.result?.[index]||"")}`}
                                 />
                         )
-                        :   
+                        :
+                        result.event !== "333mbf" ?
                         <Input
                         type="text"
                         size="sm"
@@ -143,6 +165,46 @@ export default function ResultInsert({
                         endContent={<ScramblePopover scramble={result?.scrambles?.[0]||""} changeScramble={changeScramble} index={0}/>}
                         description={`Formatted time: ${formatTime(result?.result?.[0]||"")}`}
                         />
+                        :
+                        <>
+                        <div className="flex justify-center items-center gap-3">
+                            <NumberInput
+                            hideStepper
+                            aria-label="Solved"
+                            className="w-1/4"
+                            value={mbfResult.solved}
+                            onChange={(e) => setMbfResult(prev => ({...prev, solved: Number(e)}))}
+                            maxValue={99}
+                            placeholder="Solved"
+                            isInvalid={mbfResult.solved > mbfResult.total || mbfResult.solved <= 0}
+                            />
+                            /
+                            <NumberInput
+                            hideStepper
+                            aria-label="Total"
+                            className="w-1/4"
+                            value={mbfResult.total}
+                            onChange={(e) => setMbfResult(prev => ({...prev, total: Number(e)}))}
+                            maxValue={99}
+                            placeholder="Total"
+                            isInvalid={mbfResult.solved > mbfResult.total || mbfResult.solved <= 0}
+                            />
+                        </div>
+                        <p className="text-neutral-500 text-xs text-center">*Max 99 cubes are supported</p>
+                        <Input
+                        type="text"
+                        size="sm"
+                        label="Result"
+                        placeholder="Result"
+                        variant="faded"
+                        radius="sm"
+                        value={mbfResult.time[0]||""}
+                        onChange={(e) => validateResult(e.target.value, 0)}
+                        onBlur={() => result?.result?.[0] !== "/" && validateResult(normalizeRawTime(mbfResult.time[0]||""), 0)}
+                        endContent={<ScramblePopover scramble={result?.scrambles?.[0]||""} changeScramble={changeScramble} index={0}/>}
+                        description={`Formatted time: ${parseMBF(result.result[0]||"")}`}
+                        />
+                        </>
                     }
                     
                     <I18nProvider locale="it-IT">

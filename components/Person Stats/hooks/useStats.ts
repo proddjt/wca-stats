@@ -13,7 +13,8 @@ export default function useStats(id: string){
     const [person, setPerson] = useState<PersonType>();
     const [peopleMet, setPeopleMet] = useState<PersonMetType | undefined>();
     const [filters, setFilters] = useState<StatsFiltersType>({
-        year: "all"
+        year: "all",
+        name: "",
     });
     const [loadingValue, setLoadingValue] = useState(0);
     const regions = useRef<string[]>();
@@ -173,7 +174,8 @@ export default function useStats(id: string){
                 body: JSON.stringify({
                     wca_id_input: id,
                     page,
-                    page_size: pageSize
+                    page_size: pageSize,
+                    in_name: filters.name || ""
                 })
             })
             if (error) throw error + "people met"
@@ -185,6 +187,10 @@ export default function useStats(id: string){
 
     useEffect(() => {
         if (id) showLoader(getPersonStats)
+    }, [])
+
+    useEffect(() => {
+        if (id && filters.name) calculatePeopleMet(id, 1, 10)
     }, [filters])
 
     return {

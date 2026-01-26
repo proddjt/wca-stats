@@ -1,5 +1,7 @@
+import Homepage from "@/components/Home/Homepage";
+
 export default function Home() {
   return (
-    <h1> Home </h1>
+    <Homepage/>
   );
 }

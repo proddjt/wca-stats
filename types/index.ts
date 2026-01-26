@@ -170,6 +170,7 @@ export interface PersonMetType {
 
 export interface StatsFiltersType {
     year: string,
+    name: string
 }
 
 export interface UserContextType {

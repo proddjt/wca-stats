@@ -309,7 +309,7 @@ export function extractDiaryEntries(data: any) {
         event_id: eventId,
         result_type: resultType.charAt(0).toUpperCase() + resultType.slice(1),
         key: item.id,
-        result: formatTime(item.result),
+        result: eventId === "333mbf" ? parseMBF(item.result) : formatTime(item.result),
         date: dayjs(item.date).format("DD-MM-YYYY")
       });
     });
@@ -318,4 +318,21 @@ export function extractDiaryEntries(data: any) {
   return output;
 }
 
+export function encodeMBF(solved: number, total: number, time: string) {
+    const mm = (total-solved).toString().padStart(2, "0");
+    const dd = (99 - (solved - Number(mm))).toString().padStart(2, "0");
+    const tttt = time.padStart(5, "0");
+    return `${dd}${tttt}${mm}`
+}
 
+export function parseMBF(str: string) {
+    console.log(str);
+    
+    if (str.length !== 9) return "";
+    const ttttt = str.slice(2, 7).padEnd(7, "0")
+    const time = formatTime(ttttt.startsWith("0") ? ttttt.slice(1) : ttttt)
+    const solved = ((99 - Number(str.slice(0, 2))) + Number(str.slice(7, 9))).toString()
+    const total = (Number(solved) + Number(str.slice(7, 9))).toString()
+
+    return `${solved}/${total} ${time}`
+}

@@ -46,7 +46,7 @@ export default function StatTable({
         aria-label="stats-table"
         isCompact
         isStriped
-        key={page_number || mode}
+        key={page_number || mode || data.rows.length}
         className="mt-2"
         classNames={{
           wrapper: "max-h-[50vh] lg:max-h-[60vh] w-full max-w-[90vw] lg:w-[40vw] lg:max-w-[65vw] overflow-auto",

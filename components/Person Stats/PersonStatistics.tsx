@@ -133,7 +133,7 @@ export default function PersonStatistics({
             onSelectionChange={setSectionSelected}
             />
 
-            {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters, peopleMet, calculatePeopleMet})}
+            {getSection(sectionSelected, {person, regions, int_cities, ita_cities, filters, peopleMet, calculatePeopleMet, handleFiltersChange})}
             
             <p className="text-xs italic text-gray-400 pb-1">(*) The number of regions and cities may be slightly inaccurate in some cases, because the WCA does not provide data about the specific venue attended in competitions with multiple venues.</p>
             <p className="text-xs italic text-gray-400">(**) “If a message such as ‘Roma not found in the list’ appears among the regions, please contact the developer to report the unrecognized city name so the issue can be fixed.</p>
