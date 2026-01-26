@@ -132,7 +132,7 @@ export function decodeMBF(value: number): number | null {
 
     // NEW FORMAT: DDTTTTTMM (9 digits)
     if (str.length === 9) {
-        const TTTTT = parseInt(str.slice(2, 7), 9);
+        const TTTTT = parseInt(str.slice(2, 7));
 
         if (TTTTT === 99999) return null; // unknown time
 
