@@ -6,12 +6,13 @@ import useIsLoading from "@/Context/IsLoading/useIsLoading";
 
 import { showToast } from "@/lib/Toast";
 import { continentsTable } from "@/Utils/continents";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function useDatabase () {
-    const {showLoader} = useIsLoading();
     const [registrations, setRegistrations] = useState<any[]>([])
-
+    const comp_id = useRef<string>("")
+    
+    const {showLoader} = useIsLoading();
     const supabase = createClient();
 
     async function getPages(url: string){
@@ -230,36 +231,45 @@ export default function useDatabase () {
         }
     }
 
-    async function getRegistrations(comp_id: string){
+    async function getRegistrations(){
+        const limit = pLimit(50)
         try{
-            const response = await fetch (`https://www.worldcubeassociation.org/api/v0/competitions/${comp_id}/registrations`)
+            const response = await fetch (`https://www.worldcubeassociation.org/api/v0/competitions/${comp_id.current}/registrations`)
             if (!response.ok) throw {code: response.status}
             const data = await response.json();
-            const wca_ids = await data.map(async (p: any) => {
-                const response = await fetch (`https://www.worldcubeassociation.org/api/v0/users/${p.user_id}`)
-                if (!response.ok) throw {code: response.status}
-                const data = await response.json();
-                if (data) return data.user.wca_id
-                return ""
-            })
-            console.log(wca_ids);
-            
+            const wca_ids = await Promise.all(
+                data.map((p: any) => {
+                    return limit(async () => {
+                        const response = await fetch (`https://www.worldcubeassociation.org/api/v0/users/${p.user_id}`)
+                        if (!response.ok) throw {code: response.status}
+                        const data = await response.json();
+                        if (data) return data.user.wca_id
+                    })
+                })
+            )
             const { data: persons_data, error: persons_error } = await supabase
             .from("persons")
-            .select("wca_id")
+            .select("wca_id, name, country_id, region")
             .in("wca_id", wca_ids)
             
             if (persons_error) throw persons_error
-            if (persons_data) setRegistrations(persons_data)
+            if (persons_data) setRegistrations(persons_data.filter((p: any) => p.country_id === "IT"))
         } catch (error) {
             console.log(error);
             showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
 
+    function resetRegistration(){
+        setRegistrations([])
+        comp_id.current = ""
+    }
+
     return {
         doUpdate,
         getRegistrations,
-        registrations
+        registrations,
+        comp_id,
+        resetRegistration
     };
 }
