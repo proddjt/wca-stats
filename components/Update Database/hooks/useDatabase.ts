@@ -232,7 +232,7 @@ export default function useDatabase () {
     }
 
     async function getRegistrations(){
-        const limit = pLimit(50)
+        const limit = pLimit(15)
         try{
             const response = await fetch (`https://www.worldcubeassociation.org/api/v0/competitions/${comp_id.current}/registrations`)
             if (!response.ok) throw {code: response.status}
@@ -260,6 +260,21 @@ export default function useDatabase () {
         }
     }
 
+    async function updateRegion(region: string, wca_id: string){
+        try{
+            const { error } = await supabase
+            .from("persons")
+            .update({region: region})
+            .eq("wca_id", wca_id)
+            if (error) throw error
+            showToast("Success!", "Region updated", "success")
+            await getRegistrations()
+        } catch (error) {
+            console.log(error);
+            showToast("Attention!", JSON.stringify(error), "danger")
+        }
+    }
+
     function resetRegistration(){
         setRegistrations([])
         comp_id.current = ""
@@ -270,6 +285,7 @@ export default function useDatabase () {
         getRegistrations,
         registrations,
         comp_id,
-        resetRegistration
+        resetRegistration,
+        updateRegion
     };
 }

@@ -117,7 +117,7 @@ export default function UserProvider({ children } : { children: React.ReactNode 
     }
 
     useEffect(() => {
-        if (!user_role.current) getUserRole()
+        showLoader(getUserRole)
     }, [])
 
     return (

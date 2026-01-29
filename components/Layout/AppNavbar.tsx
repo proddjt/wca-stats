@@ -20,7 +20,8 @@ export default function AppNavbar(){
 
   const {
     doLogout,
-    isUser
+    isUser,
+    user_role
   } = useUser();
 
   useEffect(() => {
@@ -167,6 +168,14 @@ export default function AppNavbar(){
               Logout
             </Link>
           </NavbarMenuItem>
+          {
+            user_role.current === "admin" &&
+            <NavbarMenuItem aria-label="update_database">
+              <Link onClick={() => {router.push("/update-database"); setIsMenuOpen(false)}} className="flex gap-2">
+                Update Database
+              </Link>
+            </NavbarMenuItem>
+          }
           </>
           :
           <NavbarMenuItem className="flex gap-2" aria-label="login">

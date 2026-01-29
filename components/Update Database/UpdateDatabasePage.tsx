@@ -19,6 +19,7 @@ import Loader from "../Layout/Loader";
 import FullPageMsg from "../Layout/FullPageMsg";
 import { useRef } from "react";
 import { useDisclosure } from "@heroui/modal";
+import EditRegionModal from "../Layout/EditRegionModal";
 
 
 const cols = [
@@ -42,7 +43,8 @@ export default function UpdateDatabasePage(){
         getRegistrations,
         registrations,
         comp_id,
-        resetRegistration
+        resetRegistration,
+        updateRegion
     } = useDatabase();
 
     const modalPerson = useRef<any>(null);
@@ -55,9 +57,10 @@ export default function UpdateDatabasePage(){
 
     const {isPending, showLoader} = useIsLoading();
 
-    // if (user_role.current !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
+    if (user_role.current !== "admin") return <FullPageMsg msg="You are not an admin. Please login with a valid admin account" />
 
     return (
+        <>
         <div className="flex flex-col grow justify-center gap-10 items-center">
             <h1 className="font-bold text-5xl">Update database</h1>
             <div className="flex justify-center gap-10 items-center lg:flex-row flex-col">
@@ -100,7 +103,7 @@ export default function UpdateDatabasePage(){
             </div>
             {
                 !registrations || !registrations.length ?
-
+                
                 <div className="flex flex-col justify-center items-center gap-3">
                     <p className="text-xl">Get registrations list</p>
                     <Input
@@ -139,21 +142,21 @@ export default function UpdateDatabasePage(){
                         emptyContent="No data available"
                         >
                             {(item) => (
-                            <TableRow
-                            key={item.key}
-                            onClick={() => {
-                                if (item["region"]) {
-                                    modalPerson.current = item;
-                                    onOpen();
-                                }
-                            }}
-                            >
+                                <TableRow
+                                key={item.key}
+                                onClick={() => {
+                                    if (!item["region"]) {
+                                        modalPerson.current = item;
+                                        onOpen();
+                                    }
+                                }}
+                                >
                                 {(columnKey) => <TableCell>
                                     <span className="flex flex-row gap-1">
                                     {
                                         columnKey === "region" ?
-                                            item[columnKey] ?
-                                            <>
+                                        item[columnKey] ?
+                                        <>
                                             <CircleFlag countryCode={regions_icon.find((region) => region.name === item[columnKey])?.icon||"IT"} width="20" />
                                             {getKeyValue(item, columnKey)}
                                             </>
@@ -198,5 +201,8 @@ export default function UpdateDatabasePage(){
                 isPending && <Loader noFullscreen/>
             }
         </div>
+
+        <EditRegionModal isOpen={isOpen} person={modalPerson.current} onOpenChange={onOpenChange} action={updateRegion} />
+        </>
     )
 }
