@@ -28,6 +28,7 @@ export default function useTable(screenWidth: number, sectionSelected: string){
     
     const [pages, setPages] = useState<PagesType>({page: 1, total: 0});
     const last_update = useRef<string>("")
+    const try_count = useRef<number>(0)
 
     const {showLoader} = useIsLoading();
 
@@ -48,7 +49,7 @@ export default function useTable(screenWidth: number, sectionSelected: string){
     }
 
     async function getRows(page = pages.page, newFilters = filters){
-        let count = 0
+        try_count.current++
         try{
             const { data, error } = await supabase.functions.invoke('get_medal_leaderboard', {
                 method: "POST",
@@ -69,12 +70,12 @@ export default function useTable(screenWidth: number, sectionSelected: string){
                     in_region: newFilters.region === "all" || newFilters.region === "" ? null : newFilters.region
                 })
             })
-            count++
             if (error) throw error.message
             setRows(data.data);
+            try_count.current = 0
             if (data.count) setPages(prev => ({...prev, total: Math.ceil(data.count / 50)}));
         } catch (error) {
-            if (count < 3) getRows(1)
+            if (try_count.current < 3) getRows(1)
             else showToast("Attention!", JSON.stringify(error), "danger")
         }
     }
