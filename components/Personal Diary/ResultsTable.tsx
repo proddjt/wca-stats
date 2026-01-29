@@ -21,7 +21,6 @@ export default function ResultsTable({
     getResults: () => Promise<void>
 }){
     const {events} = useConfig()
-
     return (
         <div className="grow flex flex-col justify-center items-center w-full p-5">
             <p className="text-2xl font-bold">Your best results</p>

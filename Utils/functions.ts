@@ -318,6 +318,27 @@ export function extractDiaryEntries(data: any) {
   return output;
 }
 
+// function groupByEvent(flatResults: Record<string, any>[]) {
+//   const grouped = {} as Record<string, any[]>;
+
+//   for (const item of flatResults) {
+//     const event = item.event_id;
+
+//     if (!grouped[event]) {
+//       grouped[event] = [];
+//     }
+
+//     grouped[event].push(item);
+//   }
+
+//   // trasformo l’oggetto in array di oggetti
+//   return Object.entries(grouped).map(([event_id, results]) => ({
+//     event_id,
+//     results
+//   }));
+// }
+
+
 export function encodeMBF(solved: number, total: number, time: string) {
     const mm = (total-solved).toString().padStart(2, "0");
     const dd = (99 - (solved - Number(mm))).toString().padStart(2, "0");
@@ -326,8 +347,6 @@ export function encodeMBF(solved: number, total: number, time: string) {
 }
 
 export function parseMBF(str: string) {
-    console.log(str);
-    
     if (str.length !== 9) return "";
     const ttttt = str.slice(2, 7).padEnd(7, "0")
     const time = formatTime(ttttt.startsWith("0") ? ttttt.slice(1) : ttttt)

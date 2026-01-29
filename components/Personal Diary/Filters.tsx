@@ -78,7 +78,7 @@ export default function Filters({
             radius="sm"
             isClearable
             onClear={() => setFilters(prev => ({...prev, result_type: "all"}))}
-            selectedKeys={filters.result_type !== "all" ? filters.result_type : []}
+            selectedKeys={filters.result_type !== "all" ? [filters.result_type] : []}
             onChange={(e) => setFilters(prev => ({...prev, result_type: e.target.value}))}
             >
             <>
